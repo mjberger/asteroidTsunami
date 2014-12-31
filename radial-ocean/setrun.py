@@ -42,6 +42,11 @@ def setrun(claw_pkg='geoclaw'):
     #------------------------------------------------------------------
     # Problem-specific parameters to be written to setprob.data:
     #------------------------------------------------------------------
+    # theta_island locates the island: 220 or 260 in the paper (x axis is latter)
+    # to get rid of island altogether, change make topo file to not include routine that
+    # adds island to topography
+    # if changed here need to do make data then make topo
+    # then make .output as usual, or make .plots
     theta_island = 260.
     probdata = rundata.new_UserData(name='probdata',fname='setprob.data')
     probdata.add_param('theta_island', theta_island,  'angle to island')
@@ -109,8 +114,8 @@ def setrun(claw_pkg='geoclaw'):
     # restart_file 'fort.chkNNNNN' specified below should be in 
     # the OUTDIR indicated in Makefile.
 
-    clawdata.restart = False               # True to restart from prior results
-    clawdata.restart_file = 'fort.chk00006'  # File to use for restart data
+    clawdata.restart = False                # True to restart from prior results
+    clawdata.restart_file = 'fort.chk00021'  # File to use for restart data
     
     
     # -------------
@@ -136,8 +141,8 @@ def setrun(claw_pkg='geoclaw'):
  
     elif clawdata.output_style == 3:
         # Output every step_interval timesteps over total_steps timesteps:
-        clawdata.output_step_interval = 2
-        clawdata.total_steps = 4
+        clawdata.output_step_interval = 1
+        clawdata.total_steps = 1
         clawdata.output_t0 = True  # output at initial (or restart) time?
         
 
@@ -262,7 +267,7 @@ def setrun(claw_pkg='geoclaw'):
     # Specify when checkpoint files should be created that can be
     # used to restart a computation.
 
-    clawdata.checkpt_style = 0
+    clawdata.checkpt_style = 1
 
     if clawdata.checkpt_style == 0:
       # Do not checkpoint at all
@@ -289,7 +294,8 @@ def setrun(claw_pkg='geoclaw'):
     amrdata = rundata.amrdata
 
     # max number of refinement levels:
-    amrdata.amr_levels_max = 5
+    #amrdata.amr_levels_max = 5
+    amrdata.amr_levels_max = 4
 
     # List of refinement ratios at each level (length at least amr_level_max-1)
     amrdata.refinement_ratios_x = [4, 4, 4, 4]
@@ -336,9 +342,10 @@ def setrun(claw_pkg='geoclaw'):
     # to specify regions of refinement append lines of the form
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
 
-    regions.append([1, 3,    0., 5000., -5., 20., 35., 45.])
-    regions.append([1, 2, 5000., 6900., 10., 20., 35., 45.])
-    regions.append([1, 3, 5000., 6900., 12., 20., 39., 43.])
+    #regions.append([1, 3,    0., 5000., -5., 20., 35., 45.])
+    #regions.append([1, 2, 5000., 6900., 10., 20., 35., 45.])
+    #regions.append([1, 3, 5000., 6900., 12., 20., 39., 43.])
+    regions.append([1,  3,    0., 100000000., -20., 20., 20., 60.])
 
 
     # Force refinement near the island as the wave approaches:
@@ -361,12 +368,12 @@ def setrun(claw_pkg='geoclaw'):
     #  ----- For developers ----- 
     # Toggle debugging print statements:
     amrdata.dprint = False      # print domain flags
-    amrdata.eprint = False      # print err est flags
+    amrdata.eprint = True       # print err est flags
     amrdata.edebug = False      # even more err est flags
     amrdata.gprint = False      # grid bisection/clustering
     amrdata.nprint = False      # proper nesting output
     amrdata.pprint = False      # proj. of tagged points
-    amrdata.rprint = False      # print regridding summary
+    amrdata.rprint = True       # print regridding summary
     amrdata.sprint = False      # space/memory output
     amrdata.tprint = False      # time step reporting each level
     amrdata.uprint = False      # update/upbnd reporting
@@ -409,11 +416,13 @@ def setgeo(rundata):
     refinement_data = rundata.refinement_data
     refinement_data.variable_dt_refinement_ratios = True
     refinement_data.wave_tolerance = 0.01
+    #refinement_data.wave_tolerance = 0.005
     refinement_data.deep_depth = 100.0
     refinement_data.max_level_deep = 3
 
     # == settopo.data values ==
-    rundata.topo_data.topofiles = [[2, 1, 1, 0.0, 10000000000.0, 'ocean.topotype2'], 
+    #rundata.topo_data.topofiles = [[2, 1, 1, 0.0, 10000000000.0, 'ocean.topotype2'], 
+    rundata.topo_data.topofiles = [[2, 1, 3, 0.0, 10000000000.0, 'ocean.topotype2'], 
                                    [2, 3, 4, 7.0, 10000000000.0, 'island.topotype2']]
     # for topography, append lines of the form
     #    [topotype, minlevel, maxlevel, t1, t2, fname]
@@ -464,7 +473,8 @@ def set_storm(rundata):
 
     # AMR parameters
     data.wind_refine = [20.0,40.0,60.0] # m/s
-    data.R_refine = [60.0e3,40e3,20e3]  # m
+    #data.R_refine = [60.0e3,40e3,20e3]  # m
+    data.R_refine = [0]  # m
     
     # Storm parameters
     data.storm_type = 0

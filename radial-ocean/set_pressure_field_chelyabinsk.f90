@@ -30,64 +30,76 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux)
     real(kind=8) :: yc, xc,dist,dist_in_km,pressRatio,peakRatio, fallOff             
     character(len=*), parameter :: aux_format = "(2i4,4d15.3)"
     real(kind=8) :: blastx_center, blasty_center,currPress
-    real(kind=8) :: airSpeed, dx_in_radians, dy_in_radians,dsigma,pi,mindist,maxRatio
+    real(kind=8) :: airSpeed, dx_in_radians, dy_in_radians,dsigma,pi,mindist,maxRatio, decay
+    real(kind=8) :: ts, ts_x, ts_y
     integer :: iloc,jloc
     real (kind=8) :: sumPress,xuse,yuse,wtx,wty   ! to do simpsons rule to get cell avg of pressure
  
-    airSpeed  = 344.0  ! geoclaw is dimensional, meters per second
+  
+    airSpeed  = 344.0  ! geoclaw is dimensional, meters per second, roughly mach 1
     blastx_center = 0.
     blasty_center = 40.
     pi = 3.14159265357989
     mindist=1000000000.
     maxRatio = 1.
 
-    ! Set pressure field  constnat in time for now
-    aux(pressure_index, :, :) = ambient_pressure
-!    if (time < 2000.d0) then
-        do j=1-mbc,my+mbc
-            ym = ylow + (j - 1.d0) * dy
-            y = ylow + (j - 0.5d0) * dy
-            yp = ylow + real(j,kind=8) * dy
-            do i=1-mbc,mx+mbc
-                xm = xlow + (i - 1.d0) * dx
-                x = xlow + (i - 0.5d0) * dx
-                xp = xlow + real(i,kind=8) * dx
+    ! Set pressure field 
+    aux(pressure_index, :, :) = ambient_pressure  !! units for geoclaw: amb is  101300 pascal (~101KPa)
 
-                ! prep for simpsons rule for conservative avg of pressure integral
-                ! try to "see" it better on coarser grid
-                sumPress = 0.
-                do jloc = 1, 3
-                  wty = 1.
-                  if (jloc .eq. 2) wty = 4.
-                  yuse = ym + (jloc-1)*.5d0*dy
-                do iloc = 1, 3
-                    wtx = 1.
-                    if (iloc .eq. 2) wtx = 4.
-                    xuse = xm + (iloc-1)*.5d0*dx
+    do j=1-mbc,my+mbc
+       ym = ylow + (j - 1.d0) * dy
+       y = ylow + (j - 0.5d0) * dy
+       yp = ylow + real(j,kind=8) * dy
+       do i=1-mbc,mx+mbc
+          xm = xlow + (i - 1.d0) * dx
+          x = xlow + (i - 0.5d0) * dx
+          xp = xlow + real(i,kind=8) * dx
+
+          ! prep for simpsons rule for conservative avg of pressure integral
+          ! try to "see" it better on coarser grid
+          sumPress = 0.
+          do jloc = 1, 3
+             wty = 1.
+             if (jloc .eq. 2) wty = 4.
+             yuse = ym + (jloc-1)*.5d0*dy
+             do iloc = 1, 3
+                wtx = 1.
+                if (iloc .eq. 2) wtx = 4.
+                xuse = xm + (iloc-1)*.5d0*dx
                 !  convert dist in lat-long angle to meters
-                   dist_in_km = spherical_distance(xuse,yuse,blastx_center,blasty_center)/1000.
-                   peakRatio = 1.036  !from popova, corr. to Chelyabinsk at 300kTNT, burst height 25km
-                   pressRatio  = 1./(1.+5.*(dist_in_km/50.)**(2.5) ) *(peakRatio-1.) + 1.0
-                   sumPress = sumPress + wtx*wty*pressRatio
-                end do                   
-                end do                   
-                sumPress = sumPress / 36.0   ! normalize for simpsons rule on rectangle
-                maxRatio = max(maxRatio,sumPress)
+                dist_in_km = spherical_distance(xuse,yuse,blastx_center,blasty_center)/1000.
+                !peakRatio = 1.036  !from popova, corr. to Chelyabinsk at 300kTNT, burst height 25km
+                peakRatio = 1.14  ! to match Mikes plots (pre-buoyancy)
+                pressRatio  = 1./(1.+5.*(dist_in_km/50.)**(2.5) ) *(peakRatio-1.) + 1.0
+                sumPress = sumPress + wtx*wty*pressRatio
+             end do
+          end do
 
-!!$                ! compute peak pressure at (x,y) then decay in time
-!!$                if (dist>= airSpeed*time ) then  ! so refine within one cell on coarsest grid at time 0
-!!$                   currPress = ambient_pressure
-!!$                else
+          sumPress = sumPress / 36.0   ! normalize for simpsons rule on rectangle
+          maxRatio = max(maxRatio,sumPress)
 
-                 ! apply first as constant pressure once started see what it looks like
-                  currPress = pressRatio * ambient_pressure ! will add decay in time next
-!!$                endif
+       ! compute peak pressure at (x,y) then decay in time
+         !! if (dist_in_km <= airSpeed*time) then   !make sure blast has reached this loc
+             ! apply first as constant pressure once started see what it looks like
+             currPress = pressRatio * ambient_pressure ! will add decay in time next
 
-                aux(pressure_index, i, j) = currPress
+             ! ts is fit to friedlander curve, time of arrival to negative ! pressure
+             ! is anisotropic in these explosions
+             ! not (yet) handling the turnaround to positive again
+             ts_x =  10000 / airSpeed  ! taken from mike figure in x   
+             ts_y =   7500 / airSpeed  ! appears constant over the run
+
+             decay = 1.  !!! no decay yet  no ts  exp(-time/ts)*(1.-time/ts)  ! from friedlander eq
 
 
-             enddo
-        enddo
-!    end if
-     !write(*,*)" max pressure ratio ",maxRatio
+             aux(pressure_index, i, j) = currPress*decay
+         !! endif
+
+
+
+       enddo
+    enddo
+!   end if
+!   write(*,*)" max pressure ratio ",maxRatio
+
 end subroutine set_pressure_field

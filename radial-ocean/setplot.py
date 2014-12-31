@@ -78,8 +78,10 @@ def setplot(plotdata):
     #plotitem.plot_var = geoplot.surface
     plotitem.plot_var = geoplot.surface_or_depth
     plotitem.pcolor_cmap = geoplot.tsunami_colormap
-    plotitem.pcolor_cmin = -1.0
-    plotitem.pcolor_cmax = 1.0
+    #plotitem.pcolor_cmin = -1.0
+    #plotitem.pcolor_cmax = 1.0
+    plotitem.pcolor_cmin = -.1
+    plotitem.pcolor_cmax = .1
     plotitem.add_colorbar = True
     plotitem.amr_celledges_show = [0,0,0]
     plotitem.patchedges_show = 1
@@ -96,15 +98,17 @@ def setplot(plotdata):
     plotitem.patchedges_show = 1
     plotaxes.xlimits = [-20,20]
     plotaxes.ylimits = [20,60]
+    #plotaxes.xlimits = [-5,5]
+    #plotaxes.ylimits = [35,45]
 
 
     # add contour lines of bathy if desired:
     plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
-    plotitem.show = False
+    plotitem.show = True #False
     plotitem.plot_var = geoplot.topo
-    plotitem.contour_levels = linspace(-1000,-1000,1)
+    plotitem.contour_levels = [-3500,-2500,-1500, -500, 0, 500]
     plotitem.amr_contour_colors = ['g']  # color on each level
-    plotitem.kwargs = {'linestyles':'dashed','linewidths':2}
+    plotitem.kwargs = {'linestyles':'dashed','linewidths':2,'colors' : 'red' }
     plotitem.amr_contour_show = [1,0,0]  
     plotitem.celledges_show = 0
     plotitem.patchedges_show = 0
@@ -240,14 +244,18 @@ def setplot(plotdata):
     plotfigure.show = True
     
     plotaxes = plotfigure.new_plotaxes()
-    plotaxes.xlimits = [-20,20]
-    plotaxes.ylimits = [20,60]
+    #plotaxes.xlimits = [-20,20]
+    #plotaxes.ylimits = [20,60]
+    plotaxes.xlimits = [-5,5]
+    plotaxes.ylimits = [35,45]
     plotaxes.title = "Pressure Field"
     # plotaxes.afteraxes = gulf_after_axes
     plotaxes.scaled = True
     
-    pressure_limits = [surge_data.ambient_pressure / 100.0, 
-                       2.0 * surge_data.ambient_pressure / 100.0]
+    #pressure_limits = [surge_data.ambient_pressure / 100.0, 
+    #                   2.0 * surge_data.ambient_pressure / 100.0]
+    pressure_limits = [.995*surge_data.ambient_pressure / 100.0, 
+                       1.005 * surge_data.ambient_pressure / 100.0]
     surgeplot.add_pressure(plotaxes, bounds=pressure_limits)
     surgeplot.add_land(plotaxes)
 

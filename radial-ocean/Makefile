@@ -16,7 +16,9 @@ CLAW_PKG = geoclaw                  # Clawpack package to use
 EXE = xgeoclaw                 # Executable to create
 SETRUN_FILE = setrun.py        # File containing function to make data
 OUTDIR = _output               # Directory for output
+#OUTDIR = .               # Directory for output
 SETPLOT_FILE = setplot.py      # File containing function to set plots
+#PLOTDIR = .               # Directory for plots
 PLOTDIR = _plots               # Directory for plots
 
 OVERWRITE ?= True                   # False ==> make a copy of OUTDIR first
@@ -58,7 +60,6 @@ SOURCES = \
   $(GEOLIB)/surge/setprob.f90 \
   ./flag2refine2.f90 \
   ./b4step2.f90 \
-  ./set_pressure_field.f90 \
   $(GEOLIB)/qinit.f90 \
   $(GEOLIB)/topo_update.f90 \
   $(GEOLIB)/cellgridintegrate2.f \
@@ -176,7 +177,9 @@ SOURCES = \
   $(AMRLIB)/opendatafile.f \
   $(AMRLIB)/init_alloc.f90 \
   $(AMRLIB)/restrt_alloc.f90 \
-  $(AMRLIB)/resize_alloc.f90
+  $(AMRLIB)/resize_alloc.f90 \
+  ./set_pressure_field_chelyabinsk.f90 
+#  ./set_pressure_field_kyleTest.f90 \
 
 #-------------------------------------------------------------------
 # Include Makefile containing standard definitions and make options:

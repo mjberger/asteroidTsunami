@@ -90,7 +90,7 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
             ! Check to see if we are some specified distance from the eye of
             ! the storm and refine if we are
 !             R_eye = storm_location(t)
-            R_eye = [0.d0, 40.d0]
+            R_eye = [0.d0, 40.d0]   ! compute distance from blastx_center, blasty_center
             do m=1,size(R_refine,1)
                 if (coordinate_system == 2) then
                     ds = spherical_distance(x_c, y_c, R_eye(1), R_eye(2))
@@ -171,6 +171,8 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
             ! -----------------------------------------------------------------
             ! Refinement not forced, so check if it is allowed and if so,
             ! check if there is a reason to flag this point:
+
+           
             if (allowflag(x_c,y_c,t,level)) then
                     
                 if (q(1,i,j) > dry_tolerance) then
@@ -201,7 +203,7 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
                         endif
                     enddo
                 endif
-            endif
+           endif
             
         enddo x_loop
     enddo y_loop

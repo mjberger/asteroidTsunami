@@ -8,6 +8,7 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux)
 
     use geoclaw_module, only: coordinate_system, earth_radius, deg2rad
     use geoclaw_module, only: sea_level
+    use geoclaw_module, only: spherical_distance
 
     use storm_module, only: wind_index, pressure_index, set_storm_fields
     use storm_module, only: ambient_pressure
@@ -26,15 +27,20 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux)
     ! Locals
     integer :: i,j,m,iint,jint
     real(kind=8) :: x,y,xm,ym,xp,yp,topo_integral
-    real(kind=8) :: yc, xc,dist,pressRatio,peakRatio, fallOff             
+    real(kind=8) :: yc, xc,dist,dist_in_km,pressRatio,peakRatio, fallOff             
     character(len=*), parameter :: aux_format = "(2i4,4d15.3)"
-     
+    real(kind=8) :: blastx_center, blasty_center,currPress
+    real(kind=8) :: airSpeed, dx_in_radians, dy_in_radians,dsigma,pi,dxymax
 
-    peakRatio = 1.04  !from popova report, corresponds to Chelyabinsk at 300kTNT,burst height 25km
+    airSpeed  = 344  ! geoclaw is dimensional, meters per second
+    blastx_center = 0.
+    blasty_center = 40.
+    pi = 3.14159265357989
+    !dxymax = max(dx,dy)
 
     ! Set pressure field  constnat in time for now
     aux(pressure_index, :, :) = ambient_pressure
-    if (time < 2000.d0) then
+!    if (time < 2000.d0) then
         do j=1-mbc,my+mbc
             ym = ylow + (j - 1.d0) * dy
             y = ylow + (j - 0.5d0) * dy
@@ -44,12 +50,32 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux)
                 x = xlow + (i - 0.5d0) * dx
                 xp = xlow + real(i,kind=8) * dx
 
-                dist = sqrt(x**2 + (y-40.d0)**2) 
-                if (dist < 1.d0) then
-                    aux(pressure_index, i, j) = 2.d0 * aux(pressure_index, i, j) * (2000.d0 - time) / 2000.d0 * (1.d0 - dist)
-                end if
+                !  convert dist in lat-long angle to meters
+                dist = spherical_distance(x,y,blastx_center,blasty_center)
+
+!                kyles initial radial pressure field with time decay
+!                if (dist < 1.d0) then
+!                    aux(pressure_index, i, j) = 2.d0 * aux(pressure_index, i, j) * (2000.d0 - time) / 2000.d0 * (1.d0 - dist)
+!                end if
+                
+                ! compute peak pressure at (x,y) then decay in time
+                if (dist>= airSpeed*time ) then  ! so refine within one cell on coarsest grid at time 0
+                   currPress = ambient_pressure
+                else
+                  peakRatio = 1.036  !from popova, corr. to Chelyabinsk at 300kTNT, burst height 25km
+                  dist_in_km = dist/1000.
+                  pressRatio  = (peakRatio-1.) * 1./(1.+5.*(dist_in_km/50.)**(2.5) ) + 1
+                  write(*,444) dist_in_km,pressRatio
+444               format(" dist (km)",e12.4," pressRatio ",7.5)
+                  ! apply first as constant pressure once started see what it looks like
+                  currPress = pressRatio * ambient_pressure ! will add decay in time next
+                endif
+
+                aux(pressure_index, i, j) = currPress
+
+
              enddo
         enddo
-    end if
+!    end if
 
 end subroutine set_pressure_field

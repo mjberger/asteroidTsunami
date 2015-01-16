@@ -1,3 +1,4 @@
+!
 subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux)
 !     ============================================
 !
@@ -30,18 +31,19 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux)
     real(kind=8) :: yc, xc,dist,dist_in_km,pressRatio,peakRatio, fallOff             
     character(len=*), parameter :: aux_format = "(2i4,4d15.3)"
     real(kind=8) :: blastx_center, blasty_center,currPress
-    real(kind=8) :: airSpeed, dx_in_radians, dy_in_radians,dsigma,pi,mindist,maxRatio, decay
-    real(kind=8) :: ts, ts_x, ts_y
+    real(kind=8) :: airSpeed, dx_in_radians, dy_in_radians,dsigma,pi,maxRatio
     integer :: iloc,jloc
     real (kind=8) :: sumPress,xuse,yuse,wtx,wty   ! to do simpsons rule to get cell avg of pressure
- 
+    real (kind=8) :: overPressure, computedOverPressure, maxOverPressure
+    character(len=100) :: format_string
+
   
     airSpeed  = 344.0  ! geoclaw is dimensional, meters per second, roughly mach 1
     blastx_center = 0.
     blasty_center = 40.
-    pi = 3.14159265357989
-    mindist=1000000000.
-    maxRatio = 1.
+    pi = 3.14159265358979
+    maxRatio = 0.
+    maxOverPressure = 0.
 
     ! Set pressure field 
     aux(pressure_index, :, :) = ambient_pressure  !! units for geoclaw: amb is  101300 pascal (~101KPa)
@@ -56,7 +58,7 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux)
           xp = xlow + real(i,kind=8) * dx
 
           ! prep for simpsons rule for conservative avg of pressure integral
-          ! try to "see" it better on coarser grid
+          ! try to "see" it better on coarser grid. this uses 9 points in cell
           sumPress = 0.
           do jloc = 1, 3
              wty = 1.
@@ -68,9 +70,10 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux)
                 xuse = xm + (iloc-1)*.5d0*dx
                 !  convert dist in lat-long angle to meters
                 dist_in_km = spherical_distance(xuse,yuse,blastx_center,blasty_center)/1000.
-                !peakRatio = 1.036  !from popova, corr. to Chelyabinsk at 300kTNT, burst height 25km
-                peakRatio = 1.14  ! to match Mikes plots (pre-buoyancy)
-                pressRatio  = 1./(1.+5.*(dist_in_km/50.)**(2.5) ) *(peakRatio-1.) + 1.0
+
+                overPressure = computedOverPressure(dist_in_km,time)/100.  !overpress was percentage
+                maxOverPressure = max(maxOverPressure,abs(overPressure))
+                pressRatio = 1.0 + overPressure 
                 sumPress = sumPress + wtx*wty*pressRatio
              end do
           end do
@@ -78,28 +81,48 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux)
           sumPress = sumPress / 36.0   ! normalize for simpsons rule on rectangle
           maxRatio = max(maxRatio,sumPress)
 
-       ! compute peak pressure at (x,y) then decay in time
-         !! if (dist_in_km <= airSpeed*time) then   !make sure blast has reached this loc
-             ! apply first as constant pressure once started see what it looks like
-             currPress = pressRatio * ambient_pressure ! will add decay in time next
-
-             ! ts is fit to friedlander curve, time of arrival to negative ! pressure
-             ! is anisotropic in these explosions
-             ! not (yet) handling the turnaround to positive again
-             ts_x =  10000 / airSpeed  ! taken from mike figure in x   
-             ts_y =   7500 / airSpeed  ! appears constant over the run
-
-             decay = 1.  !!! no decay yet  no ts  exp(-time/ts)*(1.-time/ts)  ! from friedlander eq
-
-
-             aux(pressure_index, i, j) = currPress*decay
-         !! endif
-
-
+          currPress = pressRatio * ambient_pressure 
+          aux(pressure_index, i, j) = currPress
 
        enddo
     enddo
-!   end if
-!   write(*,*)" max pressure ratio ",maxRatio
+
+    !format_string = "('max pressure ratio ',f6.4,'  max abs. val. overPressure ',e12.5)"
+    !write(*,format_string) maxRatio, maxOverPressure
 
 end subroutine set_pressure_field
+
+! ==========================================================================
+
+double precision function  computedOverPressure(dist_in_km,time)
+
+!  # use model of overpressure (based on MJA calcs) as a function of x,y,time
+
+   implicit none
+
+   ! Arguments
+   real(kind=8), intent(in) :: dist_in_km, time
+
+   ! Locals
+!   real(kind=8),parameter :: ampl = 5., width = 5., tstar = .5;
+   real(kind=8) :: ampl, width, tstar  ! they could be params, but for debugging make them vars
+   real(kind=8) :: blast_radius,a
+
+     
+   blast_radius = 2*sqrt(time); ! note that it slows down as time increases
+   ampl  = 5.
+   width = 5.
+   tstar = .5
+
+   a = ampl * exp(-(dist_in_km/width)**2); ! replace this with my runge fit
+
+   ! later will make it depend on x or y direction and blend, to allow
+   ! for different propagation speeds. For now radially ymmetric
+   if (dist_in_km <= blast_radius ) then
+       computedOverPressure = 2*a*exp(-.8*(blast_radius - dist_in_km)/tstar) *   &
+                  (.5 - 1.1*(blast_radius -dist_in_km)/tstar)
+   else
+       computedOverPressure = 0.0
+   endif
+
+end function computedOverPressure

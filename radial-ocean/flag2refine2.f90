@@ -37,8 +37,8 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
     use qinit_module, only: x_low_qinit,x_hi_qinit,y_low_qinit,y_hi_qinit
     use qinit_module, only: min_level_qinit, qinit_type
 
-    use storm_module, only: wind_refine, R_refine, storm_location, wind_index
-    use storm_module, only: wind_forcing
+    use storm_module, only: wind_refine, R_refine, storm_location, wind_index,pressure_index
+    use storm_module, only: wind_forcing, pressure_forcing
     
     use regions_module, only: num_regions, regions
     use refinement_module
@@ -58,7 +58,7 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
     real(kind=8), intent(in) :: DOFLAG
 
     ! Storm specific variables
-    real(kind=8) :: R_eye(2), wind_speed
+    real(kind=8) :: R_eye(2), wind_speed, P_gradientx, P_gradienty, gradP_sq
     
     logical :: allowflag
     external allowflag
@@ -66,10 +66,27 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
     ! Generic locals
     integer :: i,j,m
     real(kind=8) :: x_c,y_c,x_low,y_low,x_hi,y_hi
-    real(kind=8) :: speed, eta, ds
+    real(kind=8) :: speed, eta, ds, dx_meters, dy_meters
+    real(kind=8) :: pressure_refine, maxGradP2
 
     ! Initialize flags
     amrflags = DONTFLAG
+
+    ! for refinement using pressure gradient
+    pressure_refine = 10
+    maxGradP2 = 0.
+
+    ! Initialize mesh sizes, assume constant
+    if (coordinate_system == 2) then
+       ! Convert distance in lat-long to meters
+       dx_meters = spherical_distance(xlower+dx,ylower,xlower,ylower)
+       dy_meters = spherical_distance(xlower,ylower+dy,xlower,ylower)
+    else
+       dx_meters = dx
+       dy_meters = dy
+    endif
+
+    
 
     ! Loop over interior points on this grid
     ! (i,j) grid cell is [x_low,x_hi] x [y_low,y_hi], cell center at (x_c,y_c)
@@ -114,8 +131,23 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
                     endif
                 enddo
             endif
-            ! *****************************************************
 
+           ! Refine based on pressure gradient
+            if (pressure_forcing) then
+                P_gradientx = (aux(pressure_index,i+1,j) &
+                               - aux(pressure_index,i-1,j)) / (2.d0 * dx_meters)
+                P_gradienty = (aux(pressure_index,i,j+1) &
+                               - aux(pressure_index,i,j-1)) / (2.d0 * dy_meters)
+                gradP_sq = p_gradientx**2 + p_gradienty**2
+                maxGradP2 = max(gradP_sq, maxGradP2)
+
+                if (gradP_sq > pressure_refine) then
+                    amrflags(i,j) = DOFLAG
+                    cycle x_loop
+                endif
+            endif
+            ! *****************************************************
+            
             ! Check to see if refinement is forced in any topography file region:
             do m=1,mtopofiles
                 if (level < minleveltopo(m) .and. t >= tlowtopo(m) .and. t <= thitopo(m)) then
@@ -207,4 +239,8 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
             
         enddo x_loop
     enddo y_loop
+
+
+   write(*,*)" max grad press squared at time",t," level",level," = ",maxGradP2
+
 end subroutine flag2refine2

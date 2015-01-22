@@ -73,8 +73,8 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
     amrflags = DONTFLAG
 
     ! for refinement using pressure gradient
-    pressure_refine = 10
-    maxGradP2 = 0.
+    pressure_refine = .001D0**2  !since compared with square below
+    maxGradP2 = 0.d0
 
     ! Initialize mesh sizes, assume constant
     if (coordinate_system == 2) then
@@ -241,6 +241,7 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
     enddo y_loop
 
 
-   write(*,*)" max grad press squared at time",t," level",level," = ",maxGradP2
+     !write(*,100) t,level,maxGradP2
+100 format(" max grad press squared at time",e12.5," level",i3," = ",e15.7)
 
 end subroutine flag2refine2

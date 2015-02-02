@@ -1,5 +1,5 @@
 !
-subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux)
+subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux,mptr)
 !     ============================================
 !
 !     # set auxiliary array pressure field 
@@ -21,7 +21,7 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux)
     implicit none
     
     ! Arguments
-    integer, intent(in) :: mbc,mx,my,maux
+    integer, intent(in) :: mbc,mx,my,maux,mptr
     real(kind=8), intent(in) :: xlow,ylow,dx,dy,time
     real(kind=8), intent(inout) :: aux(maux,1-mbc:mx+mbc,1-mbc:my+mbc)
     
@@ -72,9 +72,10 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux)
                 !  convert dist in lat-long angle to meters
                 dist_in_km = spherical_distance(xuse,yuse,blastx_center,blasty_center)/1000.
 
-                overPressure = computedOverPressure(dist_in_km,time)
+                overPressure = computedOverPressure(dist_in_km,time)/100. !  / 100 from percent to value
+                !overPressure = computedOverPressure(dist_in_km,time)       !  this version returns dp
                 maxOverPressure = max(maxOverPressure,abs(overPressure))
-                pressRatio = 1.0 + overPressure 
+                pressRatio = 1.0 + overPressure/ambient_pressure 
 
                 sumPress = sumPress + wtx*wty*pressRatio
              end do
@@ -86,12 +87,11 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux)
           currPress = pressRatio * ambient_pressure 
           aux(pressure_index, i, j) = currPress
           maxPress = max(maxPress, currPress)
-
        enddo
     enddo
 
-    format_string = "('time ',e12.5,' max pressure ',e15.7,'  max abs. val. overPressure ',e12.5)"
-    write(*,format_string) time, maxPress, maxOverPressure
+    !format_string = "('time ',e12.5,' mptr ',i3,' max pressure ',e15.7,'  max abs. val. overPressure ',e12.5)"
+    !write(*,format_string) time, mptr, maxPress, maxOverPressure
 
 end subroutine set_pressure_field
 
@@ -109,7 +109,7 @@ double precision function  computedOverPressure(dist_in_km,time)
    ! Locals
 !   real(kind=8),parameter :: ampl = 5., width = 5., tstar = .5;
    real(kind=8) :: ampl, width, tstar  ! they could be params, but for debugging make them vars
-   real(kind=8) :: blast_radius,a, peakRatio, airSpeed
+   real(kind=8) :: blast_radius,a, peakRatio, airSpeed, epsilon
 
   !!! dont know how to work this in yet   
   !!! blast_radius = 2*sqrt(time); ! note that it slows down as time increases
@@ -118,19 +118,21 @@ double precision function  computedOverPressure(dist_in_km,time)
    ! then at time t it travels 340*time/1000 km.
    airSpeed  = 344.0  ! geoclaw is dimensional, meters per second, roughly mach 1
    blast_radius = 1.4d0*airSpeed*time/1000.d0 
-   ampl  = 9.d0
+   ampl  = 9.d0  !mikes model number
    width = 5.d0
    tstar = .5d0
    peakRatio = 1.1  ! higher than chelyabinsk
+   epsilon = 1.d-10 ! floating pt tolerance (enforce symmetry)
 
    !a = ampl * exp(-(dist_in_km/width)**2); ! replace this with my runge fit
-   a =  1./(1.+5.*(dist_in_km/50.)**(2.5) ) *(peakRatio-1.) 
+   a =  ampl! % so constant a 9% here for traveling wave emulation
 
    ! later will make it depend on x or y direction and blend, to allow
    ! for different propagation speeds. For now radially ymmetric
-   if (dist_in_km <= blast_radius ) then
-       computedOverPressure = 2*a*exp(-.8*(blast_radius - dist_in_km)/tstar) *   &
-                  (.5d0 - 1.1d0*(blast_radius -dist_in_km)/tstar)
+   if (dist_in_km <= blast_radius +epsilon) then
+   !    computedOverPressure = 2*a*exp(-.8*(blast_radius - dist_in_km)/tstar) *   &
+   !               (.5d0 - 1.1d0*(blast_radius -dist_in_km)/tstar) 
+      computedOverPressure = 101300*.1  ! mimic traveling wave solution, 10% overpressure
    else
        computedOverPressure = 0.0
    endif

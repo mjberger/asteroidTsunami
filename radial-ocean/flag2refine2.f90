@@ -67,13 +67,13 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
     integer :: i,j,m
     real(kind=8) :: x_c,y_c,x_low,y_low,x_hi,y_hi
     real(kind=8) :: speed, eta, ds, dx_meters, dy_meters
-    real(kind=8) :: pressure_refine, maxGradP2
+    real(kind=8) :: pressure_refine_sq, maxGradP2
 
     ! Initialize flags
     amrflags = DONTFLAG
 
     ! for refinement using pressure gradient
-    pressure_refine = .001D0**2  !since compared with square below
+    pressure_refine_sq = .01D0**2  !since compared with square below
     maxGradP2 = 0.d0
 
     ! Initialize mesh sizes, assume constant
@@ -107,7 +107,7 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
             ! Check to see if we are some specified distance from the eye of
             ! the storm and refine if we are
 !             R_eye = storm_location(t)
-            R_eye = [0.d0, 40.d0]   ! compute distance from blastx_center, blasty_center
+            R_eye = [0.d0, 40.d0]   
             do m=1,size(R_refine,1)
                 if (coordinate_system == 2) then
                     ds = spherical_distance(x_c, y_c, R_eye(1), R_eye(2))
@@ -141,7 +141,7 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
                 gradP_sq = p_gradientx**2 + p_gradienty**2
                 maxGradP2 = max(gradP_sq, maxGradP2)
 
-                if (gradP_sq > pressure_refine) then
+                if (gradP_sq > pressure_refine_sq) then
                     amrflags(i,j) = DOFLAG
                     cycle x_loop
                 endif

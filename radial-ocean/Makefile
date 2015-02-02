@@ -16,9 +16,7 @@ CLAW_PKG = geoclaw                  # Clawpack package to use
 EXE = xgeoclaw                 # Executable to create
 SETRUN_FILE = setrun.py        # File containing function to make data
 OUTDIR = _output               # Directory for output
-#OUTDIR = .               # Directory for output
 SETPLOT_FILE = setplot.py      # File containing function to set plots
-#PLOTDIR = .               # Directory for plots
 PLOTDIR = _plots               # Directory for plots
 
 OVERWRITE ?= True                   # False ==> make a copy of OUTDIR first
@@ -60,12 +58,13 @@ SOURCES = \
   $(GEOLIB)/surge/setprob.f90 \
   ./flag2refine2.f90 \
   ./b4step2.f90 \
+  $(AMRLIB)/flagger.f \
   $(GEOLIB)/qinit.f90 \
   $(GEOLIB)/topo_update.f90 \
   $(GEOLIB)/cellgridintegrate2.f \
   $(GEOLIB)/topointegral.f \
   $(GEOLIB)/bilinearintegral.f \
-  $(GEOLIB)/stepgrid.f \
+  ./stepgrid.f \
   $(CLAW)/riemann/src/rpn2_geoclaw.f \
   $(CLAW)/riemann/src/rpt2_geoclaw.f \
   $(CLAW)/riemann/src/geoclaw_riemann_utils.f \
@@ -83,14 +82,14 @@ SOURCES = \
   $(GEOLIB)/update.f \
   $(AMRLIB)/flagregions2.f90  \
   $(GEOLIB)/allowflag.f90  \
-  $(GEOLIB)/dumpgauge.f \
+  ./dumpgauge.f \
   $(GEOLIB)/upbnd.f  \
   $(GEOLIB)/tick.f \
   $(GEOLIB)/setgrd.f \
   $(GEOLIB)/gfixup.f \
   $(GEOLIB)/ginit.f \
   $(GEOLIB)/getmaxspeed.f90 \
-  $(GEOLIB)/advanc.f \
+  ./advanc.f \
   $(GEOLIB)/amr2.f90 \
   $(GEOLIB)/fgmax_read.f90 \
   $(GEOLIB)/fgmax_frompatch.f90 \
@@ -111,7 +110,6 @@ SOURCES = \
   $(AMRLIB)/prepregstep.f \
   $(AMRLIB)/prepbigstep.f \
   $(AMRLIB)/bufnst2.f \
-  $(AMRLIB)/flagger.f \
   $(AMRLIB)/flagregions.f \
   $(AMRLIB)/errf1.f \
   $(AMRLIB)/fixcapaq.f \
@@ -178,7 +176,7 @@ SOURCES = \
   $(AMRLIB)/init_alloc.f90 \
   $(AMRLIB)/restrt_alloc.f90 \
   $(AMRLIB)/resize_alloc.f90 \
-  ./set_pressure_field_chelyabinsk.f90 
+  ./set_pressure_field_travelingwave.f90 
 #  ./set_pressure_field_kyleTest.f90 \
 
 #-------------------------------------------------------------------

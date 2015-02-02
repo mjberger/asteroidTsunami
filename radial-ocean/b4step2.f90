@@ -1,4 +1,5 @@
-subroutine b4step2(mbc,mx,my,meqn,q,xlower,ylower,dx,dy,t,dt,maux,aux)
+!
+subroutine b4step2(mbc,mx,my,meqn,q,xlower,ylower,dx,dy,t,dt,maux,aux,mptr)
 ! ============================================
 ! 
 ! # called before each call to step
@@ -28,7 +29,7 @@ subroutine b4step2(mbc,mx,my,meqn,q,xlower,ylower,dx,dy,t,dt,maux,aux)
     implicit none
     
     ! Subroutine arguments
-    integer, intent(in) :: mbc,mx,my,meqn,maux
+    integer, intent(in) :: mbc,mx,my,meqn,maux,mptr
     real(kind=8), intent(in) :: xlower, ylower, dx, dy, t, dt
     real(kind=8), intent(inout) :: q(meqn,1-mbc:mx+mbc,1-mbc:my+mbc)
     real(kind=8), intent(inout) :: aux(maux,1-mbc:mx+mbc,1-mbc:my+mbc)
@@ -57,7 +58,7 @@ subroutine b4step2(mbc,mx,my,meqn,q,xlower,ylower,dx,dy,t,dt,maux,aux)
 
 
     ! Set wind and pressure aux variables for this grid
-    call set_pressure_field(maux, mbc, mx, my, xlower, ylower, dx, dy, t, aux)
+    call set_pressure_field(maux, mbc, mx, my, xlower, ylower, dx, dy, t, aux, mptr)
 
 end subroutine b4step2
     

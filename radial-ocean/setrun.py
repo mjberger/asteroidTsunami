@@ -80,10 +80,16 @@ def setrun(claw_pkg='geoclaw'):
     clawdata.upper[0] = 20.0          # xupper
     clawdata.lower[1] = 20.0          # ylower
     clawdata.upper[1] = 60.0          # yupper
+    #clawdata.lower[0] = -5.0          # xlower
+    #clawdata.upper[0] = 5.0          # xupper
+    #clawdata.lower[1] = 35.0          # ylower
+    #clawdata.upper[1] = 45.0          # yupper
     
     # Number of grid cells:
-    clawdata.num_cells[0] = 40      # mx
-    clawdata.num_cells[1] = 40      # my
+    #clawdata.num_cells[0] = 40      # mx
+    #clawdata.num_cells[1] = 40      # my
+    clawdata.num_cells[0] = 100      # mx
+    clawdata.num_cells[1] = 100      # my
     
 
     # ---------------
@@ -125,13 +131,14 @@ def setrun(claw_pkg='geoclaw'):
     # Specify at what times the results should be written to fort.q files.
     # Note that the time integration stops after the final output time.
  
-    clawdata.output_style = 1
+    clawdata.output_style = 3
  
     if clawdata.output_style==1:
         # Output ntimes frames at equally spaced times up to tfinal:
         # Can specify num_output_times = 0 for no output
         clawdata.num_output_times = 14
-        clawdata.tfinal = 14000.0
+        #clawdata.tfinal = 14000.0
+        clawdata.tfinal = 7000.0
         clawdata.output_t0 = True  # output at initial (or restart) time?
         
     elif clawdata.output_style == 2:
@@ -141,12 +148,13 @@ def setrun(claw_pkg='geoclaw'):
  
     elif clawdata.output_style == 3:
         # Output every step_interval timesteps over total_steps timesteps:
-        clawdata.output_step_interval = 1
-        clawdata.total_steps = 1
+        clawdata.output_step_interval = 100
+        clawdata.total_steps = 300/1   # final time 6000 sec / dtinit of 2 sec
         clawdata.output_t0 = True  # output at initial (or restart) time?
         
 
-    clawdata.output_format = 'binary'      # 'ascii', 'binary'
+    #clawdata.output_format = 'binary'      # 'ascii', 'binary'
+    clawdata.output_format = 'ascii'        # 'ascii', 'binary'
 
     clawdata.output_q_components = 'all'   # could be list such as [True,True]
     clawdata.output_aux_components = 'all'  # could be list
@@ -170,11 +178,13 @@ def setrun(claw_pkg='geoclaw'):
 
     # if dt_variable==True:  variable time steps used based on cfl_desired,
     # if dt_variable==Falseixed time steps dt = dt_initial always used.
-    clawdata.dt_variable = True
+    #clawdata.dt_variable = True
+    clawdata.dt_variable = False
     
     # Initial time step for variable dt.  
     # (If dt_variable==0 then dt=dt_initial for all steps)
-    clawdata.dt_initial = 16.0
+    #clawdata.dt_initial = 16.0
+    clawdata.dt_initial = 1.0
     
     # Max time step to be allowed if variable dt used:
     clawdata.dt_max = 1e+99
@@ -254,10 +264,23 @@ def setrun(claw_pkg='geoclaw'):
     # for gauges append lines of the form  [gaugeno, x, y, t1, t2]
 
     gaugeno = 0
-    for d in [1570e3, 1590e3, 1610e3, 1630e3]:
-        gaugeno = gaugeno+1
-        x,y = latlong(d, theta_island, 40., Rearth)
-        gauges.append([gaugeno, x, y, 0., 1e10])
+    #for d in [1570e3, 1590e3, 1610e3, 1630e3]:
+        #gaugeno = gaugeno+1
+        #x,y = latlong(d, theta_island, 40., Rearth)
+        #gauges.append([gaugeno, x, y, 0., 1e10])
+
+    # for radially symmetric traveling wave test
+    gauges.append([1,  0.01, 40.01, 0, 1e10])
+    #gauges.append([2,  1.01, 40.01, 0, 1e10])
+    #gauges.append([3,  2.01, 40.01, 0, 1e10])
+    #gauges.append([4,  3.01, 40.01, 0, 1e10])
+
+
+    #for 1d test problem i use these gauges
+    #gauges.append([1,  -17.50, 40, 0, 1e10])
+    #gauges.append([2,  -15.5, 40, 0, 1e10])
+    #gauges.append([3,  -13.5, 40, 0, 1e10])
+    #gauges.append([4,  -11.5, 40, 0, 1e10])
 
                   
     # --------------
@@ -295,7 +318,7 @@ def setrun(claw_pkg='geoclaw'):
 
     # max number of refinement levels:
     #amrdata.amr_levels_max = 5
-    amrdata.amr_levels_max = 4
+    amrdata.amr_levels_max = 2
 
     # List of refinement ratios at each level (length at least amr_level_max-1)
     amrdata.refinement_ratios_x = [4, 4, 4, 4]
@@ -355,20 +378,20 @@ def setrun(claw_pkg='geoclaw'):
     x2 = xisland + 1.
     y1 = yisland - 1.
     y2 = yisland + 1.
-    regions.append([4, 4, 7000., 1.e10,  x1,x2,y1,y2])
+    #regions.append([4, 4, 7000., 1.e10,  x1,x2,y1,y2])
 
     x1 = xisland - 0.2
     x2 = xisland + 0.2
     y1 = yisland - 0.2
     y2 = yisland + 0.2
-    regions.append([4, 5, 8000., 1.e10,  x1,x2,y1,y2])
+    #regions.append([4, 5, 8000., 1.e10,  x1,x2,y1,y2])
 
 
 
     #  ----- For developers ----- 
     # Toggle debugging print statements:
     amrdata.dprint = False      # print domain flags
-    amrdata.eprint = True       # print err est flags
+    amrdata.eprint = False      # print err est flags
     amrdata.edebug = False      # even more err est flags
     amrdata.gprint = False      # grid bisection/clustering
     amrdata.nprint = False      # proper nesting output
@@ -415,15 +438,16 @@ def setgeo(rundata):
     # Refinement settings
     refinement_data = rundata.refinement_data
     refinement_data.variable_dt_refinement_ratios = True
-    refinement_data.wave_tolerance = 0.01
-    #refinement_data.wave_tolerance = 0.005
+    #refinement_data.wave_tolerance = 0.01
+    refinement_data.wave_tolerance = 0.0005
     refinement_data.deep_depth = 100.0
     refinement_data.max_level_deep = 3
 
     # == settopo.data values ==
     #rundata.topo_data.topofiles = [[2, 1, 1, 0.0, 10000000000.0, 'ocean.topotype2'], 
     rundata.topo_data.topofiles = [[2, 1, 3, 0.0, 10000000000.0, 'ocean.topotype2'], 
-                                   [2, 3, 4, 7.0, 10000000000.0, 'island.topotype2']]
+                                   [2, 1, 4, 7.0, 10000000000.0, 'island.topotype2']]
+    #                               [2, 3, 4, 7.0, 10000000000.0, 'island.topotype2']]
     # for topography, append lines of the form
     #    [topotype, minlevel, maxlevel, t1, t2, fname]
 

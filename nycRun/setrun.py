@@ -66,21 +66,28 @@ def setrun(claw_pkg='geoclaw'):
     clawdata.num_dim = num_dim
 
     # Lower and upper edge of computational domain:
+    #  this is whole region covered by bathy
     # clawdata.lower[0] = -85.0      # west longitude
     # clawdata.upper[0] = -55.0      # east longitude
 
     # clawdata.lower[1] = 13.0       # south latitude
     # clawdata.upper[1] = 45.0      # north latitude
 
-    clawdata.lower[0] = -100.0      # west longitude
-    clawdata.upper[0] = -55.0      # east longitude
+    #clawdata.lower[0] = -80.0      # west longitude
+    #clawdata.upper[0] = -65.0      # east longitude
 
-    clawdata.lower[1] = 13.0       # south latitude
-    clawdata.upper[1] = 45.0      # north latitude
+    #clawdata.lower[1] = 30.0       # south latitude
+    #clawdata.upper[1] = 45.0      # north latitude
+
+    clawdata.lower[0] = -75.0      # west longitude
+    clawdata.upper[0] = -70.0      # east longitude
+
+    clawdata.lower[1] = 38.0       # south latitude
+    clawdata.upper[1] = 43.0      # north latitude
 
 
     # Number of grid cells:
-    degree_factor = 4
+    degree_factor = 16
     clawdata.num_cells[0] = int(clawdata.upper[0] - clawdata.lower[0]) * degree_factor
     clawdata.num_cells[1] = int(clawdata.upper[1] - clawdata.lower[1]) * degree_factor
 
@@ -126,6 +133,8 @@ def setrun(claw_pkg='geoclaw'):
 
     clawdata.output_style = 3
 
+    clawdata.tfinal = 3000  # seconds  # in case not set and used later 
+
     if clawdata.output_style==1:
         # Output nout frames at equally spaced times up to tfinal:
         #                 day     s/hour  hours/day
@@ -147,7 +156,7 @@ def setrun(claw_pkg='geoclaw'):
     elif clawdata.output_style == 3:
         # Output every iout timesteps with a total of ntot time steps:
         clawdata.output_step_interval = 1
-        clawdata.total_steps = 10
+        clawdata.total_steps = 5
         clawdata.output_t0 = True
 
         
@@ -251,6 +260,9 @@ def setrun(claw_pkg='geoclaw'):
     #   3 => solid wall for systems where q(2) is normal velocity
 
 
+    clawdata.bc_lower[0] = 'extrap'
+    clawdata.bc_upper[0] = 'extrap'
+
     clawdata.bc_lower[1] = 'extrap'
     clawdata.bc_upper[1] = 'extrap'
 
@@ -279,7 +291,11 @@ def setrun(claw_pkg='geoclaw'):
     #gauges.append([2,  -15.5, 40, 0, 1e10])
     #gauges.append([3,  -13.5, 40, 0, 1e10])
     #gauges.append([4,  -11.5, 40, 0, 1e10])
-
+ 
+    # == setgauges.data values ==
+    # for gauges append lines of the form  [gaugeno, x, y, t1, t2]
+    #rundata.gaugedata.gauges.append([1,-74.0,40.55,clawdata.t0,clawdata.tfinal])
+    #rundata.gaugedata.gauges.append([2,-63.0,43.5,clawdata.t0,clawdata.tfinal])
 
 
     # --------------
@@ -324,9 +340,9 @@ def setrun(claw_pkg='geoclaw'):
     amrdata.amr_levels_max = 3
 
     # List of refinement ratios at each level (length at least mxnest-1)
-    amrdata.refinement_ratios_x = [2,2,2,6,16]
-    amrdata.refinement_ratios_y = [2,2,2,6,16]
-    amrdata.refinement_ratios_t = [2,2,2,6,16]
+    amrdata.refinement_ratios_x = [4,4,4,6,16]
+    amrdata.refinement_ratios_y = [4,4,4,6,16]
+    amrdata.refinement_ratios_t = [4,4,4,6,16]
 
 
     # Specify type of each aux variable in amrdata.auxtype.
@@ -366,32 +382,13 @@ def setrun(claw_pkg='geoclaw'):
     # ---------------
     # Regions:
     # ---------------
-    #regions = rundata.regiondata.regions
+    # == setregions.data values ==
+    regions = rundata.regiondata.regions
     # to specify regions of refinement append lines of the form
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
-
-    #regions.append([1, 3,    0., 5000., -5., 20., 35., 45.])
-    #regions.append([1, 2, 5000., 6900., 10., 20., 35., 45.])
-    #regions.append([1, 3, 5000., 6900., 12., 20., 39., 43.])
+    regions.append([2,7,clawdata.t0,clawdata.tfinal,-74.5,-72.5,40.45,41.5])
+    regions.append([3,7,clawdata.t0,clawdata.tfinal,-74.2,-73.8,40.45,41.0])
     
-    #regions.append([1,  3,    0., 100000000., -20., 20., 20., 60.])
-
-
-    # Force refinement near the island as the wave approaches:
-
-    #(xisland,yisland) = latlong(1600.e3, theta_island, 40., Rearth)
-    #x1 = xisland - 1.
-    #x2 = xisland + 1.
-    #y1 = yisland - 1.
-    #y2 = yisland + 1.
-    #regions.append([4, 4, 7000., 1.e10,  x1,x2,y1,y2])
-
-    #x1 = xisland - 0.2
-    #x2 = xisland + 0.2
-    #y1 = yisland - 0.2
-    #y2 = yisland + 0.2
-    #regions.append([4, 5, 8000., 1.e10,  x1,x2,y1,y2])
-
 
 
     #  ----- For developers ----- 
@@ -409,16 +406,7 @@ def setrun(claw_pkg='geoclaw'):
     
     # More AMR parameters can be set -- see the defaults in pyclaw/data.py
 
-    # == setregions.data values ==
-    regions = rundata.regiondata.regions
-    # to specify regions of refinement append lines of the form
-    #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
-    regions.append([1,7,clawdata.t0,clawdata.tfinal,-74.2,-73.8,40.55,41.0])
-    
-    # == setgauges.data values ==
-    # for gauges append lines of the form  [gaugeno, x, y, t1, t2]
-    #rundata.gaugedata.gauges.append([1,-74.0,40.55,clawdata.t0,clawdata.tfinal])
-    #rundata.gaugedata.gauges.append([2,-63.0,43.5,clawdata.t0,clawdata.tfinal])
+
 
     #------------------------------------------------------------------
     # GeoClaw specific parameters:

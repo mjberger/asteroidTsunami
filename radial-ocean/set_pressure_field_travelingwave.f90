@@ -130,6 +130,7 @@ double precision function  computedOverPressure(dist_in_km,time)
    ! then at time t it travels 340*time/1000 km.
    airSpeed  = 344.0  ! geoclaw is dimensional, meters per second, roughly mach 1
    blast_radius = 1.4d0*airSpeed*time/1000.d0 
+   !blast_radius = 3.0d0*airSpeed*time/1000.d0 
 
    ampl  = 9.d0  !mikes model number
    width = 5.d0
@@ -138,12 +139,15 @@ double precision function  computedOverPressure(dist_in_km,time)
 
    ! later will make it depend on x or y direction and blend, to allow
    ! for different propagation speeds. For now radially ymmetric
-   if (abs(dist_in_km) <= blast_radius +epsilon) then
+!   if (abs(dist_in_km) <= blast_radius +epsilon) then
    !    computedOverPressure = 2*a*exp(-.8*(blast_radius - dist_in_km)/tstar) *   &
    !               (.5d0 - 1.1d0*(blast_radius -dist_in_km)/tstar) 
-      computedOverPressure = 1013.d0  !this is  1% overpressure, ambient_p = 101300
-   else
-       computedOverPressure = 0.0
-   endif
+   !   computedOverPressure = 1013.d0  !this is  1% overpressure, ambient_p = 101300
+
+       computedOverPressure = 10130.d0*exp(-(dist_in_km-blast_radius)**2)  ! 10% overpressure, but a pulse
+
+!   else
+!       computedOverPressure = 0.0
+!   endif
 
 end function computedOverPressure

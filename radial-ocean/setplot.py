@@ -268,10 +268,10 @@ def setplot(plotdata):
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes()
-    #plotaxes.xlimits = [0000, 7000]
-    #plotaxes.ylimits = [-1.0, 1.0]
-    plotaxes.xlimits = 'auto'
-    plotaxes.ylimits = 'auto'
+    plotaxes.xlimits = [0000, 7000]
+    plotaxes.ylimits = [-.05, .05]
+    #plotaxes.xlimits = 'auto'
+    #plotaxes.ylimits = 'auto'
     plotaxes.title = 'Surface'
 
     # Plot surface as blue curve:
@@ -280,7 +280,7 @@ def setplot(plotdata):
     plotitem.plotstyle = 'b-'
 
     # Plot topo as green curve:
-    plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
+    #plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
 
     def gaugetopo(current_data):
         q = current_data.q
@@ -294,19 +294,40 @@ def setplot(plotdata):
         #dpress = (q[4,:] - 101300)/101300
         dpress = q[4,:]  # already output as relative:  dp/amb_pr
         return dpress
+
+    def gs(current_data):
+        q = current_data.q
+        # different than speed function because q is function of time, not
+        # x,y at the gauges.
+        from numpy import where, sqrt
+        h = q[0,:]
+        #print('shape of h ' +  str(h.shape))
+        dry_tol = 0.001
+        u = where(h>dry_tol, q[1,:]/h, 0.)
+        v = where(h>dry_tol, q[2,:]/h, 0.)
+        ssq = sqrt(u*u+v*v)
+        #s = sqrt(u**2 + v**2)
+        s = sqrt(ssq)
+        return ssq
         
-    plotitem.plot_var = gaugetopo
-    plotitem.plotstyle = 'g-'
+    #plotitem.plot_var = gaugetopo
+    #plotitem.plotstyle = 'g-'
 
     # Plot relative delta pressure as red curve:
     plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
     plotitem.plot_var = gaugedpress
     plotitem.plotstyle = 'r-'
 
+    # add speed to this plot since cant get new one going
+    plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
+    plotitem.plot_var = gs
+    plotitem.plotstyle = 'g-'
+
     def add_zeroline(current_data):
         from pylab import plot, legend
         t = current_data.t
-        legend(('surface','topography','dp'),loc='lower left')
+#        legend(('surface','topography','dp'),loc='lower left')
+        legend(('surface','dp','speed'),loc='upper right')
         plot(t, 0*t, 'k')
 
     plotaxes.afteraxes = add_zeroline
@@ -315,42 +336,27 @@ def setplot(plotdata):
     # Figure for speed at gauges
     #--------------------------------
 
-    plotfigure = plotdata.new_plotfigure(name='Speed at gauges', figno=310, \
-                    type='each_gauge')
+#    plotfigure = plotdata.new_plotfigure(name='Speed at gauges', figno=310, \
+#                    type='each_gauge')
+#
 
-    def gauge_speed2(current_data):
-        # different than speed function because q is function of time, not
-        # x,y at the gauges.
-        from numpy import where, sqrt
-        h = q[0,:]
-        print('shape of h ' +  str(h.shape))
-        dry_tol = 0.001
-        #u = where(h>dry_tol, q[1,:]/h, 0.)
-        #v = where(h>dry_tol, q[2,:]/h, 0.)
-
-        u = q[1,:] 
-        v = q[2,:] 
-        ssq = u*u+v*v
-        #s = sqrt(u**2 + v**2)
-        s = sqrt(ssq)
-        return s
-
-    # Set up for axes in this figure:
-    plotaxes = plotfigure.new_plotaxes()
-    plotaxes.xlimits = 'auto'
-    plotaxes.ylimits = 'auto'
-    #plotaxes.xlimits = [0000, 7000]
-    #plotaxes.ylimits = 'auto'
-    plotaxes.title = 'Speed'
-
-    # Plot surface as blue curve:
-    plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
-    #plotitem.plot_var = speed
-    plotitem.plot_var = gauge_speed2
-    plotitem.plotstyle = 'b-'
-
-    plotfigure.show = True 
-
+#
+#    # Set up for axes in this figure:
+#    plotaxes = plotfigure.new_plotaxes()
+#    plotaxes.xlimits = 'auto'
+#    plotaxes.ylimits = 'auto'
+#    #plotaxes.xlimits = [0000, 7000]
+#    #plotaxes.ylimits = 'auto'
+#    plotaxes.title = 'Speed'
+#
+#    # Plot surface as blue curve:
+#    plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
+#    #plotitem.plot_var = speed
+#    plotitem.plot_var = gs  #gauge_speed
+#    plotitem.plotstyle = 'b-'
+#
+#    plotfigure.show = True 
+#
 
     #-----------------------------------------
     # Figure for grids alone

@@ -133,16 +133,16 @@ def setrun(claw_pkg='geoclaw'):
 
     clawdata.output_style = 3
 
-    clawdata.tfinal = 3000  # seconds  # in case not set and used later 
+    clawdata.tfinal = 3000  # seconds  # in case not set in output_1, used later for region times
 
     if clawdata.output_style==1:
         # Output nout frames at equally spaced times up to tfinal:
         #                 day     s/hour  hours/day
         
-        clawdata.tfinal = 3000  # seconds
+        clawdata.tfinal = 1000  # seconds
 
         # Output occurrence per day, 24 = every hour, 4 = every 6 hours
-        recurrence = 10   # output every 10 seconds
+        recurrence = 50   # output every 10 seconds
         clawdata.num_output_times = int((clawdata.tfinal - clawdata.t0) 
                                             / recurrence)
 
@@ -155,8 +155,8 @@ def setrun(claw_pkg='geoclaw'):
 
     elif clawdata.output_style == 3:
         # Output every iout timesteps with a total of ntot time steps:
-        clawdata.output_step_interval = 1
-        clawdata.total_steps = 5
+        clawdata.output_step_interval = 40
+        clawdata.total_steps = 400
         clawdata.output_t0 = True
 
         
@@ -186,12 +186,12 @@ def setrun(claw_pkg='geoclaw'):
 
     # if dt_variable==1: variable time steps used based on cfl_desired,
     # if dt_variable==0: fixed time steps dt = dt_initial will always be used.
-    clawdata.dt_variable = True
-    #clawdata.dt_variable = False
+    #clawdata.dt_variable = True
+    clawdata.dt_variable = False
 
     # Initial time step for variable dt.
     # If dt_variable==0 then dt=dt_initial for all steps:
-    clawdata.dt_initial = 0.016
+    clawdata.dt_initial = 1.0
 
     # Max time step to be allowed if variable dt used:
     clawdata.dt_max = 1e+99
@@ -272,30 +272,19 @@ def setrun(claw_pkg='geoclaw'):
     gauges  = rundata.gaugedata.gauges 
     # for gauges append lines of the form  [gaugeno, x, y, t1, t2]
 
-
     gaugeno = 0
     #for d in [1570e3, 1590e3, 1610e3, 1630e3]:
         #gaugeno = gaugeno+1
         #x,y = latlong(d, theta_island, 40., Rearth)
         #gauges.append([gaugeno, x, y, 0., 1e10])
 
-    # for radially symmetric traveling wave test
-    #gauges.append([1,  0.01, 40.01, 0, 1e10])
-    #gauges.append([2,  1.01, 40.01, 0, 1e10])
-    #gauges.append([3,  2.01, 40.01, 0, 1e10])
-    #gauges.append([4,  3.01, 40.01, 0, 1e10])
+    # for manhattan test
+    gauges.append([1,  -73.8, 40.45, 0, 1e10])
+    gauges.append([2,  -74.0, 40.5,  0, 1e10])
+    gauges.append([3,  -74.1, 40.65, 0, 1e10])
+    gauges.append([4,  -73.5, 40.4, 0, 1e10])
+    gauges.append([5,  -72.2, 39.8, 0, 1e10])
 
-
-    #for 1d test problem i use these gauges
-    #gauges.append([1,  -17.50, 40, 0, 1e10])
-    #gauges.append([2,  -15.5, 40, 0, 1e10])
-    #gauges.append([3,  -13.5, 40, 0, 1e10])
-    #gauges.append([4,  -11.5, 40, 0, 1e10])
- 
-    # == setgauges.data values ==
-    # for gauges append lines of the form  [gaugeno, x, y, t1, t2]
-    #rundata.gaugedata.gauges.append([1,-74.0,40.55,clawdata.t0,clawdata.tfinal])
-    #rundata.gaugedata.gauges.append([2,-63.0,43.5,clawdata.t0,clawdata.tfinal])
 
 
     # --------------
@@ -386,7 +375,7 @@ def setrun(claw_pkg='geoclaw'):
     regions = rundata.regiondata.regions
     # to specify regions of refinement append lines of the form
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
-    regions.append([2,7,clawdata.t0,clawdata.tfinal,-74.5,-72.5,40.45,41.5])
+    regions.append([2,7,clawdata.t0,clawdata.tfinal,-74.5,-72.5,40.25,41.5])
     regions.append([3,7,clawdata.t0,clawdata.tfinal,-74.2,-73.8,40.45,41.0])
     
 

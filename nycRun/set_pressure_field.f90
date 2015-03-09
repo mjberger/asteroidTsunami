@@ -40,8 +40,9 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux,mptr)
     !blastx_center = -17.999
 
     ! for two dimensional radially symmetric pressure wave. give blast center in lat/long units of domain
-    blastx_center = -73.9
-    blasty_center = 40.6
+    !blastx_center = -73.6
+    blasty_center = 40.00
+    blastx_center = -73.0
 
     maxRatio        = 0.
     maxOverPressure = 0.

@@ -62,6 +62,10 @@ def setplot(plotdata):
         gaugetools.plot_gauge_locations(current_data.plotdata, \
              gaugenos='all', format_string='ko', add_labels=True)
     
+    def mynewafteraxes(current_data):
+        addgauges
+        bigfont
+
 
     #-----------------------------------------
     # Figure for pcolor plot for surface
@@ -108,7 +112,7 @@ def setplot(plotdata):
 
     # add contour lines of bathy if desired:
     plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
-    plotitem.show = True #False
+    plotitem.show = True # False
     plotitem.plot_var = geoplot.topo
     plotitem.contour_levels = [-3500,-2500,-1500, -500, 0, 500]
     plotitem.amr_contour_colors = ['g']  # color on each level
@@ -204,8 +208,10 @@ def setplot(plotdata):
         manhattan_island=-73.5
         xisland,yisland = latlong(1600e3, manhattan_island, 40., Rearth)
         #plotaxes.xlimits = [xisland-0.6, xisland+0.6]
-        plotaxes.xlimits = [manhattan_island-1, manhattan_island+1]
-        plotaxes.ylimits = [40.5,41.5]
+        #plotaxes.xlimits = [manhattan_island-1, manhattan_island+1]
+        #plotaxes.ylimits = [40.15,41.5]
+        plotaxes.xlimits = [-74.5, -73.5]  # really zoom in on lower manhattan]
+        plotaxes.ylimits = [40.4,40.9]
         #plotaxes.afteraxes = addgauges
         def bigfont(current_data):
             import pylab
@@ -213,7 +219,8 @@ def setplot(plotdata):
             pylab.title("Surface at t = %8.1f" % t, fontsize=20)
             pylab.xticks(fontsize=15)
             pylab.yticks(fontsize=15)
-        plotaxes.afteraxes = bigfont
+        #plotaxes.afteraxes = bigfont
+        plotaxes.afteraxes = mynewafteraxes
 
         # Water
         plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
@@ -221,8 +228,8 @@ def setplot(plotdata):
         #plotitem.plot_var = geoplot.surface
         plotitem.plot_var = geoplot.surface_or_depth
         plotitem.pcolor_cmap = geoplot.tsunami_colormap
-        plotitem.pcolor_cmin = -1.0
-        plotitem.pcolor_cmax = 1.0
+        plotitem.pcolor_cmin = -.10
+        plotitem.pcolor_cmax = .10
         plotitem.add_colorbar = False
         plotitem.amr_celledges_show = [0]
         plotitem.patchedges_show = 1
@@ -270,15 +277,15 @@ def setplot(plotdata):
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes()
-    plotaxes.xlimits = [0000, 7000]
-    plotaxes.ylimits = [-.05, .05]
+    plotaxes.xlimits = [0000, 500]
+    plotaxes.ylimits = [-.10, .12]
     #plotaxes.xlimits = 'auto'
     #plotaxes.ylimits = 'auto'
     plotaxes.title = 'Surface'
 
     # Plot surface as blue curve:
     plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
-    plotitem.plot_var = 3
+    plotitem.plot_var = 3  
     plotitem.plotstyle = 'b-'
 
     # Plot topo as green curve:
@@ -328,9 +335,9 @@ def setplot(plotdata):
     def add_zeroline(current_data):
         from pylab import plot, legend
         t = current_data.t
-#        legend(('surface','topography','dp'),loc='lower left')
+#       legend(('surface','topography','dp'),loc='lower left')
         legend(('surface','dp','speed'),loc='upper right')
-        plot(t, 0*t, 'k')
+        #plot(t, 0*t, 'k')
 
     plotaxes.afteraxes = add_zeroline
 
@@ -393,6 +400,7 @@ def setplot(plotdata):
     plotaxes.title = "Pressure Field"
     # plotaxes.afteraxes = gulf_after_axes
     plotaxes.scaled = True
+    plotaxes.afteraxes = addgauges
     
     #pressure_limits = [surge_data.ambient_pressure / 100.0, 
     #                   2.0 * surge_data.ambient_pressure / 100.0]

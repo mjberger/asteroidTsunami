@@ -359,6 +359,25 @@ def setplot(plotdata):
 #
 
     #-----------------------------------------
+    # Figure for bathy alone
+    #-----------------------------------------
+    def bathy(current_data):
+        return current_data.aux[0,:,:]
+
+    plotfigure = plotdata.new_plotfigure(name='bathymetry', figno=3)
+    plotaxes = plotfigure.new_plotaxes('pcolor')
+    plotaxes.title = 'Bathymetry'
+    plotaxes.scaled = True
+
+    plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
+    plotitem.plot_var = bathy
+    plotitem.pcolor_cmin = -4000.00
+    plotitem.pcolor_cmax = 100
+    plotitem.add_colorbar = True
+
+
+
+    #-----------------------------------------
     # Figure for grids alone
     #-----------------------------------------
     plotfigure = plotdata.new_plotfigure(name='grids', figno=2)

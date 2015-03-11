@@ -382,6 +382,16 @@ def setplot(plotdata):
 
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
     plotitem.plot_var = bathy
+    plotitem.pcolor_cmin = -2000.00
+    plotitem.pcolor_cmax = 500
+    plotitem.add_colorbar = True
+
+    plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
+    plotitem.show = True # False
+    plotitem.plot_var = geoplot.topo
+    plotitem.contour_levels = linspace(-1000,1000,11)
+    plotitem.amr_contour_colors = ['k']  # color on each level
+    #plotitem.contour_levels = [-1000 -500,-250,-100, -5, 5]
 
     #-----------------------------------------
     # Figure for grids alone

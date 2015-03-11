@@ -63,8 +63,8 @@ def setplot(plotdata):
              gaugenos='all', format_string='ko', add_labels=True)
     
     def mynewafteraxes(current_data):
-        addgauges
-        bigfont
+        addgauges(current_data)
+        bigfont(current_data)
 
 
     #-----------------------------------------
@@ -114,10 +114,12 @@ def setplot(plotdata):
     plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
     plotitem.show = True # False
     plotitem.plot_var = geoplot.topo
-    plotitem.contour_levels = [-3500,-2500,-1500, -500, 0, 500]
+    #plotitem.contour_levels = [-500,-250,-100, -50, 0, 50]
+    plotitem.contour_levels = linspace(-1000,1000,11)
     plotitem.amr_contour_colors = ['g']  # color on each level
-    plotitem.kwargs = {'linestyles':'dashed','linewidths':2,'colors' : 'red' }
-    plotitem.amr_contour_show = [0,0,0]  
+    #plotitem.kwargs = {'linestyles':'dashed','linewidths':2,'colors' : 'red' }
+    plotitem.kwargs = {'linestyles':'dashed','linewidths':2,'colors' : 'magenta' }
+    plotitem.amr_contour_show = [1,1,1]  
     plotitem.celledges_show = 0
     plotitem.patchedges_show = 0
 
@@ -259,12 +261,12 @@ def setplot(plotdata):
 
         # add contour lines of bathy if desired:
         plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
-        plotitem.show = False
+        plotitem.show = True #False
         plotitem.plot_var = geoplot.topo
-        plotitem.contour_levels = linspace(-1000,-1000,1)
-        plotitem.amr_contour_colors = ['g']  # color on each level
+        plotitem.contour_levels = linspace(-40, 40,3)
+        plotitem.amr_contour_colors = ['m']  # color on each level
         plotitem.kwargs = {'linestyles':'dashed','linewidths':2}
-        plotitem.amr_contour_show = [0,0,1]  
+        plotitem.amr_contour_show = [1,1,1]  
         plotitem.celledges_show = 0
         plotitem.patchedges_show = 0
 
@@ -366,6 +368,20 @@ def setplot(plotdata):
 #
 #    plotfigure.show = True 
 #
+
+    #-----------------------------------------
+    # Figure for bathy alone
+    #-----------------------------------------
+    def bathy(current_data):
+        return current_data.aux[0,:,:]
+
+    plotfigure = plotdata.new_plotfigure(name='bathymetry', figno=3)
+    plotaxes = plotfigure.new_plotaxes('pcolor')
+    plotaxes.title = 'Bathymetry'
+    plotaxes.scaled = True
+
+    plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
+    plotitem.plot_var = bathy
 
     #-----------------------------------------
     # Figure for grids alone

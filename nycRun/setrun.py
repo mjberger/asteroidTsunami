@@ -80,9 +80,9 @@ def setrun(claw_pkg='geoclaw'):
     #clawdata.upper[1] = 45.0      # north latitude
 
     clawdata.lower[0] = -75.0      # west longitude
-    clawdata.upper[0] = -70.0      # east longitude
+    clawdata.upper[0] = -69.0      # east longitude
 
-    clawdata.lower[1] = 38.0       # south latitude
+    clawdata.lower[1] = 37.0       # south latitude
     clawdata.upper[1] = 43.0      # north latitude
 
 
@@ -156,7 +156,7 @@ def setrun(claw_pkg='geoclaw'):
     elif clawdata.output_style == 3:
         # Output every iout timesteps with a total of ntot time steps:
         clawdata.output_step_interval = 40
-        clawdata.total_steps = 400
+        clawdata.total_steps = 500
         clawdata.output_t0 = True
 
         
@@ -283,7 +283,10 @@ def setrun(claw_pkg='geoclaw'):
     gauges.append([2,  -74.0, 40.5,  0, 1e10])
     gauges.append([3,  -74.1, 40.65, 0, 1e10])
     gauges.append([4,  -73.5, 40.4, 0, 1e10])
-    gauges.append([5,  -72.2, 39.8, 0, 1e10])
+    gauges.append([5,  -72.5, 40.0, 0, 1e10])
+    gauges.append([6,  -72.2, 39.8, 0, 1e10])
+    gauges.append([7,  -71.8, 39.2, 0, 1e10])
+    gauges.append([8,  -71.5, 38.5, 0, 1e10])
 
 
 

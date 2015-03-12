@@ -104,10 +104,10 @@ def setplot(plotdata):
     plotitem.amr_celledges_show = [0,0]
     #plotitem.patchedges_show = 1
     plotitem.patchedges_show = 0
-    #plotaxes.xlimits = [-85,-55]
-    #plotaxes.ylimits = [13,45]
-    plotaxes.xlimits = [-75,-70]
-    plotaxes.ylimits = [38,43]
+    plotaxes.xlimits = [-85,-55]
+    plotaxes.ylimits = [13,45]
+    #plotaxes.xlimits = [-75,-70]
+    #plotaxes.ylimits = [38,43]
 
 
     # add contour lines of bathy if desired:
@@ -419,10 +419,10 @@ def setplot(plotdata):
     plotfigure.show = True
     
     plotaxes = plotfigure.new_plotaxes()
-    #plotaxes.xlimits = [-85,-55]
-    #plotaxes.ylimits = [13,45]
-    plotaxes.xlimits = [-75,-70]
-    plotaxes.ylimits = [38,43]
+    plotaxes.xlimits = [-85,-55]
+    plotaxes.ylimits = [13,45]
+    #plotaxes.xlimits = [-75,-70]
+    #plotaxes.ylimits = [38,43]
     plotaxes.title = "Pressure Field"
     # plotaxes.afteraxes = gulf_after_axes
     plotaxes.scaled = True

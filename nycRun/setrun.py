@@ -67,23 +67,19 @@ def setrun(claw_pkg='geoclaw'):
 
     # Lower and upper edge of computational domain:
     #  this is whole region covered by bathy
-    # clawdata.lower[0] = -85.0      # west longitude
-    # clawdata.upper[0] = -55.0      # east longitude
+    clawdata.lower[0] = -85.0      # west longitude
+    clawdata.upper[0] = -55.0      # east longitude
 
-    # clawdata.lower[1] = 13.0       # south latitude
-    # clawdata.upper[1] = 45.0      # north latitude
+    clawdata.lower[1] = 13.0       # south latitude
+    clawdata.upper[1] = 45.0       # north latitude
 
-    #clawdata.lower[0] = -80.0      # west longitude
-    #clawdata.upper[0] = -65.0      # east longitude
 
-    #clawdata.lower[1] = 30.0       # south latitude
-    #clawdata.upper[1] = 45.0      # north latitude
+    #clawdata.lower[0] = -75.0      # west longitude
+    #clawdata.upper[0] = -69.0      # east longitude
 
-    clawdata.lower[0] = -75.0      # west longitude
-    clawdata.upper[0] = -69.0      # east longitude
-
-    clawdata.lower[1] = 37.0       # south latitude
-    clawdata.upper[1] = 43.0      # north latitude
+    #clawdata.lower[1] = 37.0       # south latitude
+    #clawdata.upper[1] = 43.0       # north latitude
+ 
 
 
     # Number of grid cells:
@@ -155,8 +151,8 @@ def setrun(claw_pkg='geoclaw'):
 
     elif clawdata.output_style == 3:
         # Output every iout timesteps with a total of ntot time steps:
-        clawdata.output_step_interval = 40
-        clawdata.total_steps = 500
+        clawdata.output_step_interval = 100
+        clawdata.total_steps = 3000
         clawdata.output_t0 = True
 
         
@@ -329,7 +325,7 @@ def setrun(claw_pkg='geoclaw'):
 
 
     # max number of refinement levels:
-    amrdata.amr_levels_max = 3
+    amrdata.amr_levels_max = 2
 
     # List of refinement ratios at each level (length at least mxnest-1)
     amrdata.refinement_ratios_x = [4,4,4,6,16]

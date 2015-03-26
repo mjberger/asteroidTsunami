@@ -325,7 +325,6 @@ c
 
 c     open for appending, need complete time history
       ihovUnit = 44
-      write(*,*) time, t0
       if (time .eq. t0) then
          open(unit=ihovUnit,file='hovSlice.data',status='unknown',
      .         position='rewind',form='formatted')
@@ -411,6 +410,9 @@ c            compute i,j index for source grid, interp val insert into hovLine
          go to 10
 
  90     continue
+        if (npts > 4000) then
+           write(*,*)" increase format statement:hov longer than 1 line"
+        endif
         write(ihovunit,100) (hovLine(4,ii),ii=1,npts)
  100    format(4000e15.7)
 

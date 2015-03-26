@@ -48,14 +48,14 @@ MODULES = \
  $(GEOLIB)/surge/constant_storm_module.f90 \
  $(GEOLIB)/surge/stommel_storm_module.f90 \
  $(GEOLIB)/surge/storm_module.f90 \
- $(GEOLIB)/surge/friction_module.f90 \
+ $(GEOLIB)/friction_module.f90 \
  $(GEOLIB)/fgmax_module.f90
 
 SOURCES = \
-  $(GEOLIB)/surge/src2.f90 \
-  $(GEOLIB)/surge/src1d.f90 \
-  $(GEOLIB)/surge/setaux.f90 \
-  $(GEOLIB)/surge/setprob.f90 \
+  $(GEOLIB)/src2.f90 \
+  $(GEOLIB)/src1d.f90 \
+  $(GEOLIB)/setaux.f90 \
+  $(GEOLIB)/setprob.f90 \
   ./flag2refine2.f90 \
   ./b4step2.f90 \
   $(AMRLIB)/flagger.f \
@@ -71,7 +71,7 @@ SOURCES = \
   $(GEOLIB)/step2.f90 \
   $(GEOLIB)/flux2fw.f \
   $(GEOLIB)/qad.f \
-  $(GEOLIB)/valout.f \
+  ./valout.f \
   $(GEOLIB)/filval.f90 \
   $(GEOLIB)/filpatch.f90 \
   $(AMRLIB)/prefilp.f90 \

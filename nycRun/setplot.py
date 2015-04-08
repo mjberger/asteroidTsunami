@@ -36,12 +36,16 @@ def setplot(plotdata):
     from numpy import linspace
 
     plotdata.clearfigures()  # clear any old figures,axes,items data
-    #plotdata.format = 'binary'
-    plotdata.format = 'ascii'
+    plotdata.format = 'binary'
+    #plotdata.format = 'ascii'
 
     # Load data from output
     clawdata = clawutil.ClawInputData(2)
     clawdata.read(os.path.join(plotdata.outdir,'claw.data'))
+
+    ocean_xlimits = [clawdata.lower[0],clawdata.upper[0]]
+    ocean_ylimits = [clawdata.lower[1],clawdata.upper[1]]
+
     amrdata = amrclaw.AmrclawInputData(clawdata)
     amrdata.read(os.path.join(plotdata.outdir,'amr.data'))
     physics = geodata.GeoClawData()
@@ -76,7 +80,7 @@ def setplot(plotdata):
     plotaxes = plotfigure.new_plotaxes('pcolor')
     plotaxes.title = 'Surface'
     plotaxes.scaled = True
-    plotaxes.afteraxes = addgauges
+    #plotaxes.afteraxes = addgauges
 
     # Water
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
@@ -104,15 +108,17 @@ def setplot(plotdata):
     plotitem.amr_celledges_show = [0,0]
     #plotitem.patchedges_show = 1
     plotitem.patchedges_show = 0
-    plotaxes.xlimits = [-85,-55]
-    plotaxes.ylimits = [13,45]
+    #plotaxes.xlimits = [-85,-55]
+    #plotaxes.ylimits = [25,45]
+    plotaxes.xlimits = ocean_xlimits
+    plotaxes.ylimits = ocean_ylimits
     #plotaxes.xlimits = [-75,-70]
     #plotaxes.ylimits = [38,43]
 
 
     # add contour lines of bathy if desired:
     plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
-    plotitem.show = True # False
+    plotitem.show = True
     plotitem.plot_var = geoplot.topo
     #plotitem.contour_levels = [-500,-250,-100, -50, 0, 50]
     plotitem.contour_levels = linspace(-1000,1000,11)
@@ -382,14 +388,14 @@ def setplot(plotdata):
 
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
     plotitem.plot_var = bathy
-    plotitem.pcolor_cmin = -2000.00
+    plotitem.pcolor_cmin = -3000.00
     plotitem.pcolor_cmax = 500
     plotitem.add_colorbar = True
 
     plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
     plotitem.show = True # False
     plotitem.plot_var = geoplot.topo
-    plotitem.contour_levels = linspace(-1000,1000,11)
+    plotitem.contour_levels = linspace(-2000,2000,21)
     plotitem.amr_contour_colors = ['k']  # color on each level
     #plotitem.contour_levels = [-1000 -500,-250,-100, -5, 5]
 
@@ -419,8 +425,10 @@ def setplot(plotdata):
     plotfigure.show = True
     
     plotaxes = plotfigure.new_plotaxes()
-    plotaxes.xlimits = [-85,-55]
-    plotaxes.ylimits = [13,45]
+    #plotaxes.xlimits = [-85,-55]
+    #plotaxes.ylimits = [25,45]
+    plotaxes.xlimits = ocean_xlimits
+    plotaxes.ylimits = ocean_ylimits
     #plotaxes.xlimits = [-75,-70]
     #plotaxes.ylimits = [38,43]
     plotaxes.title = "Pressure Field"

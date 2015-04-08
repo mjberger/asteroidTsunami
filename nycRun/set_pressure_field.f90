@@ -41,16 +41,16 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux,mptr)
 
     ! for two dimensional radially symmetric pressure wave. give blast center in lat/long units of domain
     ! this is in shallow part near NYC
-    !blasty_center = 40.00
-    !blastx_center = -73.0
+    blasty_center = 40.00
+    blastx_center = -73.0
 
     ! this is in deep part to right of shelf
     !blasty_center =  38.9
     !blastx_center = -71.9
 
     ! this is in mid_atlantic
-    blasty_center = 35.00
-    blastx_center = -68.0
+    !blasty_center = 35.00
+    !blastx_center = -68.0
 
     maxRatio        = 0.
     maxOverPressure = 0.
@@ -152,7 +152,9 @@ double precision function  computedOverPressure(dist_in_km,time)
    !               (.5d0 - 1.1d0*(blast_radius -dist_in_km)/tstar) 
    !   computedOverPressure = 1013.d0  !this is  1% overpressure, ambient_p = 101300
 
-       computedOverPressure = 10130.d0*exp(-(dist_in_km-blast_radius)**2)  ! 10% overpressure, but a pulse
+   !   computedOverPressure = 10130.d0*exp(-(dist_in_km-blast_radius)**2)  ! 10% overpressure, but a pulse
+
+       computedOverPressure = 2.d0*10130.d0*exp(-(dist_in_km-blast_radius)**2)  ! 20% overpressure, but a pulse
 
 !   else
 !       computedOverPressure = 0.0

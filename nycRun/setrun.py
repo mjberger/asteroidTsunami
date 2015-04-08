@@ -67,10 +67,11 @@ def setrun(claw_pkg='geoclaw'):
 
     # Lower and upper edge of computational domain:
     #  this is whole region covered by bathy
-    clawdata.lower[0] = -85.0      # west longitude
+    clawdata.lower[0] = -80.0      # west longitude
     clawdata.upper[0] = -55.0      # east longitude
 
-    clawdata.lower[1] = 13.0       # south latitude
+    #clawdata.lower[1] = 13.0       # south latitude
+    clawdata.lower[1] = 25.0       # south latitude
     clawdata.upper[1] = 45.0       # north latitude
 
 
@@ -83,7 +84,7 @@ def setrun(claw_pkg='geoclaw'):
 
 
     # Number of grid cells:
-    degree_factor = 16
+    degree_factor = 20
     clawdata.num_cells[0] = int(clawdata.upper[0] - clawdata.lower[0]) * degree_factor
     clawdata.num_cells[1] = int(clawdata.upper[1] - clawdata.lower[1]) * degree_factor
 
@@ -116,8 +117,8 @@ def setrun(claw_pkg='geoclaw'):
     # restart_file 'fort.chkNNNNN' specified below should be in 
     # the OUTDIR indicated in Makefile.
 
-    clawdata.restart = False               # True to restart from prior results
-    clawdata.restart_file = 'fort.chk00006'  # File to use for restart data
+    clawdata.restart = True                # True to restart from prior results
+    clawdata.restart_file = 'fort.chk03000'  # File to use for restart data
 
     # -------------
     # Output times:
@@ -152,12 +153,12 @@ def setrun(claw_pkg='geoclaw'):
     elif clawdata.output_style == 3:
         # Output every iout timesteps with a total of ntot time steps:
         clawdata.output_step_interval = 100
-        clawdata.total_steps = 3000
+        clawdata.total_steps = 6000
         clawdata.output_t0 = True
 
         
-    #clawdata.output_format = 'binary'      # 'ascii', 'binary'
-    clawdata.output_format = 'ascii'        # 'ascii' or 'netcdf' 
+    clawdata.output_format = 'binary'      # 'ascii', 'binary'
+    #clawdata.output_format = 'ascii'        # 'ascii' or 'netcdf' 
 
     clawdata.output_q_components = 'all'   # could be list such as [True,True]
     clawdata.output_aux_components = 'all'
@@ -187,7 +188,8 @@ def setrun(claw_pkg='geoclaw'):
 
     # Initial time step for variable dt.
     # If dt_variable==0 then dt=dt_initial for all steps:
-    clawdata.dt_initial = 1.0
+    #clawdata.dt_initial = 1.0
+    clawdata.dt_initial = .50
 
     # Max time step to be allowed if variable dt used:
     clawdata.dt_max = 1e+99
@@ -325,7 +327,7 @@ def setrun(claw_pkg='geoclaw'):
 
 
     # max number of refinement levels:
-    amrdata.amr_levels_max = 1
+    amrdata.amr_levels_max = 2
 
     # List of refinement ratios at each level (length at least mxnest-1)
     amrdata.refinement_ratios_x = [4,4,4,6,16]

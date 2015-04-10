@@ -123,7 +123,7 @@ c       output in tecplot format
            xpt(ii) = xstHov+(ii-1)*dxFine
         end do
 
-        write(ihovunit,100) ((xpt(ii),time,hovLine(ii)),ii=1,npts)
+        write(ihovunit,100)(xpt(ii),time,hovLine(ii),ii=1,npts)
  100    format(3e15.7)
 
         return

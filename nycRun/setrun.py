@@ -153,7 +153,8 @@ def setrun(claw_pkg='geoclaw'):
     elif clawdata.output_style == 3:
         # Output every iout timesteps with a total of ntot time steps:
         clawdata.output_step_interval = 100
-        clawdata.total_steps = 6000
+        clawdata.total_steps = 1000
+        #clawdata.total_steps = 6000
         clawdata.output_t0 = True
 
         
@@ -188,8 +189,8 @@ def setrun(claw_pkg='geoclaw'):
 
     # Initial time step for variable dt.
     # If dt_variable==0 then dt=dt_initial for all steps:
-    #clawdata.dt_initial = 1.0
-    clawdata.dt_initial = .50
+    clawdata.dt_initial = 1.0
+    #clawdata.dt_initial = .50
 
     # Max time step to be allowed if variable dt used:
     clawdata.dt_max = 1e+99

@@ -117,7 +117,7 @@ def setrun(claw_pkg='geoclaw'):
     # restart_file 'fort.chkNNNNN' specified below should be in 
     # the OUTDIR indicated in Makefile.
 
-    clawdata.restart = True                # True to restart from prior results
+    clawdata.restart = False               # True to restart from prior results
     clawdata.restart_file = 'fort.chk03000'  # File to use for restart data
 
     # -------------

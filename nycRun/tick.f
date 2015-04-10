@@ -45,8 +45,13 @@ c ::::::::::::::::::::::::::::::::::::;::::::::::::::::::::::::::
 c
       ihovUnit = 44
       write(*,*)" opening file and rewinding for hovmoller data"
-      open(unit=ihovUnit,file='hovSlice.dat',status='unknown',
-     .     position='rewind',form='formatted')
+      if (time .eq. start_time) then
+         open(unit=ihovUnit,file='hovSlice.dat',status='unknown',
+     .        position='rewind',form='formatted')
+      else
+         open(unit=ihovUnit,file='hovSlice.dat',status='unknown',
+     .        position='append',form='formatted')
+      endif
 
       ncycle         = nstart
       call setbestsrc()     ! need at very start of run, including restart
@@ -364,7 +369,7 @@ c
           ystHov  = 39.501d0
           yendHov = 39.501d0
           xstHov  = -74.001d0
-          xendHov = -65.001d0 
+          xendHov = -55.001d0 
           npts = (xendHov-xstHov)/hxposs(mxnest) ! cell centered vals spanning the line
           xendHov = xstHov+npts*hxposs(mxnest)  ! in case not a multiple
 c         call makeHovmoller(time,xstHov,ystHov,xendHov,yendHov,

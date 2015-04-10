@@ -129,6 +129,50 @@ def setplot(plotdata):
     plotitem.celledges_show = 0
     plotitem.patchedges_show = 0
 
+
+    #-----------------------------------------------------------
+    # Figure for KML files
+    # This is a very limited set of items that can
+    # be controlled.
+    #----------------------------------------------------------
+    plotfigure = plotdata.new_plotfigure(name='kml_figure',figno=1)
+    plotfigure.show = True   # Don't show this file in the html version
+    plotfigure.use_for_kml = True
+    plotfigure.kml_dpi = 1200
+    plotfigure.kml_xlimits = [-120,-60]
+    plotfigure.kml_ylimits = [-60, 0.0];
+    plotfigure.kml_starttime = [2010,2,27,6,34,0]  # Time of event in UTC
+    plotfigure.kml_tz_offset = -3    # Time zone offset (in hours) of event.
+    plotfigure.kml_tile_images = True
+
+
+    # Set up for axes in this figure:
+    plotaxes = plotfigure.new_plotaxes('kml')
+    plotaxes.scaled = True
+
+    # Water
+    plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
+    plotitem.plot_var = geoplot.surface_or_depth
+    plotitem.pcolor_cmap = geoplot.googleearth_transparent
+    plotitem.pcolor_cmin = -0.2
+    plotitem.pcolor_cmax = 0.2
+    plotitem.amr_celledges_show = [0,0,0]
+    plotitem.patchedges_show = 0
+
+    # add contour lines of bathy if desired:
+    plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
+    plotitem.show = False
+    plotitem.plot_var = geoplot.topo
+    plotitem.contour_levels = linspace(-3000,-3000,1)
+    plotitem.amr_contour_colors = ['y']  # color on each level
+    plotitem.kwargs = {'linestyles':'solid','linewidths':2}
+    plotitem.amr_contour_show = [1,0,0]
+    plotitem.celledges_show = 0
+    plotitem.patchedges_show = [1,1,1]
+
+
+
+
     #-----------------------------------------
     # Figure for speeds
     #-----------------------------------------
@@ -461,6 +505,8 @@ def setplot(plotdata):
     plotdata.latex_figsperline = 2           # layout of plots
     plotdata.latex_framesperline = 1         # layout of plots
     plotdata.latex_makepdf = False           # also run pdflatex?
+
+    plotdata.kml = True
 
     return plotdata
 

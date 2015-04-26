@@ -138,7 +138,7 @@ c velocities are zeroed out which can then lead to increase in h again.
 c
 c --------------------------------------------------------------------
 c
-      subroutine setbestsrc()
+      subroutine setbestsrc_orig()
 c
 c  ## called every time grids change, to set the best source grid
 c  ## to find gauge data

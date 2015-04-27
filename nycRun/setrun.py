@@ -153,7 +153,7 @@ def setrun(claw_pkg='geoclaw'):
     elif clawdata.output_style == 3:
         # Output every iout timesteps with a total of ntot time steps:
         clawdata.output_step_interval = 100
-        clawdata.total_steps = 1000
+        clawdata.total_steps = 1500
         #clawdata.total_steps = 6000
         clawdata.output_t0 = True
 

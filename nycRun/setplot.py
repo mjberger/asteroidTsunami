@@ -137,14 +137,31 @@ def setplot(plotdata):
     #----------------------------------------------------------
     plotfigure = plotdata.new_plotfigure(name='kml_figure',figno=1)
     plotfigure.show = True   # Don't show this file in the html version
-    plotfigure.use_for_kml = True
-    plotfigure.kml_dpi = 1200
-    plotfigure.kml_xlimits = [-120,-60]
-    plotfigure.kml_ylimits = [-60, 0.0];
-    plotfigure.kml_starttime = [2010,2,27,6,34,0]  # Time of event in UTC
+    plotfigure.use_for_kml = True  ## Make this a KML figure (no colorer, axes, labels, title)
+    plotfigure.kml_dpi = 1200      ## Resolution  dpi >> 1 good if you want lots of zoom levels
+    plotfigure.kml_xlimits = ocean_xlimits ## lat long for location in Google Earth
+    plotfigure.kml_ylimits = ocean_ylimits
+    plotfigure.kml_starttime = [2010,2,27,6,34,0]  # Time of event in UTC [y-m-d-h-m-s]
     plotfigure.kml_tz_offset = -3    # Time zone offset (in hours) of event.
-    plotfigure.kml_tile_images = True
+    plotfigure.kml_tile_images = True ## tile images using GDAL. False doesnt use GDAL
 
+    #transparent = [0.0, 0.0, 0.0,0.0]
+    #blue_a = [0.0,0.0,1.0,1.0]
+    #red_a = [1.0,0.0,0.0,1.0]
+    #white_a = [1.0,1.0,1.0,1.0]
+    #purple_a = [0.8,0.3,0.8,1.0]
+
+    #blue_zodiac = [0.05, 0.15, 0.34]  
+    #astronaut = [0.16, 0.24, 0.45] 
+    #bay_of_many = [0.18, 0.26, 0.50]  
+
+    #TSUNAMI_MAX_AMPLITUDE = 0.05
+    #googleearth_lightblue = colormaps.make_colormap({-TSUNAMI_MAX_AMPLITUDE:blue_a,
+    #                                                0.0:bay_of_many, TSUNAMI_MAX_AMPLITUDE:red_a})
+    #googleearth_darkblue = colormaps.make_colormap({-TSUNAMI_MAX_AMPLITUDE:blue_a,
+    #                                                0.0:blue_zodiac, TSUNAMI_MAX_AMPLITUDE:red_a})
+    #googleearth_transparent = colormaps.make_colormap({-TSUNAMI_MAX_AMPLITUDE:blue_a,
+    #                                                0.0:transparent, TSUNAMI_MAX_AMPLITUDE:red_a})
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes('kml')
@@ -153,9 +170,11 @@ def setplot(plotdata):
     # Water
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
     plotitem.plot_var = geoplot.surface_or_depth
-    plotitem.pcolor_cmap = geoplot.googleearth_transparent
-    plotitem.pcolor_cmin = -0.2
-    plotitem.pcolor_cmax = 0.2
+    #plotitem.pcolor_cmap = geoplot.googleearth_transparent
+    plotitem.pcolor_cmap = geoplot.googleearth_lightblue
+    #plotitem.pcolor_cmap = geoplot.googleearth_darkblue
+    plotitem.pcolor_cmin = -0.05
+    plotitem.pcolor_cmax = 0.05
     plotitem.amr_celledges_show = [0,0,0]
     plotitem.patchedges_show = 0
 

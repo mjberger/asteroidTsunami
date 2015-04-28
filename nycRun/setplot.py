@@ -1,11 +1,11 @@
 
-""" 
+"""
 Set up the plot figures, axes, and items to be done for each frame.
 
 This module is imported by the plotting routines and then the
 function setplot is called to set the plot parameters.
-    
-""" 
+
+"""
 
 import os
 
@@ -23,13 +23,13 @@ import clawpack.geoclaw.surge.data as surgedata
 #--------------------------
 def setplot(plotdata):
 #--------------------------
-    
-    """ 
+
+    """
     Specify what is to be plotted at each frame.
     Input:  plotdata, an instance of clawpack.visclaw.data.ClawPlotData.
     Output: a modified version of plotdata.
-    
-    """ 
+
+    """
 
 
     from clawpack.visclaw import colormaps, geoplot
@@ -65,11 +65,40 @@ def setplot(plotdata):
         from clawpack.visclaw import gaugetools
         gaugetools.plot_gauge_locations(current_data.plotdata, \
              gaugenos='all', format_string='ko', add_labels=True)
-    
+
     def mynewafteraxes(current_data):
         addgauges(current_data)
         bigfont(current_data)
 
+
+
+    #-----------------------------------------
+    # Some global KML settings
+    #-----------------------------------------
+    #plotdata.kml_publish = 'http://math.boisestate.edu/~calhoun/visclaw/GoogleEarth/kmz/' #public html
+    plotdata.kml_publish = None
+    plotdata.kml_name = "NYC Asteroid" # name appears in Google Earth display only
+    plotdata.kml_index_fname = "NYC_Asteroid" # name for .kmz and .kml files ["_GoogleEarth"]
+
+    # specify beginning of slider time. if not used, assumes Jan. 1 1970
+    plotdata.kml_starttime = [2115,4,29,7,32,0]   # Asteroid hits at 1:32AM, 4/29/2115 (UTC)
+    plotdata.kml_tz_offset = 6   # off set to UTC
+    # for todays date as the default use 
+
+    kml_cmin = -0.02   #colorbar min and max
+    kml_cmax = 0.02
+    kml_dpi = 400       # only used if individual figures dpi not set
+    kml_cmap = geoplot.googleearth_lightblue
+#    kml_cmap = geoplot.googleearth_darkblue
+#    kml_cmap = geoplot.googleearth_transparent
+#    kml_cmap = geoplot.googleearth_white
+
+    def kml_colorbar(filename):
+        #cmin = -0.01
+        #cmax = 0.01
+        geoplot.kml_build_colorbar(filename,
+                                   kml_cmap,
+                                   kml_cmin,kml_cmax)
 
     #-----------------------------------------
     # Figure for pcolor plot for surface
@@ -84,6 +113,7 @@ def setplot(plotdata):
 
     # Water
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
+    plotitem.show = True
     #plotitem.plot_var = geoplot.surface
     plotitem.plot_var = geoplot.surface_or_depth
     #plotitem.plot_var = 0/1/2 or plot that entry into q instead of a function
@@ -100,6 +130,7 @@ def setplot(plotdata):
     # Land
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
     plotitem.plot_var = geoplot.land
+    plotitem.show = True
     # plotitem.pcolor_cmap = colormaps.all_white  # to print better in B&W
     plotitem.pcolor_cmap = geoplot.land_colors
     plotitem.pcolor_cmin = 0.0
@@ -125,43 +156,36 @@ def setplot(plotdata):
     plotitem.amr_contour_colors = ['g']  # color on each level
     #plotitem.kwargs = {'linestyles':'dashed','linewidths':2,'colors' : 'red' }
     plotitem.kwargs = {'linestyles':'dashed','linewidths':2,'colors' : 'magenta' }
-    plotitem.amr_contour_show = [1,1,1]  
+    plotitem.amr_contour_show = [1,1,1]
     plotitem.celledges_show = 0
     plotitem.patchedges_show = 0
 
 
     #-----------------------------------------------------------
-    # Figure for KML files
-    # This is a very limited set of items that can
-    # be controlled.
+    # Figure for KML files - Sea Surface Height
     #----------------------------------------------------------
-    plotfigure = plotdata.new_plotfigure(name='kml_figure',figno=1)
-    plotfigure.show = True   # Don't show this file in the html version
-    plotfigure.use_for_kml = True  ## Make this a KML figure (no colorer, axes, labels, title)
-    plotfigure.kml_dpi = 1200      ## Resolution  dpi >> 1 good if you want lots of zoom levels
-    plotfigure.kml_xlimits = ocean_xlimits ## lat long for location in Google Earth
-    plotfigure.kml_ylimits = ocean_ylimits
-    plotfigure.kml_starttime = [2010,2,27,6,34,0]  # Time of event in UTC [y-m-d-h-m-s]
-    plotfigure.kml_tz_offset = -3    # Time zone offset (in hours) of event.
-    plotfigure.kml_tile_images = True ## tile images using GDAL. False doesnt use GDAL
+    plotfigure = plotdata.new_plotfigure(name='Sea Surface',figno=1)
+    plotfigure.show = True
 
-    #transparent = [0.0, 0.0, 0.0,0.0]
-    #blue_a = [0.0,0.0,1.0,1.0]
-    #red_a = [1.0,0.0,0.0,1.0]
-    #white_a = [1.0,1.0,1.0,1.0]
-    #purple_a = [0.8,0.3,0.8,1.0]
+    plotfigure.use_for_kml = True
+    plotfigure.kml_use_for_initial_view = True
 
-    #blue_zodiac = [0.05, 0.15, 0.34]  
-    #astronaut = [0.16, 0.24, 0.45] 
-    #bay_of_many = [0.18, 0.26, 0.50]  
+    # These overide any values set in the plotitems below
+    plotfigure.kml_xlimits = [-80,-55]
+    plotfigure.kml_ylimits = [25, 45]
 
-    #TSUNAMI_MAX_AMPLITUDE = 0.05
-    #googleearth_lightblue = colormaps.make_colormap({-TSUNAMI_MAX_AMPLITUDE:blue_a,
-    #                                                0.0:bay_of_many, TSUNAMI_MAX_AMPLITUDE:red_a})
-    #googleearth_darkblue = colormaps.make_colormap({-TSUNAMI_MAX_AMPLITUDE:blue_a,
-    #                                                0.0:blue_zodiac, TSUNAMI_MAX_AMPLITUDE:red_a})
-    #googleearth_transparent = colormaps.make_colormap({-TSUNAMI_MAX_AMPLITUDE:blue_a,
-    #                                                0.0:transparent, TSUNAMI_MAX_AMPLITUDE:red_a})
+    # Resolution
+    plotfigure.kml_dpi = 400
+    plotfigure.kml_tile_images = False
+
+    def kml_colorbar_transparent(filename):
+        #cmin = -0.01
+        #cmax = 0.01
+        geoplot.kml_build_colorbar(filename,
+                                   geoplot.googleearth_transparent,
+                                   kml_cmin,kml_cmax)
+
+    plotfigure.kml_colorbar = kml_colorbar_transparent
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes('kml')
@@ -169,27 +193,15 @@ def setplot(plotdata):
 
     # Water
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
+    plotitem.show = True
     plotitem.plot_var = geoplot.surface_or_depth
-    #plotitem.pcolor_cmap = geoplot.googleearth_transparent
-    plotitem.pcolor_cmap = geoplot.googleearth_lightblue
-    #plotitem.pcolor_cmap = geoplot.googleearth_darkblue
-    plotitem.pcolor_cmin = -0.05
-    plotitem.pcolor_cmax = 0.05
+    plotitem.pcolor_cmap = geoplot.googleearth_transparent
+    plotitem.pcolor_cmin = kml_cmin
+    plotitem.pcolor_cmax = kml_cmax
     plotitem.amr_celledges_show = [0,0,0]
     plotitem.patchedges_show = 0
 
-    # add contour lines of bathy if desired:
-    plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
-    plotitem.show = False
-    plotitem.plot_var = geoplot.topo
-    plotitem.contour_levels = linspace(-3000,-3000,1)
-    plotitem.amr_contour_colors = ['y']  # color on each level
-    plotitem.kwargs = {'linestyles':'solid','linewidths':2}
-    plotitem.amr_contour_show = [1,0,0]
-    plotitem.celledges_show = 0
-    plotitem.patchedges_show = [1,1,1]
-
-
+    plotfigure.kml_colorbar = kml_colorbar
 
 
     #-----------------------------------------
@@ -234,7 +246,7 @@ def setplot(plotdata):
                 v[ii,jj] = 0.
                 s[ii,jj] = 0
         #print("max of u = " + str(max(u)))
-              
+
         #u = where(h>dry_tol, q[1,:]/h, 0.)
         #v = where(h>dry_tol, q[2,:]/h, 0.)
         #s = sqrt(u**2 + v**2)
@@ -272,6 +284,23 @@ def setplot(plotdata):
     zoomWanted = True
     if zoomWanted:
         plotfigure = plotdata.new_plotfigure(name='Zoom1', figno=7)
+
+        # add another figure
+        plotfigure.use_for_kml = True
+        plotfigure.kml_use_for_initial_view = False
+
+        # These overide any values set in the plotitems below
+        plotfigure.kml_xlimits =  [-74.5, -73.5]
+        plotfigure.kml_ylimits = [40.4,40.9]
+
+        # Resolution
+        plotfigure.kml_dpi = 400
+        plotfigure.kml_tile_images = True
+
+
+        plotfigure.kml_colorbar = kml_colorbar   # defined above
+
+
         # Set up for axes in this figure:
         plotaxes = plotfigure.new_plotaxes('zoom on nyc')
         plotaxes.title = 'Surface elevation'
@@ -291,23 +320,24 @@ def setplot(plotdata):
             pylab.xticks(fontsize=15)
             pylab.yticks(fontsize=15)
         #plotaxes.afteraxes = bigfont
-        plotaxes.afteraxes = mynewafteraxes
+        #plotaxes.afteraxes = mynewafteraxes   # after axes functions mess with GE plots
 
         # Water
         plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
         plotitem.show = True
         #plotitem.plot_var = geoplot.surface
         plotitem.plot_var = geoplot.surface_or_depth
-        plotitem.pcolor_cmap = geoplot.tsunami_colormap
-        plotitem.pcolor_cmin = -.10
-        plotitem.pcolor_cmax = .10
+        #plotitem.pcolor_cmap = geoplot.tsunami_colormap
+        plotitem.pcolor_cmap = kml_cmap
+        plotitem.pcolor_cmin = kml_cmin   # same as above
+        plotitem.pcolor_cmax = kml_cmax
         plotitem.add_colorbar = False
         plotitem.amr_celledges_show = [0]
-        plotitem.patchedges_show = 1
+        plotitem.patchedges_show = 0
 
         # Land
         plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
-        plotitem.show = True
+        plotitem.show = False
         plotitem.plot_var = geoplot.land
         # plotitem.pcolor_cmap = colormaps.all_white  # to print better in B&W
         plotitem.pcolor_cmap = geoplot.land_colors
@@ -319,23 +349,23 @@ def setplot(plotdata):
 
         # contour lines:
         plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
-        plotitem.show = True
+        plotitem.show = False
         plotitem.plot_var = geoplot.surface
         plotitem.contour_levels = [-0.8, -0.4, 0.4, 0.8]
         plotitem.amr_contour_colors = ['k']  # color on each level
         plotitem.kwargs = {'linewidths':2}
-        plotitem.amr_contour_show = [0,0,0,1,1]  
+        plotitem.amr_contour_show = [0,0,0,1,1]
         plotitem.celledges_show = 0
         plotitem.patchedges_show = 0
 
         # add contour lines of bathy if desired:
         plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
-        plotitem.show = True #False
+        plotitem.show = False
         plotitem.plot_var = geoplot.topo
         plotitem.contour_levels = linspace(-40, 40,3)
         plotitem.amr_contour_colors = ['m']  # color on each level
         plotitem.kwargs = {'linestyles':'dashed','linewidths':2}
-        plotitem.amr_contour_show = [1,1,1]  
+        plotitem.amr_contour_show = [1,1,1]
         plotitem.celledges_show = 0
         plotitem.patchedges_show = 0
 
@@ -356,7 +386,7 @@ def setplot(plotdata):
 
     # Plot surface as blue curve:
     plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
-    plotitem.plot_var = 3  
+    plotitem.plot_var = 3
     plotitem.plotstyle = 'b-'
 
     # Plot topo as green curve:
@@ -389,7 +419,7 @@ def setplot(plotdata):
         #s = sqrt(u**2 + v**2)
         s = sqrt(ssq)
         return ssq
-        
+
     #plotitem.plot_var = gaugetopo
     #plotitem.plotstyle = 'g-'
 
@@ -435,7 +465,7 @@ def setplot(plotdata):
 #    plotitem.plot_var = gs  #gauge_speed
 #    plotitem.plotstyle = 'b-'
 #
-#    plotfigure.show = True 
+#    plotfigure.show = True
 #
 
     #-----------------------------------------
@@ -478,15 +508,15 @@ def setplot(plotdata):
     # Set up for item on these axes:
     plotitem = plotaxes.new_plotitem(plot_type='2d_patch')
     plotitem.amr_patch_bgcolor = ['#ffeeee', '#eeeeff', '#eeffee']
-    plotitem.amr_celledges_show = [1,1,0]   
-    #plotitem.amr_patchedges_show = [1]     
-    plotitem.amr_patchedges_show = [0]     
+    plotitem.amr_celledges_show = [1,1,0]
+    #plotitem.amr_patchedges_show = [1]
+    plotitem.amr_patchedges_show = [0]
 
-    
+
     # Pressure field
     plotfigure = plotdata.new_plotfigure(name='Pressure')
     plotfigure.show = True
-    
+
     plotaxes = plotfigure.new_plotaxes()
     #plotaxes.xlimits = [-85,-55]
     #plotaxes.ylimits = [25,45]
@@ -498,18 +528,18 @@ def setplot(plotdata):
     # plotaxes.afteraxes = gulf_after_axes
     plotaxes.scaled = True
     plotaxes.afteraxes = addgauges
-    
-    #pressure_limits = [surge_data.ambient_pressure / 100.0, 
+
+    #pressure_limits = [surge_data.ambient_pressure / 100.0,
     #                   2.0 * surge_data.ambient_pressure / 100.0]
-    pressure_limits = [.999*surge_data.ambient_pressure / 100.0, 
+    pressure_limits = [.999*surge_data.ambient_pressure / 100.0,
                        1.001 * surge_data.ambient_pressure / 100.0]
-    #pressure_limits = [-.000001*surge_data.ambient_pressure, 
+    #pressure_limits = [-.000001*surge_data.ambient_pressure,
     #                   .000001 * surge_data.ambient_pressure]
     surgeplot.add_pressure(plotaxes, bounds=pressure_limits)
     surgeplot.add_land(plotaxes)
 
     #-----------------------------------------
-    
+
     # Parameters used only when creating html and/or latex hardcopy
     # e.g., via clawpack.visclaw.frametools.printframes:
 
@@ -517,7 +547,7 @@ def setplot(plotdata):
     plotdata.print_format = 'png'            # file format
     plotdata.print_framenos = 'all'          # list of frames to print
     plotdata.print_gaugenos = 'all'          # list of gauges to print
-    plotdata.print_fignos = 'all'            # list of figures to print
+    plotdata.print_fignos = [1,7,300]            # list of figures to print
     plotdata.html = True                     # create html files of plots?
     plotdata.html_homelink = '../README.html'   # pointer for top of index
     plotdata.latex = True                    # create latex file of plots?
@@ -528,5 +558,3 @@ def setplot(plotdata):
     plotdata.kml = True
 
     return plotdata
-
-    

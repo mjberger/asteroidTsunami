@@ -295,7 +295,11 @@ def setplot(plotdata):
         plotfigure.kml_ylimits = [40.4,40.9]
 
         # Resolution
+<<<<<<< HEAD
         plotfigure.kml_dpi = 300
+=======
+        plotfigure.kml_dpi = 400
+>>>>>>> 613a622ed4f29af25de46f343b5258392d315745
         plotfigure.kml_tile_images = True
 
 

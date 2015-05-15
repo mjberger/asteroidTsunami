@@ -57,18 +57,18 @@ def setrun(claw_pkg='geoclaw'):
     clawdata.num_dim = num_dim
 
     # Lower and upper edge of computational domain:
-    clawdata.lower[0] = -50000.0
-    clawdata.upper[0] =  50000.0
+    clawdata.lower[0] = -25000.0
+    clawdata.upper[0] =  25000.0
 
-    clawdata.lower[1] = -50000.0
-    clawdata.upper[1] =  50000.0
+    clawdata.lower[1] = -25000.0
+    clawdata.upper[1] =  25000.0
 
 
 
     # Number of grid cells: Coarsest grid
     #clawdata.num_cells[0] = 100000
-    clawdata.num_cells[0] = 100000
-    clawdata.num_cells[1] = 10
+    clawdata.num_cells[0] = 50000
+    clawdata.num_cells[1] = 4
 
 
     # ---------------
@@ -102,7 +102,7 @@ def setrun(claw_pkg='geoclaw'):
     # restart_file 'fort.chkNNNNN' specified below should be in 
     # the OUTDIR indicated in Makefile.
 
-    clawdata.restart = True                # True to restart from prior results
+    clawdata.restart = False               # True to restart from prior results
     clawdata.restart_file = 'fort.chk10000'  # File to use for restart data
 
     # -------------
@@ -128,7 +128,7 @@ def setrun(claw_pkg='geoclaw'):
     elif clawdata.output_style == 3:
         # Output every iout timesteps with a total of ntot time steps:
         clawdata.output_step_interval = 15000
-        clawdata.total_steps = 15000
+        clawdata.total_steps = 30000
         #clawdata.total_steps = 10
         clawdata.output_t0 = True
         #clawdata.output_t0 = False
@@ -348,9 +348,6 @@ def setrun(claw_pkg='geoclaw'):
     rundata.gaugedata.gauges.append([5, 5000.001, .001, 0., 1e10])
     rundata.gaugedata.gauges.append([6, 10000.001, .001, 0., 1e10])
     rundata.gaugedata.gauges.append([7, 20000.001, .001, 0., 1e10])
-    rundata.gaugedata.gauges.append([8, 30000.001, .001, 0., 1e10])
-    rundata.gaugedata.gauges.append([9, 40000.001, .001, 0., 1e10])
-    rundata.gaugedata.gauges.append([10, 49900.001, .001, 0., 1e10])
 
     # gauges along diagonal:
     #gaugeno = 100

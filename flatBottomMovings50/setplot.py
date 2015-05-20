@@ -80,7 +80,7 @@ def setplot(plotdata):
     plotitem.pcolor_cmin = 0.0
     plotitem.pcolor_cmax = 100.0
     plotitem.add_colorbar = False
-    plotitem.amr_celledges_show = [1,1,0]
+    plotitem.amr_celledges_show = [0,0,0]
 
 
     #-----------------------------------------

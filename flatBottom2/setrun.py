@@ -102,7 +102,7 @@ def setrun(claw_pkg='geoclaw'):
     # restart_file 'fort.chkNNNNN' specified below should be in 
     # the OUTDIR indicated in Makefile.
 
-    clawdata.restart = True                # True to restart from prior results
+    clawdata.restart = False               # True to restart from prior results
     clawdata.restart_file = 'fort.chk15000'  # File to use for restart data
 
     # -------------
@@ -128,11 +128,11 @@ def setrun(claw_pkg='geoclaw'):
     elif clawdata.output_style == 3:
         # Output every iout timesteps with a total of ntot time steps:
         clawdata.output_step_interval = 15000
-        #clawdata.total_steps = 15000
-        clawdata.total_steps = 15001
+        clawdata.total_steps = 15000
+        #clawdata.total_steps = 15001
         #clawdata.total_steps = 10
-        #clawdata.output_t0 = True
-        clawdata.output_t0 = False
+        clawdata.output_t0 = True
+        #clawdata.output_t0 = False
         
 
     clawdata.output_format = 'ascii'      # 'ascii' or 'netcdf' 

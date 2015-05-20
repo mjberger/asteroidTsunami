@@ -65,6 +65,7 @@ def shelf1(r):
     rad3 = rad2 + 80e3   # end of shelf, start of beach
     rad4 = rad3 + 5e3    # radius of shoreline where z=0
     z1 = -4000.          # depth from r=0  to rad1 (ocean)
+    #z1 = -2000.          # depth from r=0  to rad1 (ocean)
     z2 = -100.           # depth at r=rad2 (start of shelf)
     z3 = -100.           # depth at r=rad3 (start of beach)
     z4 = 0.              # depth at shoreline

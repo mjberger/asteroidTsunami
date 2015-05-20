@@ -51,14 +51,16 @@ c
       veldif = -1.d0 
       level = node(nestlevel,mptr)
 
+      if (dump) then
          write(outunit,*)" at start of stepgrid: dumping grid ",mptr
-            yout = ylow+(4-.5d0)*dy
          do i = 1, mitot
-            xout = xlow+(i-.5d0)*dx
-            write(outunit,545)xout,yout,(q(ivar,i,4),ivar=1,nvar),
-     .                      aux(2,i,4)
- 545        format(2e25.15,4e15.7)
+         do j = 1, mjtot
+            write(outunit,545) i,j,(q(ivar,i,j),ivar=1,nvar),
+     .                         (aux(iaux,i,j),iaux=1,maux)
+ 545        format(2i4,4e15.7,/,8x,4e15.7)
          end do
+         end do
+      endif
 c
       meqn   = nvar
       mx = mitot - 2*mbc

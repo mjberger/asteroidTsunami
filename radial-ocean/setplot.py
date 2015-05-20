@@ -194,7 +194,7 @@ def setplot(plotdata):
     #-----------------------------------------
     # Figure for zoom at island
     #-----------------------------------------
-    zoomWanted = False
+    zoomWanted = True
     if zoomWanted:
         plotfigure = plotdata.new_plotfigure(name='Zoom1', figno=7)
         # Set up for axes in this figure:
@@ -212,6 +212,7 @@ def setplot(plotdata):
             pylab.xticks(fontsize=15)
             pylab.yticks(fontsize=15)
         plotaxes.afteraxes = bigfont
+        plotaxes.afteraxes = addgauges
 
         # Water
         plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
@@ -268,8 +269,8 @@ def setplot(plotdata):
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes()
-    plotaxes.xlimits = [0000, 7000]
-    plotaxes.ylimits = [-.05, .05]
+    plotaxes.xlimits = [0000, 5000]
+    plotaxes.ylimits = [-.10, .10]
     #plotaxes.xlimits = 'auto'
     #plotaxes.ylimits = 'auto'
     plotaxes.title = 'Surface'

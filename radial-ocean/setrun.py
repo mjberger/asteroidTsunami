@@ -149,7 +149,7 @@ def setrun(claw_pkg='geoclaw'):
     elif clawdata.output_style == 3:
         # Output every step_interval timesteps over total_steps timesteps:
         clawdata.output_step_interval = 100
-        clawdata.total_steps = 300/1   # final time 6000 sec / dtinit of 2 sec
+        clawdata.total_steps = 4000/1   # final time 6000 sec / dtinit of 2 sec
         clawdata.output_t0 = True  # output at initial (or restart) time?
         
 
@@ -264,13 +264,13 @@ def setrun(claw_pkg='geoclaw'):
     # for gauges append lines of the form  [gaugeno, x, y, t1, t2]
 
     gaugeno = 0
-    #for d in [1570e3, 1590e3, 1610e3, 1630e3]:
-        #gaugeno = gaugeno+1
-        #x,y = latlong(d, theta_island, 40., Rearth)
-        #gauges.append([gaugeno, x, y, 0., 1e10])
+    for d in [1570e3, 1590e3, 1610e3, 1630e3]:
+        gaugeno = gaugeno+1
+        x,y = latlong(d, theta_island, 40., Rearth)
+        gauges.append([gaugeno, x, y, 0., 1e10])
 
     # for radially symmetric traveling wave test
-    gauges.append([1,  0.01, 40.01, 0, 1e10])
+    #gauges.append([1,  0.01, 40.01, 0, 1e10])
     #gauges.append([2,  1.01, 40.01, 0, 1e10])
     #gauges.append([3,  2.01, 40.01, 0, 1e10])
     #gauges.append([4,  3.01, 40.01, 0, 1e10])
@@ -318,7 +318,7 @@ def setrun(claw_pkg='geoclaw'):
 
     # max number of refinement levels:
     #amrdata.amr_levels_max = 5
-    amrdata.amr_levels_max = 2
+    amrdata.amr_levels_max = 4
 
     # List of refinement ratios at each level (length at least amr_level_max-1)
     amrdata.refinement_ratios_x = [4, 4, 4, 4]
@@ -368,7 +368,7 @@ def setrun(claw_pkg='geoclaw'):
     #regions.append([1, 3,    0., 5000., -5., 20., 35., 45.])
     #regions.append([1, 2, 5000., 6900., 10., 20., 35., 45.])
     #regions.append([1, 3, 5000., 6900., 12., 20., 39., 43.])
-    regions.append([1,  3,    0., 100000000., -20., 20., 20., 60.])
+    regions.append([1,  2,    0., 100000000., -20., 20., 20., 60.])
 
 
     # Force refinement near the island as the wave approaches:
@@ -378,13 +378,13 @@ def setrun(claw_pkg='geoclaw'):
     x2 = xisland + 1.
     y1 = yisland - 1.
     y2 = yisland + 1.
-    #regions.append([4, 4, 7000., 1.e10,  x1,x2,y1,y2])
+    regions.append([4, 4, 2500., 1.e10,  x1,x2,y1,y2])
 
     x1 = xisland - 0.2
     x2 = xisland + 0.2
     y1 = yisland - 0.2
     y2 = yisland + 0.2
-    #regions.append([4, 5, 8000., 1.e10,  x1,x2,y1,y2])
+    regions.append([4, 5, 3000., 1.e10,  x1,x2,y1,y2])
 
 
 
@@ -446,7 +446,7 @@ def setgeo(rundata):
     # == settopo.data values ==
     #rundata.topo_data.topofiles = [[2, 1, 1, 0.0, 10000000000.0, 'ocean.topotype2'], 
     rundata.topo_data.topofiles = [[2, 1, 3, 0.0, 10000000000.0, 'ocean.topotype2'], 
-                                   [2, 1, 4, 7.0, 10000000000.0, 'island.topotype2']]
+                                   [2, 1, 4, 0.0, 10000000000.0, 'island.topotype2']]
     #                               [2, 3, 4, 7.0, 10000000000.0, 'island.topotype2']]
     # for topography, append lines of the form
     #    [topotype, minlevel, maxlevel, t1, t2, fname]

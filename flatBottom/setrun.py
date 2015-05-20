@@ -66,8 +66,8 @@ def setrun(claw_pkg='geoclaw'):
 
 
     # Number of grid cells: Coarsest grid
-    #clawdata.num_cells[0] = 100000
-    clawdata.num_cells[0] = 50000
+    #clawdata.num_cells[0] = 50000
+    clawdata.num_cells[0] = 25000
     clawdata.num_cells[1] = 4
 
 
@@ -102,7 +102,7 @@ def setrun(claw_pkg='geoclaw'):
     # restart_file 'fort.chkNNNNN' specified below should be in 
     # the OUTDIR indicated in Makefile.
 
-    clawdata.restart = True                # True to restart from prior results
+    clawdata.restart = False               # True to restart from prior results
     clawdata.restart_file = 'fort.chk15000'  # File to use for restart data
 
     # -------------
@@ -127,7 +127,7 @@ def setrun(claw_pkg='geoclaw'):
 
     elif clawdata.output_style == 3:
         # Output every iout timesteps with a total of ntot time steps:
-        clawdata.output_step_interval = 15000
+        clawdata.output_step_interval = 30000
         clawdata.total_steps = 30000
         #clawdata.total_steps = 10
         clawdata.output_t0 = True

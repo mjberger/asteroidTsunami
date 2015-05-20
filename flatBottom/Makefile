@@ -20,7 +20,7 @@ SETPLOT_FILE = setplot.py      # File containing function to set plots
 PLOTDIR = _plots               # Directory for plots
 
 OVERWRITE ?= True                   # False ==> make a copy of OUTDIR first
-RESTART ?= True                     # Should = clawdata.restart in setrun
+RESTART ?= False                    # Should = clawdata.restart in setrun
 
 # Environment variable FC should be set to fortran compiler, e.g. gfortran
 
@@ -36,7 +36,7 @@ GEOLIB = $(CLAW)/geoclaw/src/2d/shallow
 
 MODULES = \
  $(GEOLIB)/utility_module.f90 \
- $(AMRLIB)/amr_module.f90 \
+ ./amr_module.f90 \
  $(AMRLIB)/regions_module.f90 \
  $(GEOLIB)/geoclaw_module.f90 \
  ./gauges_module.f90 \
@@ -47,7 +47,7 @@ MODULES = \
  $(GEOLIB)/surge/holland_storm_module.f90 \
  $(GEOLIB)/surge/constant_storm_module.f90 \
  $(GEOLIB)/surge/stommel_storm_module.f90 \
- $(GEOLIB)/surge/storm_module.f90 \
+ ./storm_module.f90 \
  $(GEOLIB)/friction_module.f90 \
  $(GEOLIB)/fgmax_module.f90
 

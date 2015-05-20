@@ -47,7 +47,7 @@ MODULES = \
  $(GEOLIB)/surge/holland_storm_module.f90 \
  $(GEOLIB)/surge/constant_storm_module.f90 \
  $(GEOLIB)/surge/stommel_storm_module.f90 \
- $(GEOLIB)/surge/storm_module.f90 \
+ ./storm_module.f90 \
  $(GEOLIB)/friction_module.f90 \
  $(GEOLIB)/fgmax_module.f90
 

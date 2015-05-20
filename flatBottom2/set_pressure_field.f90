@@ -144,7 +144,7 @@ double precision function  computedOverPressure(dist_in_m,time)
     computedOverPressure = 0.d0
     ! if less than one km, compute gaussian pressure pulse
     if (dist_in_m .lt. 1000) then
-       computedOverPressure = 10130.d0*exp(-(dist_in_m/400.d0)**4)
+       computedOverPressure = 2.*10130.d0*exp(-(dist_in_m/400.d0)**4)
     endif
 
 end function computedOverPressure

@@ -98,7 +98,8 @@ def setplot(plotdata):
     plotaxes.scaled = True
     plotaxes.xlimits = [-2000,2000]
     plotaxes.ylimits = [-2000,2000]
-    #plotaxes.afteraxes = addgauges
+    plotaxes.afteraxes = addgauges
+    plotitem.amr_patchedges_show = [1]
 
     # Water
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')

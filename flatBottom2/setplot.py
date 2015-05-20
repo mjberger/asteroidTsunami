@@ -59,6 +59,8 @@ def setplot(plotdata):
     plotaxes = plotfigure.new_plotaxes('pcolor')
     plotaxes.title = 'Surface'
     plotaxes.scaled = True
+    plotaxes.xlimits = [-25000,25000]
+    plotaxes.ylimits = [-25000,25000]
 
     # Water
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
@@ -79,9 +81,39 @@ def setplot(plotdata):
     plotitem.pcolor_cmax = 100.0
     plotitem.add_colorbar = False
     plotitem.amr_celledges_show = [1,1,0]
-    plotaxes.xlimits = [-50000,50000]
-    plotaxes.ylimits = [-50000,50000]
 
+
+    #-----------------------------------------
+    # Figure for pcolor plot
+    #-----------------------------------------
+    plotfigure = plotdata.new_plotfigure(name='Speed')
+
+    # Set up for axes in this figure:
+    plotaxes = plotfigure.new_plotaxes('pcolor')
+    plotaxes.title = 'Speed'
+    plotaxes.scaled = True
+    plotaxes.xlimits = [-25000,25000]
+    plotaxes.ylimits = [-25000,25000]
+
+    # Water
+    import clawpack.geoclaw.surge.plot as surge
+    surge.add_speed(plotaxes,'pcolor',bounds=None,shrink=1.0,contours=None)
+    #can also use imshow, contourf or contour instead of 2d_pcolor
+
+    plotitem.pcolor_cmin = -1.
+    plotitem.pcolor_cmax = 1.
+
+    plotitem.amr_celledges_show = [0,0,0]
+    plotitem.amr_patchedges_show = [0,0,0]
+
+    # Land
+    plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
+    plotitem.plot_var = geoplot.land
+    plotitem.pcolor_cmap = geoplot.land_colors
+    plotitem.pcolor_cmin = 0.0
+    plotitem.pcolor_cmax = 100.0
+    plotitem.add_colorbar = False
+    plotitem.amr_celledges_show = [0,0,0]
 
 
     #-----------------------------------------
@@ -92,12 +124,12 @@ def setplot(plotdata):
     plotfigure.kwargs = {'figsize':[12,7]}
 
     # Set up for axes in this figure:
-    plotaxes = plotfigure.new_plotaxes('diag zoom')
+    plotaxes = plotfigure.new_plotaxes('zoom')
     plotaxes.axescmd = 'axes([0.0,0.1,0.6,0.6])'
     plotaxes.title = 'Zoom'
     plotaxes.scaled = True
-    plotaxes.xlimits = [-1000,1000]
-    plotaxes.ylimits = [-1000,1000]
+    plotaxes.xlimits = [-2000,2000]
+    plotaxes.ylimits = [-2000,2000]
     #plotaxes.afteraxes = addgauges
 
     # Water

@@ -178,8 +178,8 @@ SOURCES = \
   $(AMRLIB)/init_alloc.f90 \
   $(AMRLIB)/restrt_alloc.f90 \
   $(AMRLIB)/resize_alloc.f90 \
-  ./set_pressure_field_model.f90 
-#  ./set_pressure_field.f90 
+  ./set_pressure_field.f90 
+#  ./set_pressure_field_model.f90 
 #  ./set_pressure_field_travelingwave.f90 
 #  ./set_pressure_field_kyleTest.f90 \
 

@@ -17,7 +17,7 @@ import clawpack.geoclaw.data as geodata
 from mapper import latlong
 
 import clawpack.geoclaw.surge.plot as surgeplot
-import clawpack.geoclaw.surge.data as surgedata
+#import clawpack.geoclaw.surge.data as surgedata
 
 
 #--------------------------
@@ -50,7 +50,7 @@ def setplot(plotdata):
     amrdata.read(os.path.join(plotdata.outdir,'amr.data'))
     physics = geodata.GeoClawData()
     physics.read(os.path.join(plotdata.outdir,'geoclaw.data'))
-    surge_data = surgedata.SurgeData()
+    surge_data = geodata.SurgeData()
     surge_data.read(os.path.join(plotdata.outdir,'surge.data'))
 
     probdata = clawutil.ClawData()
@@ -109,7 +109,7 @@ def setplot(plotdata):
     plotaxes = plotfigure.new_plotaxes('pcolor')
     plotaxes.title = 'Surface'
     plotaxes.scaled = True
-    #plotaxes.afteraxes = addgauges
+    plotaxes.afteraxes = addgauges
 
     # Water
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
@@ -118,28 +118,25 @@ def setplot(plotdata):
     plotitem.plot_var = geoplot.surface_or_depth
     #plotitem.plot_var = 0/1/2 or plot that entry into q instead of a function
     plotitem.pcolor_cmap = geoplot.tsunami_colormap
-    #plotitem.pcolor_cmin = -1.0
-    #plotitem.pcolor_cmax = 1.0
     plotitem.pcolor_cmin = -.005
     plotitem.pcolor_cmax = .005
     plotitem.add_colorbar = True
     plotitem.amr_celledges_show = [0,0,0]
-    plotitem.patchedges_show = 1
-    #plotitem.patchedges_show = 0
+    plotitem.amr_patchedges_show = [0,0,0]
 
     # Land
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
     plotitem.plot_var = geoplot.land
     plotitem.show = True
     # plotitem.pcolor_cmap = colormaps.all_white  # to print better in B&W
-    #plotitem.pcolor_cmap = geoplot.land_colors
-    plotitem.pcolor_cmap = geoplot.googleearth_transparent
+    plotitem.pcolor_cmap = geoplot.land_colors
+    #plotitem.pcolor_cmap = geoplot.googleearth_transparent
     plotitem.pcolor_cmin = 0.0
     plotitem.pcolor_cmax = 100.0
     plotitem.add_colorbar = False
-    plotitem.amr_celledges_show = [0,0]
+    plotitem.amr_celledges_show = [0,0,0,0,0]
     #plotitem.patchedges_show = 1
-    plotitem.patchedges_show = 0
+    plotitem.amr_patchedges_show = [0,0,0]
     #plotaxes.xlimits = [-85,-55]
     #plotaxes.ylimits = [25,45]
     plotaxes.xlimits = ocean_xlimits
@@ -165,19 +162,19 @@ def setplot(plotdata):
     #-----------------------------------------------------------
     # Figure for KML files - Sea Surface Height
     #----------------------------------------------------------
-    plotfigure = plotdata.new_plotfigure(name='Sea Surface',figno=1)
-    plotfigure.show = True
+    #plotfigure = plotdata.new_plotfigure(name='Sea Surface',figno=1)
+    #plotfigure.show = True 
 
-    plotfigure.use_for_kml = True
-    plotfigure.kml_use_for_initial_view = True
+    #plotfigure.use_for_kml = True
+    #plotfigure.kml_use_for_initial_view = True
 
     # These overide any values set in the plotitems below
-    plotfigure.kml_xlimits = [-80,-55]
-    plotfigure.kml_ylimits = [25, 45]
+    #plotfigure.kml_xlimits = [-80,-55]
+    #plotfigure.kml_ylimits = [25, 45]
 
     # Resolution
-    plotfigure.kml_dpi = 300
-    plotfigure.kml_tile_images = False
+    #plotfigure.kml_dpi = 300
+    #plotfigure.kml_tile_images = False
 
     def kml_colorbar_transparent(filename):
         #cmin = -0.01
@@ -186,23 +183,23 @@ def setplot(plotdata):
                                    geoplot.googleearth_transparent,
                                    kml_cmin,kml_cmax)
 
-    plotfigure.kml_colorbar = kml_colorbar_transparent
+    #plotfigure.kml_colorbar = kml_colorbar_transparent
 
     # Set up for axes in this figure:
-    plotaxes = plotfigure.new_plotaxes('kml')
-    plotaxes.scaled = True
+    #plotaxes = plotfigure.new_plotaxes('kml')
+    #plotaxes.scaled = True
 
     # Water
-    plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
-    plotitem.show = True
-    plotitem.plot_var = geoplot.surface_or_depth
-    plotitem.pcolor_cmap = geoplot.googleearth_transparent
-    plotitem.pcolor_cmin = kml_cmin
-    plotitem.pcolor_cmax = kml_cmax
-    plotitem.amr_celledges_show = [0,0,0]
-    plotitem.patchedges_show = 0
+    #plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
+    #plotitem.show = True
+    #plotitem.plot_var = geoplot.surface_or_depth
+    #plotitem.pcolor_cmap = geoplot.googleearth_transparent
+    #plotitem.pcolor_cmin = kml_cmin
+    #plotitem.pcolor_cmax = kml_cmax
+    #plotitem.amr_celledges_show = [0,0,0]
+    #plotitem.patchedges_show = 0
 
-    plotfigure.kml_colorbar = kml_colorbar
+    #plotfigure.kml_colorbar = kml_colorbar
 
 
     #-----------------------------------------
@@ -258,8 +255,8 @@ def setplot(plotdata):
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
     plotitem.plot_var = speed
     plotitem.pcolor_cmap = geoplot.tsunami_colormap
-    plotitem.pcolor_cmap = \
-           colormaps.make_colormap({0:[1,1,1],0.5:[0.5,0.5,1],1:[1,0.3,0.3]})
+    #plotitem.pcolor_cmap = \
+    #       colormaps.make_colormap({0:[1,1,1],0.5:[0.5,0.5,1],1:[1,0.3,0.3]})
     plotitem.pcolor_cmin = 0.
     plotitem.pcolor_cmax = .01
     plotitem.add_colorbar = True
@@ -287,19 +284,19 @@ def setplot(plotdata):
         plotfigure = plotdata.new_plotfigure(name='Zoom1', figno=7)
 
         # add another figure
-        plotfigure.use_for_kml = True
-        plotfigure.kml_use_for_initial_view = False
+        #plotfigure.use_for_kml = True
+        #plotfigure.kml_use_for_initial_view = False
 
         # These overide any values set in the plotitems below
-        plotfigure.kml_xlimits =  [-74.5, -73.5]
-        plotfigure.kml_ylimits = [40.4,40.9]
+        #plotfigure.kml_xlimits =  [-74.5, -73.5]
+        #plotfigure.kml_ylimits = [40.4,40.9]
 
         # Resolution
-        plotfigure.kml_dpi = 300
-        plotfigure.kml_tile_images = True
+        #plotfigure.kml_dpi = 300
+        #plotfigure.kml_tile_images = True
 
 
-        plotfigure.kml_colorbar = kml_colorbar   # defined above
+        #plotfigure.kml_colorbar = kml_colorbar   # defined above
 
 
         # Set up for axes in this figure:
@@ -338,7 +335,7 @@ def setplot(plotdata):
 
         # Land
         plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
-        plotitem.show = False
+        plotitem.show = True 
         plotitem.plot_var = geoplot.land
         # plotitem.pcolor_cmap = colormaps.all_white  # to print better in B&W
         plotitem.pcolor_cmap = geoplot.land_colors
@@ -350,7 +347,7 @@ def setplot(plotdata):
 
         # contour lines:
         plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
-        plotitem.show = False
+        plotitem.show = True 
         plotitem.plot_var = geoplot.surface
         plotitem.contour_levels = [-0.8, -0.4, 0.4, 0.8]
         plotitem.amr_contour_colors = ['k']  # color on each level
@@ -361,7 +358,7 @@ def setplot(plotdata):
 
         # add contour lines of bathy if desired:
         plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
-        plotitem.show = False
+        plotitem.show = True 
         plotitem.plot_var = geoplot.topo
         plotitem.contour_levels = linspace(-40, 40,3)
         plotitem.amr_contour_colors = ['m']  # color on each level
@@ -548,7 +545,7 @@ def setplot(plotdata):
     plotdata.print_format = 'png'            # file format
     plotdata.print_framenos = 'all'          # list of frames to print
     plotdata.print_gaugenos = 'all'          # list of gauges to print
-    plotdata.print_fignos = [1,7,300]            # list of figures to print
+    plotdata.print_fignos = [0,7,10,300]            # list of figures to print
     plotdata.html = True                     # create html files of plots?
     plotdata.html_homelink = '../README.html'   # pointer for top of index
     plotdata.latex = True                    # create latex file of plots?
@@ -556,6 +553,6 @@ def setplot(plotdata):
     plotdata.latex_framesperline = 1         # layout of plots
     plotdata.latex_makepdf = False           # also run pdflatex?
 
-    plotdata.kml = True
+    plotdata.kml = False
 
     return plotdata

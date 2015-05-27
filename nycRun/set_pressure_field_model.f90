@@ -108,8 +108,8 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux,mptr)
        enddo
     enddo
 
-    !format_string = "('time ',e12.5,' mptr ',i3,' max pressure ',e15.7,'  max abs. val. overPressure ',e12.5)"
-    !write(*,format_string) time, mptr, maxPress, maxOverPressure
+    format_string = "('time ',e12.5,' mptr ',i3,' max pressure ',e15.7,'  max abs. val. overPressure ',e12.5)"
+    write(*,format_string) time, mptr, maxPress, maxOverPressure
 
 end subroutine set_pressure_field
 
@@ -137,8 +137,8 @@ double precision function  computedOverPressure(dist_in_km,time)
 
    ! Locals
    !real(kind=8),parameter :: ampl = 5., width = 5., tstar = .5;
-    real(kind=8) :: ampl, width, tstar  ! they could be params, but for debugging make them vars
-    real(kind=8) :: blast_radius,a, airSpeed
+    real(kind=8) :: ampl,  tstar  ! they could be params, but for debugging make them vars
+    real(kind=8) :: blast_radius,a, airSpeed,rad
 
     maxAmp  = 6.d0
     width   = 150.d0
@@ -149,6 +149,7 @@ double precision function  computedOverPressure(dist_in_km,time)
     p_t  =  thick*2.d0
     t    =  time * speed
     g    =  maxAmp * exp(-rad*rad/(c*c))  ! /* ...Gaussian envelope */
+    rad = dist_in_km   ! different notation, before global edit
 
     ! ...pulse -- functional fit from various blast simulations 
     if ( dist_in_km < t) then

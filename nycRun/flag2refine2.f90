@@ -73,7 +73,7 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
     amrflags = DONTFLAG
 
     ! for refinement using pressure gradient
-    pressure_refine_sq = .02D0**2  !since compared with square below
+    pressure_refine_sq = .005D0**2  !since compared with square below
     maxGradP2 = 0.d0
 
     ! Initialize mesh sizes, assume constant

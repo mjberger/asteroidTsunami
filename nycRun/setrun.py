@@ -12,7 +12,7 @@ import datetime
 
 import numpy as np
 
-import clawpack.geoclaw.surge.data as surge
+import clawpack.geoclaw.data as surge
 
 
 #                           days   s/hour    hours/day            
@@ -152,8 +152,8 @@ def setrun(claw_pkg='geoclaw'):
 
     elif clawdata.output_style == 3:
         # Output every iout timesteps with a total of ntot time steps:
-        clawdata.output_step_interval = 100
-        clawdata.total_steps = 1500
+        clawdata.output_step_interval = 500
+        clawdata.total_steps = 3000
         #clawdata.total_steps = 6000
         clawdata.output_t0 = True
 

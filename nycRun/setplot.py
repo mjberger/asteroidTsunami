@@ -512,7 +512,7 @@ def setplot(plotdata):
 
 
     # Pressure field
-    plotfigure = plotdata.new_plotfigure(name='Pressure')
+    plotfigure = plotdata.new_plotfigure(name='Pressure',figno=33)
     plotfigure.show = True
 
     plotaxes = plotfigure.new_plotaxes()
@@ -545,7 +545,7 @@ def setplot(plotdata):
     plotdata.print_format = 'png'            # file format
     plotdata.print_framenos = 'all'          # list of frames to print
     plotdata.print_gaugenos = 'all'          # list of gauges to print
-    plotdata.print_fignos = [0,7,10,300]            # list of figures to print
+    plotdata.print_fignos = [0,7,10,33,300]  # list of figures to print
     plotdata.html = True                     # create html files of plots?
     plotdata.html_homelink = '../README.html'   # pointer for top of index
     plotdata.latex = True                    # create latex file of plots?

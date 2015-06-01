@@ -118,8 +118,8 @@ def setplot(plotdata):
     plotitem.plot_var = geoplot.surface_or_depth
     #plotitem.plot_var = 0/1/2 or plot that entry into q instead of a function
     plotitem.pcolor_cmap = geoplot.tsunami_colormap
-    plotitem.pcolor_cmin = -.2 
-    plotitem.pcolor_cmax = .2 
+    plotitem.pcolor_cmin = -.1 
+    plotitem.pcolor_cmax = .1
     plotitem.add_colorbar = True
     plotitem.amr_celledges_show = [0,0,0]
     plotitem.amr_patchedges_show = [0,0,0]
@@ -525,7 +525,7 @@ def setplot(plotdata):
     plotaxes.scaled = True
     plotaxes.afteraxes = addgauges
 
-    pressure_limits = [.9,1.1]
+    pressure_limits = [.99,1.01]
     #pressure_limits = [.999*surge_data.ambient_pressure / 100.0,
     #                   1.001 * surge_data.ambient_pressure / 100.0]
     #pressure_limits = [-.000001*surge_data.ambient_pressure,
@@ -541,6 +541,8 @@ def setplot(plotdata):
     plotitem.amr_celledges_show = [0,0,0]
     plotitem.amr_patchedges_show = [0,0,0]
 
+    plotaxes.plotitem_dict['land'].amr_celledges_show=[0,0,0]
+    plotaxes.plotitem_dict['land'].amr_patchedges_show=[0,0,0]
 
     #-----------------------------------------
 

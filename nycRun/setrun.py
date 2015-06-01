@@ -107,7 +107,7 @@ def setrun(claw_pkg='geoclaw'):
     # Initial time:
     # -------------
 
-    clawdata.t0 = 0.0
+    clawdata.t0 = 0.1
 
 
     # Restart from checkpoint file of a previous run?
@@ -130,7 +130,7 @@ def setrun(claw_pkg='geoclaw'):
 
     clawdata.output_style = 3
 
-    clawdata.tfinal = 3000  # seconds  # in case not set in output_1, used later for region times
+    clawdata.tfinal = 10000  # seconds  # in case not set in output_1, used later for region times
 
     if clawdata.output_style==1:
         # Output nout frames at equally spaced times up to tfinal:
@@ -152,9 +152,8 @@ def setrun(claw_pkg='geoclaw'):
 
     elif clawdata.output_style == 3:
         # Output every iout timesteps with a total of ntot time steps:
-        clawdata.output_step_interval = 500
-        clawdata.total_steps = 3000
-        #clawdata.total_steps = 6000
+        clawdata.output_step_interval = 100
+        clawdata.total_steps = 6100
         clawdata.output_t0 = True
 
         
@@ -198,8 +197,8 @@ def setrun(claw_pkg='geoclaw'):
     # Desired Courant number if variable dt used, and max to allow without
     # retaking step with a smaller dt:
     # clawdata.cfl_desired = 0.75
-    clawdata.cfl_desired = 0.75
-    clawdata.cfl_max = 1.0
+    clawdata.cfl_desired = 0.05
+    clawdata.cfl_max = .1
 
     # Maximum number of time steps to allow between output times:
     clawdata.steps_max = 2**16
@@ -280,7 +279,7 @@ def setrun(claw_pkg='geoclaw'):
     # for manhattan test
     gauges.append([1,  -73.8, 40.45, 0, 1e10])
     gauges.append([2,  -74.0, 40.5,  0, 1e10])
-    gauges.append([3,  -74.1, 40.65, 0, 1e10])
+    gauges.append([3,  -74.07, 40.65, 0, 1e10])
     gauges.append([4,  -73.5, 40.4, 0, 1e10])
     gauges.append([5,  -72.5, 40.0, 0, 1e10])
     gauges.append([6,  -72.2, 39.8, 0, 1e10])
@@ -299,7 +298,7 @@ def setrun(claw_pkg='geoclaw'):
     # Specify when checkpoint files should be created that can be
     # used to restart a computation.
 
-    clawdata.checkpt_style = 1
+    clawdata.checkpt_style = 2
 
     if clawdata.checkpt_style == 0:
         # Do not checkpoint at all
@@ -311,7 +310,7 @@ def setrun(claw_pkg='geoclaw'):
 
     elif clawdata.checkpt_style == 2:
         # Specify a list of checkpoint times.  
-        clawdata.checkpt_times = [0.1,0.15]
+        clawdata.checkpt_times = [2700.1, 2900.100,3000.100]
 
     elif clawdata.checkpt_style == 3:
         # Checkpoint every checkpt_interval timesteps (on Level 1)
@@ -331,9 +330,9 @@ def setrun(claw_pkg='geoclaw'):
     amrdata.amr_levels_max = 2
 
     # List of refinement ratios at each level (length at least mxnest-1)
-    amrdata.refinement_ratios_x = [4,4,4,6,16]
-    amrdata.refinement_ratios_y = [4,4,4,6,16]
-    amrdata.refinement_ratios_t = [4,4,4,6,16]
+    amrdata.refinement_ratios_x = [10,4,4,6,16]
+    amrdata.refinement_ratios_y = [10,4,4,6,16]
+    amrdata.refinement_ratios_t = [10,4,4,6,16]
 
 
     # Specify type of each aux variable in amrdata.auxtype.
@@ -378,7 +377,7 @@ def setrun(claw_pkg='geoclaw'):
     # to specify regions of refinement append lines of the form
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
     regions.append([2,7,clawdata.t0,clawdata.tfinal,-74.5,-72.5,40.25,41.5])
-    regions.append([3,7,clawdata.t0,clawdata.tfinal,-74.2,-73.8,40.45,41.0])
+    regions.append([1,7,clawdata.t0,clawdata.tfinal,-100.,0.0,0.,100.])
     
 
 
@@ -390,9 +389,9 @@ def setrun(claw_pkg='geoclaw'):
     amrdata.gprint = False      # grid bisection/clustering
     amrdata.nprint = False      # proper nesting output
     amrdata.pprint = False      # proj. of tagged points
-    amrdata.rprint = True       # print regridding summary
+    amrdata.rprint = False      # print regridding summary
     amrdata.sprint = False      # space/memory output
-    amrdata.tprint = True       # time step reporting each level
+    amrdata.tprint = False      # time step reporting each level
     amrdata.uprint = False      # update/upbnd reporting
     
     # More AMR parameters can be set -- see the defaults in pyclaw/data.py
@@ -448,7 +447,8 @@ def setgeo(rundata):
     #refine_data.speed_tolerance = [1.0,2.0,3.0,4.0]
     refine_data.deep_depth = 1e6
     refine_data.max_level_deep = 3
-    refine_data.variable_dt_refinement_ratios = True
+    #refine_data.variable_dt_refinement_ratios = True
+    refine_data.variable_dt_refinement_ratios = False
 
     # == settopo.data values ==
     topo_data = rundata.topo_data
@@ -494,7 +494,7 @@ def set_storm(rundata):
     data.ambient_pressure = 101.3e3 # Nominal atmos pressure
 
     # Source term controls - These are currently not respected
-    data.wind_forcing = True
+    data.wind_forcing = False
     data.drag_law = 1
     data.pressure_forcing = True
     

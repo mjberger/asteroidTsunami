@@ -21,7 +21,7 @@
 !
 ! ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
-                       tolsp,q,aux,amrflags,DONTFLAG,DOFLAG)
+                       tolsp,q,aux,amrflags,DONTFLAG,DOFLAG,maxGradP2)
 
     use amr_module, only: mxnest, t0
 
@@ -51,6 +51,8 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
     
     real(kind=8), intent(in) :: q(meqn,1-mbc:mx+mbc,1-mbc:my+mbc)
     real(kind=8), intent(in) :: aux(maux,1-mbc:mx+mbc,1-mbc:my+mbc)
+
+    real(kind=8), intent(inout) :: maxGradP2
     
     ! Flagging
     real(kind=8),intent(inout) :: amrflags(1-mbuff:mx+mbuff,1-mbuff:my+mbuff)
@@ -67,7 +69,7 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
     integer :: i,j,m
     real(kind=8) :: x_c,y_c,x_low,y_low,x_hi,y_hi
     real(kind=8) :: speed, eta, ds, dx_meters, dy_meters
-    real(kind=8) :: pressure_refine_sq, maxGradP2
+    real(kind=8) :: pressure_refine_sq,maxEta
 
     ! Initialize flags
     amrflags = DONTFLAG
@@ -75,6 +77,7 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
     ! for refinement using pressure gradient
     pressure_refine_sq = .005D0**2  !since compared with square below
     maxGradP2 = 0.d0
+    maxEta    = 0.d0
 
     ! Initialize mesh sizes, assume constant
     if (coordinate_system == 2) then
@@ -209,6 +212,7 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
                     
                 if (q(1,i,j) > dry_tolerance) then
                     eta = q(1,i,j) + aux(1,i,j)
+                    maxEta = max(maxEta,abs(eta-sea_level))
                     
                     ! Check wave criteria
                     if (abs(eta - sea_level) > wave_tolerance) then
@@ -241,7 +245,7 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
     enddo y_loop
 
 
-     !write(*,100) t,level,maxGradP2
-100 format(" max grad press squared at time",e12.5," level",i3," = ",e15.7)
+     !write(*,100) t,level,maxGradP2,maxEta
+100 format(" max grad press squared and maxEta at time",e12.5," level",i3," = ",2e15.7)
 
 end subroutine flag2refine2

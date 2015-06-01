@@ -58,7 +58,7 @@ SOURCES = \
   $(GEOLIB)/setprob.f90 \
   ./flag2refine2.f90 \
   ./b4step2.f90 \
-  $(AMRLIB)/flagger.f \
+  ./flagger.f \
   $(GEOLIB)/qinit.f90 \
   $(GEOLIB)/topo_update.f90 \
   $(GEOLIB)/cellgridintegrate2.f \

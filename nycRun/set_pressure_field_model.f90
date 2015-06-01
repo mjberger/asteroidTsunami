@@ -39,12 +39,12 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux,mptr)
 
     ! for two dimensional radially symmetric pressure wave. give blast center in lat/long units of domain
     ! this is in shallow part near NYC
-    blasty_center = 40.00
-    blastx_center = -73.0
+    !blasty_center = 40.00
+    !blastx_center = -73.0
 
     ! this is in deep part to right of shelf
-    !blasty_center =  38.9
-    !blastx_center = -71.9
+    blasty_center =  38.9
+    blastx_center = -71.9
 
     ! this is in mid_atlantic
     !blasty_center = 35.00
@@ -88,11 +88,12 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux,mptr)
                 ! this is for two-dimensional radially symmetric pressure wave
                 dist_in_km = spherical_distance(xuse,yuse,blastx_center,blasty_center)/1000.
 
-                !overPressure = computedOverPressure(dist_in_km,time)/100. !  / 100 from percent to value
-                overPressure = computedOverPressure(dist_in_km,time)       !  this version returns dp
+                overPressure = computedOverPressure(dist_in_km,time)/100. !  / 100 from percent to value
+                !overPressure = computedOverPressure(dist_in_km,time)       !  this version returns dp
 
                 maxOverPressure = max(maxOverPressure,abs(overPressure))
-                pressRatio = 1.0 + overPressure/ambient_pressure 
+                pressRatio = 1.0 + overPressure
+                !pressRatio = 1.0 + overPressure/ambient_pressure 
 
                 sumPress = sumPress + wtx*wty*pressRatio
              end do
@@ -108,8 +109,8 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux,mptr)
        enddo
     enddo
 
-    format_string = "('time ',e12.5,' mptr ',i3,' max pressure ',e15.7,'  max abs. val. overPressure ',e12.5)"
-    write(*,format_string) time, mptr, maxPress, maxOverPressure
+    format_string = "('time ',e12.5,' mptr ',i3,' max pressure ',e15.7,'  max abs. val. overPressure % ',e12.5)"
+    !write(*,format_string) time, mptr, maxPress, maxOverPressure
 
 end subroutine set_pressure_field
 
@@ -145,14 +146,16 @@ double precision function  computedOverPressure(dist_in_km,time)
     thick   = 5.d0 
     speed   = 0.3915d0
 
-    c    =  width/2.35482d0
-    p_t  =  thick*2.d0
     t    =  time * speed
-    g    =  maxAmp * exp(-rad*rad/(c*c))  ! /* ...Gaussian envelope */
     rad = dist_in_km   ! different notation, before global edit
 
     ! ...pulse -- functional fit from various blast simulations 
-    if ( dist_in_km < t) then
+    ! mja model computes %overpressure, so need to convert to units
+    ! so 6% becomes .06*101300 , done above in calling program
+    if ( dist_in_km <= t) then
+       p_t  =  thick*2.d0
+       c    =  width/2.35482d0
+       g    =  maxAmp * exp(-rad*rad/(c*c))  ! /* ...Gaussian envelope */
        computedOverPressure = 2.d0*g*exp(-0.8d0*(t-rad)/p_t)*(0.5d0 - 1.1d0*(t-rad)/p_t)
     else
        computedOverPressure = 0.d0

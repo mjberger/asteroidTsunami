@@ -118,8 +118,8 @@ def setplot(plotdata):
     plotitem.plot_var = geoplot.surface_or_depth
     #plotitem.plot_var = 0/1/2 or plot that entry into q instead of a function
     plotitem.pcolor_cmap = geoplot.tsunami_colormap
-    plotitem.pcolor_cmin = -.005
-    plotitem.pcolor_cmax = .005
+    plotitem.pcolor_cmin = -.2 
+    plotitem.pcolor_cmax = .2 
     plotitem.add_colorbar = True
     plotitem.amr_celledges_show = [0,0,0]
     plotitem.amr_patchedges_show = [0,0,0]
@@ -258,10 +258,11 @@ def setplot(plotdata):
     #plotitem.pcolor_cmap = \
     #       colormaps.make_colormap({0:[1,1,1],0.5:[0.5,0.5,1],1:[1,0.3,0.3]})
     plotitem.pcolor_cmin = 0.
-    plotitem.pcolor_cmax = .01
+    plotitem.pcolor_cmax = .02
     plotitem.add_colorbar = True
     plotitem.amr_celledges_show = [0,0,0]
-    plotitem.patchedges_show = 1
+    #plotitem.patchedges_show = 1
+    plotitem.amr_patchedges_show = [0,0,0]
 
     # Land
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
@@ -271,9 +272,9 @@ def setplot(plotdata):
     plotitem.pcolor_cmax = 100.0
     plotitem.add_colorbar = False
     plotitem.amr_celledges_show = [0,0,0]
-    plotitem.patchedges_show = 1
-    plotaxes.xlimits = [-75,-70]
-    plotaxes.ylimits = [38,43]
+    plotitem.patchedges_show = 0
+    plotaxes.xlimits = ocean_xlimits
+    plotaxes.ylimits = ocean_ylimits
 
 
     #-----------------------------------------
@@ -303,14 +304,14 @@ def setplot(plotdata):
         plotaxes = plotfigure.new_plotaxes('zoom on nyc')
         plotaxes.title = 'Surface elevation'
         plotaxes.scaled = True
-        manhattan_island=-73.5
+        manhattan_island = -73.5
         xisland,yisland = latlong(1600e3, manhattan_island, 40., Rearth)
         #plotaxes.xlimits = [xisland-0.6, xisland+0.6]
         #plotaxes.xlimits = [manhattan_island-1, manhattan_island+1]
         #plotaxes.ylimits = [40.15,41.5]
-        plotaxes.xlimits = [-74.5, -73.5]  # really zoom in on lower manhattan]
-        plotaxes.ylimits = [40.4,40.9]
-        #plotaxes.afteraxes = addgauges
+        plotaxes.xlimits = [-74.5, -72.5]  # really zoom in on lower manhattan]
+        plotaxes.ylimits = [40.25,41.5]
+        plotaxes.afteraxes = addgauges
         def bigfont(current_data):
             import pylab
             t = current_data.t
@@ -330,7 +331,7 @@ def setplot(plotdata):
         plotitem.pcolor_cmin = kml_cmin   # same as above
         plotitem.pcolor_cmax = kml_cmax
         plotitem.add_colorbar = False
-        plotitem.amr_celledges_show = [0]
+        plotitem.amr_celledges_show = [0,0,0]
         plotitem.patchedges_show = 0
 
         # Land
@@ -342,8 +343,8 @@ def setplot(plotdata):
         plotitem.pcolor_cmin = 0.0
         plotitem.pcolor_cmax = 100.0
         plotitem.add_colorbar = False
-        plotitem.amr_celledges_show = [1,0,0,0,0]
-        plotitem.patchedges_show = 1
+        plotitem.amr_celledges_show = [0,0,0,0,0]
+        plotitem.patchedges_show = 0
 
         # contour lines:
         plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
@@ -484,7 +485,7 @@ def setplot(plotdata):
     plotitem.add_colorbar = True
 
     plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
-    plotitem.show = True # False
+    plotitem.show =  False
     plotitem.plot_var = geoplot.topo
     plotitem.contour_levels = linspace(-2000,2000,21)
     plotitem.amr_contour_colors = ['k']  # color on each level
@@ -493,48 +494,53 @@ def setplot(plotdata):
     #-----------------------------------------
     # Figure for grids alone
     #-----------------------------------------
-    plotfigure = plotdata.new_plotfigure(name='grids', figno=2)
-    plotfigure.show = False
+    #plotfigure = plotdata.new_plotfigure(name='grids', figno=2)
+    #plotfigure.show = False
 
     # Set up for axes in this figure:
-    plotaxes = plotfigure.new_plotaxes()
-    plotaxes.xlimits = [0,1]
-    plotaxes.ylimits = [0,1]
-    plotaxes.title = 'grids'
-    plotaxes.scaled = True
+    #plotaxes = plotfigure.new_plotaxes()
+    #plotaxes.xlimits = [0,1]
+    #plotaxes.ylimits = [0,1]
+    #plotaxes.title = 'grids'
+    #plotaxes.scaled = True
 
     # Set up for item on these axes:
-    plotitem = plotaxes.new_plotitem(plot_type='2d_patch')
-    plotitem.amr_patch_bgcolor = ['#ffeeee', '#eeeeff', '#eeffee']
-    plotitem.amr_celledges_show = [1,1,0]
-    #plotitem.amr_patchedges_show = [1]
-    plotitem.amr_patchedges_show = [0]
-
+    #plotitem = plotaxes.new_plotitem(plot_type='2d_patch')
+    #plotitem.amr_patch_bgcolor = ['#ffeeee', '#eeeeff', '#eeffee']
+    #plotitem.amr_celledges_show = [0,0,0]
+    #plotitem.amr_patchedges_show = [0,0,0]
+    
+    def normalized_pressure(current_data):
+        pressure_index = 6  #7 in fortran, but python is 0 based
+        return current_data.aux[pressure_index,:,:]/surge_data.ambient_pressure
 
     # Pressure field
     plotfigure = plotdata.new_plotfigure(name='Pressure',figno=33)
     plotfigure.show = True
 
-    plotaxes = plotfigure.new_plotaxes()
-    #plotaxes.xlimits = [-85,-55]
-    #plotaxes.ylimits = [25,45]
+    plotaxes = plotfigure.new_plotaxes('normalized_pressure')
     plotaxes.xlimits = ocean_xlimits
     plotaxes.ylimits = ocean_ylimits
-    #plotaxes.xlimits = [-75,-70]
-    #plotaxes.ylimits = [38,43]
-    plotaxes.title = "Pressure Field"
-    # plotaxes.afteraxes = gulf_after_axes
+    plotaxes.title = 'Pressure Field'
     plotaxes.scaled = True
     plotaxes.afteraxes = addgauges
 
-    #pressure_limits = [surge_data.ambient_pressure / 100.0,
-    #                   2.0 * surge_data.ambient_pressure / 100.0]
-    pressure_limits = [.999*surge_data.ambient_pressure / 100.0,
-                       1.001 * surge_data.ambient_pressure / 100.0]
+    pressure_limits = [.9,1.1]
+    #pressure_limits = [.999*surge_data.ambient_pressure / 100.0,
+    #                   1.001 * surge_data.ambient_pressure / 100.0]
     #pressure_limits = [-.000001*surge_data.ambient_pressure,
     #                   .000001 * surge_data.ambient_pressure]
+
     surgeplot.add_pressure(plotaxes, bounds=pressure_limits)
     surgeplot.add_land(plotaxes)
+
+    #plotitem = plotaxes.new_plotitem(plot_type='2d_patch')
+    plotitem = plotaxes.plotitem_dict['pressure']
+    plotitem.show = True
+    plotitem.plot_var = normalized_pressure
+    plotitem.amr_celledges_show = [0,0,0]
+    plotitem.amr_patchedges_show = [0,0,0]
+
 
     #-----------------------------------------
 

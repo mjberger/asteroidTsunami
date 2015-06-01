@@ -363,15 +363,15 @@ c
        endif
 
 !    output the x-t info more often  - every coarse time step
-       if (mod(ncycle,1) .eq. 0) then
+       if (mod(ncycle,20) .eq. 0) then
        !make x-t plot hovmoller diagram. for now only when valout
        ! called, but consider moving to tick and calling every step
        ! if not fine enough resolution
        ! these params are for lat-long transect near NYC harbor
-          ystHov  = 39.501d0
-          yendHov = 39.501d0
-          xstHov  = -74.001d0
-          xendHov = -55.001d0 
+          ystHov  = 40.60d0
+          yendHov = 40.60d0
+          xstHov  = -74.08d0
+          xendHov = -74.01d0 
           npts = (xendHov-xstHov)/hxposs(mxnest) ! cell centered vals spanning the line
           xendHov = xstHov+npts*hxposs(mxnest)  ! in case not a multiple
 c         call makeHovmoller(time,xstHov,ystHov,xendHov,yendHov,

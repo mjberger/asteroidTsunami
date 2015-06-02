@@ -39,12 +39,12 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux,mptr)
 
     ! for two dimensional radially symmetric pressure wave. give blast center in lat/long units of domain
     ! this is in shallow part near NYC
-    !blasty_center = 40.00
-    !blastx_center = -73.0
+    blasty_center = 38.00
+    blastx_center = -70.0
 
     ! this is in deep part to right of shelf
-    blasty_center =  38.9
-    blastx_center = -71.9
+    !blasty_center =  38.9
+    !blastx_center = -71.9
 
     ! this is in mid_atlantic
     !blasty_center = 35.00

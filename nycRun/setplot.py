@@ -85,8 +85,8 @@ def setplot(plotdata):
     plotdata.kml_tz_offset = 6   # off set to UTC
     # for todays date as the default use 
 
-    kml_cmin = -0.002   #colorbar min and max
-    kml_cmax = 0.002
+    kml_cmin = -0.005   #colorbar min and max
+    kml_cmax = 0.005
     kml_dpi = 400       # only used if individual figures dpi not set
     kml_cmap = geoplot.googleearth_lightblue
 #    kml_cmap = geoplot.googleearth_darkblue
@@ -330,7 +330,7 @@ def setplot(plotdata):
         plotitem.pcolor_cmap = kml_cmap
         plotitem.pcolor_cmin = kml_cmin   # same as above
         plotitem.pcolor_cmax = kml_cmax
-        plotitem.add_colorbar = False
+        plotitem.add_colorbar = True 
         plotitem.amr_celledges_show = [0,0,0]
         plotitem.patchedges_show = 0
 

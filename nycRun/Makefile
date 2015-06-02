@@ -15,9 +15,9 @@ CLAWMAKE = $(CLAW)/clawutil/src/Makefile.common
 CLAW_PKG = geoclaw                  # Clawpack package to use
 EXE = xgeoclaw                 # Executable to create
 SETRUN_FILE = setrun.py        # File containing function to make data
-OUTDIR = _output               # Directory for output
+OUTDIR = _output38             # Directory for output
 SETPLOT_FILE = setplot.py      # File containing function to set plots
-PLOTDIR = _plots               # Directory for plots
+PLOTDIR = _plots38             # Directory for plots
 
 OVERWRITE ?= True                   # False ==> make a copy of OUTDIR first
 RESTART ?= False                    # Should = clawdata.restart in setrun

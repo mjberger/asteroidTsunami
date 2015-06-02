@@ -279,12 +279,14 @@ def setrun(claw_pkg='geoclaw'):
     # for manhattan test
     gauges.append([1,  -73.8, 40.45, 0, 1e10])
     gauges.append([2,  -74.0, 40.5,  0, 1e10])
-    gauges.append([3,  -74.07, 40.65, 0, 1e10])
-    gauges.append([4,  -73.5, 40.4, 0, 1e10])
-    gauges.append([5,  -72.5, 40.0, 0, 1e10])
-    gauges.append([6,  -72.2, 39.8, 0, 1e10])
-    gauges.append([7,  -71.8, 39.2, 0, 1e10])
-    gauges.append([8,  -71.5, 38.5, 0, 1e10])
+    gauges.append([3,  -74.05, 40.65, 0, 1e10])
+    gauges.append([4,  -72.5, 40.0, 0, 1e10])
+    gauges.append([5,  -72.2, 39.8, 0, 1e10])
+    gauges.append([6,  -71.9, 39.2, 0, 1e10])
+    gauges.append([7,  -71.5, 38.5, 0, 1e10])
+    gauges.append([8,  -70.5, 37.5, 0, 1e10])
+    gauges.append([9,  -69.5, 36.5, 0, 1e10])
+    gauges.append([10, -68.5, 35.5, 0, 1e10])
 
 
 

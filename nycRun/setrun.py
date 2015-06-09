@@ -118,7 +118,7 @@ def setrun(claw_pkg='geoclaw'):
     # the OUTDIR indicated in Makefile.
 
     clawdata.restart = False               # True to restart from prior results
-    clawdata.restart_file = 'fort.chk03000'  # File to use for restart data
+    clawdata.restart_file = 'fort.chk06100'  # File to use for restart data
 
     # -------------
     # Output times:
@@ -152,8 +152,8 @@ def setrun(claw_pkg='geoclaw'):
 
     elif clawdata.output_style == 3:
         # Output every iout timesteps with a total of ntot time steps:
-        clawdata.output_step_interval = 100
-        clawdata.total_steps = 6100
+        clawdata.output_step_interval = 50
+        clawdata.total_steps =  500
         clawdata.output_t0 = True
 
         
@@ -183,8 +183,8 @@ def setrun(claw_pkg='geoclaw'):
 
     # if dt_variable==1: variable time steps used based on cfl_desired,
     # if dt_variable==0: fixed time steps dt = dt_initial will always be used.
-    #clawdata.dt_variable = True
-    clawdata.dt_variable = False
+    clawdata.dt_variable = True
+    #clawdata.dt_variable = False
 
     # Initial time step for variable dt.
     # If dt_variable==0 then dt=dt_initial for all steps:
@@ -197,8 +197,8 @@ def setrun(claw_pkg='geoclaw'):
     # Desired Courant number if variable dt used, and max to allow without
     # retaking step with a smaller dt:
     # clawdata.cfl_desired = 0.75
-    clawdata.cfl_desired = 0.05
-    clawdata.cfl_max = .1
+    clawdata.cfl_desired = 0.35
+    clawdata.cfl_max = .5
 
     # Maximum number of time steps to allow between output times:
     clawdata.steps_max = 2**16
@@ -277,7 +277,7 @@ def setrun(claw_pkg='geoclaw'):
         #gauges.append([gaugeno, x, y, 0., 1e10])
 
     # for manhattan test
-    gauges.append([1,  -73.8, 40.45, 0, 1e10])
+    gauges.append([1,  -74.008, 40.71, 0, 1e10])  # tip of manhattan
     gauges.append([2,  -74.0, 40.5,  0, 1e10])
     gauges.append([3,  -74.05, 40.65, 0, 1e10])
     gauges.append([4,  -72.5, 40.0, 0, 1e10])
@@ -300,7 +300,7 @@ def setrun(claw_pkg='geoclaw'):
     # Specify when checkpoint files should be created that can be
     # used to restart a computation.
 
-    clawdata.checkpt_style = 2
+    clawdata.checkpt_style = 1
 
     if clawdata.checkpt_style == 0:
         # Do not checkpoint at all
@@ -481,6 +481,12 @@ def setgeo(rundata):
     # for fixed grids append lines of the form
     # [t1,t2,noutput,x1,x2,y1,y2,xpoints,ypoints,\
     #  ioutarrivaltimes,ioutsurfacemax]
+
+    # == fgmax.data values ==
+    fgmax_files = rundata.fgmax_data.fgmax_files
+    # for fixed grids append to this list names of any fgmax input files
+    fgmax_files.append('fgmax_grid.txt')
+    rundata.fgmax_data.num_fgmax_val = 1  # Save depth only
     
     return rundata
     # end of function setgeo

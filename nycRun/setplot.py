@@ -19,6 +19,9 @@ from mapper import latlong
 import clawpack.geoclaw.surge.plot as surgeplot
 #import clawpack.geoclaw.surge.data as surgedata
 
+# testing new addition from Kyle for dpi
+import matplotlib
+matplotlib.rcParams['savefig.dpi'] = 100
 
 #--------------------------
 def setplot(plotdata):
@@ -377,8 +380,8 @@ def setplot(plotdata):
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes()
-    plotaxes.xlimits = [0000, 500]
-    plotaxes.ylimits = [-.10, .12]
+    plotaxes.xlimits = [0000, 6100]
+    plotaxes.ylimits = [-.10, .15]
     #plotaxes.xlimits = 'auto'
     #plotaxes.ylimits = 'auto'
     plotaxes.title = 'Surface'
@@ -551,7 +554,7 @@ def setplot(plotdata):
 
     plotdata.printfigs = True                # print figures
     plotdata.print_format = 'png'            # file format
-    plotdata.print_framenos = 'all'          # list of frames to print
+    plotdata.print_framenos = [0,1] #'all'          # list of frames to print
     plotdata.print_gaugenos = 'all'          # list of gauges to print
     plotdata.print_fignos = [0,7,10,33,300]  # list of figures to print
     plotdata.html = True                     # create html files of plots?

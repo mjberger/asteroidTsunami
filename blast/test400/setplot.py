@@ -21,7 +21,8 @@ import clawpack.geoclaw.surge.plot as surgeplot
 
 # testing new addition from Kyle for dpi
 import matplotlib
-matplotlib.rcParams['savefig.dpi'] = 100
+matplotlib.rcParams['savefig.dpi'] = 200
+
 
 #--------------------------
 def setplot(plotdata):
@@ -121,8 +122,8 @@ def setplot(plotdata):
     plotitem.plot_var = geoplot.surface_or_depth
     #plotitem.plot_var = 0/1/2 or plot that entry into q instead of a function
     plotitem.pcolor_cmap = geoplot.tsunami_colormap
-    plotitem.pcolor_cmin = -.08
-    plotitem.pcolor_cmax = .08
+    plotitem.pcolor_cmin = -10.
+    plotitem.pcolor_cmax =  10.
     plotitem.add_colorbar = True
     plotitem.amr_celledges_show = [0,0,0]
     plotitem.amr_patchedges_show = [0,0,0]
@@ -261,7 +262,7 @@ def setplot(plotdata):
     #plotitem.pcolor_cmap = \
     #       colormaps.make_colormap({0:[1,1,1],0.5:[0.5,0.5,1],1:[1,0.3,0.3]})
     plotitem.pcolor_cmin = 0.
-    plotitem.pcolor_cmax = .02
+    plotitem.pcolor_cmax = 2.0
     plotitem.add_colorbar = True
     plotitem.amr_celledges_show = [0,0,0]
     #plotitem.patchedges_show = 1
@@ -331,8 +332,10 @@ def setplot(plotdata):
         plotitem.plot_var = geoplot.surface_or_depth
         #plotitem.pcolor_cmap = geoplot.tsunami_colormap
         plotitem.pcolor_cmap = kml_cmap
-        plotitem.pcolor_cmin = kml_cmin   # same as above
-        plotitem.pcolor_cmax = kml_cmax
+        #plotitem.pcolor_cmin = kml_cmin   # same as above
+        #plotitem.pcolor_cmax = kml_cmax
+        plotitem.pcolor_cmin = -.5   # same as above
+        plotitem.pcolor_cmax =  .5
         plotitem.add_colorbar = True 
         plotitem.amr_celledges_show = [0,0,0]
         plotitem.patchedges_show = 0
@@ -362,7 +365,7 @@ def setplot(plotdata):
 
         # add contour lines of bathy if desired:
         plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
-        plotitem.show = True 
+        plotitem.show = False
         plotitem.plot_var = geoplot.topo
         plotitem.contour_levels = linspace(-30, -10,3)
         plotitem.amr_contour_colors = ['m']  # color on each level
@@ -380,10 +383,10 @@ def setplot(plotdata):
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes()
-    plotaxes.xlimits = [0000, 6500]
-    plotaxes.ylimits = [-.10, .15]
-    #plotaxes.xlimits = 'auto'
-    #plotaxes.ylimits = 'auto'
+    #plotaxes.xlimits = [0000, 6500]
+    #plotaxes.ylimits = [-.10, .15]
+    plotaxes.xlimits = 'auto'
+    plotaxes.ylimits = 'auto'
     plotaxes.title = 'Surface'
 
     # Plot surface as blue curve:
@@ -519,7 +522,7 @@ def setplot(plotdata):
 
     # Pressure field
     plotfigure = plotdata.new_plotfigure(name='Pressure',figno=33)
-    plotfigure.show = False
+    plotfigure.show = True
 
     plotaxes = plotfigure.new_plotaxes('normalized_pressure')
     plotaxes.xlimits = ocean_xlimits
@@ -528,7 +531,7 @@ def setplot(plotdata):
     plotaxes.scaled = True
     plotaxes.afteraxes = addgauges
 
-    pressure_limits = [.995,1.005]
+    pressure_limits = [.99,1.10]
     #pressure_limits = [.999*surge_data.ambient_pressure / 100.0,
     #                   1.001 * surge_data.ambient_pressure / 100.0]
     #pressure_limits = [-.000001*surge_data.ambient_pressure,
@@ -539,7 +542,7 @@ def setplot(plotdata):
 
     #plotitem = plotaxes.new_plotitem(plot_type='2d_patch')
     plotitem = plotaxes.plotitem_dict['pressure']
-    plotitem.show = True
+    plotitem.show = False  #True
     plotitem.plot_var = normalized_pressure
     plotitem.amr_celledges_show = [0,0,0]
     plotitem.amr_patchedges_show = [0,0,0]
@@ -556,8 +559,7 @@ def setplot(plotdata):
     plotdata.print_format = 'png'            # file format
     plotdata.print_framenos = 'all'          # list of frames to print
     plotdata.print_gaugenos = 'all'          # list of gauges to print
-    #plotdata.print_fignos = [0,7,10,33,300]  # list of figures to print
-    plotdata.print_fignos = [0,7,10,300]  # list of figures to print
+    plotdata.print_fignos = [0,7,10,33,300]  # list of figures to print
     plotdata.html = True                     # create html files of plots?
     plotdata.html_homelink = '../README.html'   # pointer for top of index
     plotdata.latex = True                    # create latex file of plots?

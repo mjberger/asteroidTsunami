@@ -117,7 +117,7 @@ def setrun(claw_pkg='geoclaw'):
     # restart_file 'fort.chkNNNNN' specified below should be in 
     # the OUTDIR indicated in Makefile.
 
-    clawdata.restart = True                # True to restart from prior results
+    clawdata.restart = False                # True to restart from prior results
     clawdata.restart_file = 'fort.chk00904'  # File to use for restart data
 
     # -------------
@@ -139,11 +139,11 @@ def setrun(claw_pkg='geoclaw'):
         clawdata.tfinal = 8000  # seconds
 
         # Output occurrence per day, 24 = every hour, 4 = every 6 hours
-        recurrence = 150   # output every 10 seconds
+        recurrence = 100   # output every 10 seconds
         clawdata.num_output_times = int((clawdata.tfinal - clawdata.t0) 
                                             / recurrence)
 
-        clawdata.output_t0 = False  # output at initial (or restart) time?
+        clawdata.output_t0 = True   # output at initial (or restart) time?
         
 
     elif clawdata.output_style == 2:
@@ -189,8 +189,8 @@ def setrun(claw_pkg='geoclaw'):
 
     # Initial time step for variable dt.
     # If dt_variable==0 then dt=dt_initial for all steps:
-    clawdata.dt_initial = 1.0
-    #clawdata.dt_initial = .50
+    #clawdata.dt_initial = 1.0
+    clawdata.dt_initial = .50
 
     # Max time step to be allowed if variable dt used:
     clawdata.dt_max = 1e+99
@@ -198,8 +198,8 @@ def setrun(claw_pkg='geoclaw'):
     # Desired Courant number if variable dt used, and max to allow without
     # retaking step with a smaller dt:
     # clawdata.cfl_desired = 0.75
-    clawdata.cfl_desired = 0.4 
-    clawdata.cfl_max = .8
+    clawdata.cfl_desired = 0.35
+    clawdata.cfl_max = .7
 
     # Maximum number of time steps to allow between output times:
     clawdata.steps_max = 2**16
@@ -337,9 +337,9 @@ def setrun(claw_pkg='geoclaw'):
     #amrdata.refinement_ratios_x = [10,4,4,6,16]
     #amrdata.refinement_ratios_y = [10,4,4,6,16]
     #amrdata.refinement_ratios_t = [10,4,4,6,16]
-    amrdata.refinement_ratios_x = [4,4,4,6,16]
-    amrdata.refinement_ratios_y = [4,4,4,6,16]
-    amrdata.refinement_ratios_t = [4,4,4,6,16]
+    amrdata.refinement_ratios_x = [4,8,4,6,16]
+    amrdata.refinement_ratios_y = [4,8,4,6,16]
+    amrdata.refinement_ratios_t = [4,8,4,6,16]
 
 
     # Specify type of each aux variable in amrdata.auxtype.
@@ -385,7 +385,7 @@ def setrun(claw_pkg='geoclaw'):
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
     #regions.append([2,7,3000,clawdata.tfinal,-74.5,-72.5,40.25,41.5])
     regions.append([3,7,3000,clawdata.tfinal,-74.5,-72.5,40.25,41.5])
-    regions.append([1,7,clawdata.t0,clawdata.tfinal,-100.,-69.0,37.0,100.])
+    regions.append([1,2,clawdata.t0,clawdata.tfinal,-100.,-69.0,37.0,100.])
     
 
 
@@ -448,7 +448,7 @@ def setgeo(rundata):
 
     # Refinement Criteria
     refine_data = rundata.refinement_data
-    refine_data.wave_tolerance = .01 
+    refine_data.wave_tolerance = .05 
     # refine_data.wave_tolerance = 0.5
     # refine_data.speed_tolerance = [0.25,0.5,1.0,2.0,3.0,4.0]
     # refine_data.speed_tolerance = [0.5,1.0,1.5,2.0,2.5,3.0]
@@ -471,10 +471,10 @@ def setgeo(rundata):
     #                                    '../bathy/atlantic_2min.tt3'])
     topo_data.topofiles.append([3, 1, 3, rundata.clawdata.t0, 
                                        rundata.clawdata.tfinal, 
-                                       '/Users/berger/asteroidTsunami/bathy/atlantic_2min.tt3'])
+                                       '/home/berger/asteroidTsunami/bathy/atlantic_2min.tt3'])
     topo_data.topofiles.append([3, 1, 5, rundata.clawdata.t0, 
                                        rundata.clawdata.tfinal, 
-                                       '/Users/berger/asteroidTsunami/bathy/newyork_3s.tt3'])
+                                       '/home/berger/asteroidTsunami/bathy/newyork_3s.tt3'])
 
     # == setqinit.data values ==
     rundata.qinit_data.qinit_type = 0

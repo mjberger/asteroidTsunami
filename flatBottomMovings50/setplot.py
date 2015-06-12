@@ -99,6 +99,11 @@ def setplot(plotdata):
     import clawpack.geoclaw.surge.plot as surge
     surge.add_speed(plotaxes,'pcolor',bounds=None,shrink=1.0,contours=None)
     #can also use imshow, contourf or contour instead of 2d_pcolor
+    plotitem = plotaxes.plotitem_dict['speed']
+    plotitem.show = True
+    plotitem.plot_var = Speed
+    plotitem.amr_celledges_show = [0,0,0]
+    plotitem.amr_patchedges_show = [0,0,0]
 
     plotitem.pcolor_cmin = -1.
     plotitem.pcolor_cmax = 1.
@@ -141,7 +146,7 @@ def setplot(plotdata):
     plotitem.pcolor_cmax = 1.
     plotitem.add_colorbar = True
     plotitem.amr_celledges_show = [0,0,0]
-    plotitem.amr_patchedges_show = [1]
+    plotitem.amr_patchedges_show = [0]
 
     # Land
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
@@ -214,7 +219,7 @@ def setplot(plotdata):
     plotitem.pcolor_cmax = 0.9
     plotitem.add_colorbar = True
     plotitem.amr_celledges_show = [1,1,0]
-    plotitem.amr_patchedges_show = [1]
+    plotitem.amr_patchedges_show = [0]
 
     # Land
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')

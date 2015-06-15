@@ -141,7 +141,7 @@ double precision function  computedOverPressure(dist_in_km,time)
     real(kind=8) :: ampl,  tstar  ! they could be params, but for debugging make them vars
     real(kind=8) :: blast_radius,a, airSpeed,rad
 
-    maxAmp  = 179.d0
+    maxAmp  = 179.d0  ! for Tunguska sized object from Scott Lawrence
     width   = 10.d0
     thick   = 5.d0 
     speed   = 0.3915d0

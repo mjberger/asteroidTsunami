@@ -118,7 +118,7 @@ def setrun(claw_pkg='geoclaw'):
     # the OUTDIR indicated in Makefile.
 
     clawdata.restart = False               # True to restart from prior results
-    clawdata.restart_file = 'fort.chk01500'  # File to use for restart data
+    clawdata.restart_file = 'fort.chk00139'  # File to use for restart data
 
     # -------------
     # Output times:
@@ -128,7 +128,7 @@ def setrun(claw_pkg='geoclaw'):
     # Note that the time integration stops after the final output time.
     # The solution at initial time t0 is always written in addition.
 
-    clawdata.output_style = 3
+    clawdata.output_style = 1
 
     clawdata.tfinal = 1000000000  # seconds  # in case not set in output_1, used later for region times
 
@@ -136,10 +136,11 @@ def setrun(claw_pkg='geoclaw'):
         # Output nout frames at equally spaced times up to tfinal:
         #                 day     s/hour  hours/day
         
-        clawdata.tfinal = 1000  # seconds
+        #clawdata.tfinal = 1000  # seconds
+        clawdata.tfinal = 6500  # seconds
 
         # Output occurrence per day, 24 = every hour, 4 = every 6 hours
-        recurrence = 50   # output every 10 seconds
+        recurrence = 65    
         clawdata.num_output_times = int((clawdata.tfinal - clawdata.t0) 
                                             / recurrence)
 
@@ -152,9 +153,8 @@ def setrun(claw_pkg='geoclaw'):
 
     elif clawdata.output_style == 3:
         # Output every iout timesteps with a total of ntot time steps:
-        clawdata.output_step_interval =1
-        clawdata.total_steps = 2
-        #clawdata.total_steps = 2200
+        clawdata.output_step_interval = 100
+        clawdata.total_steps = 2000
         clawdata.output_t0 = True
 
         
@@ -279,9 +279,10 @@ def setrun(claw_pkg='geoclaw'):
 
     # for manhattan test
     #gauges.append([1,  -74.008, 40.71, 0, 1e10])  # tip of manhattan
-    gauges.append([1,  -74.00, 40.71, 3000, 1e10])  # tip of manhattan
-    gauges.append([2,  -74.0, 40.5,   3000,  1e10])
-    gauges.append([3,  -74.05, 40.65, 3000, 1e10])
+    #gauges.append([1,  -74.00, 40.71, 3000, 1e10])  # tip of manhattan using ref by 10
+    gauges.append([1,  -74.00, 40.70,    0, 1e10])  # tip of manhattan using 4 4 ref.
+    gauges.append([2,  -74.0, 40.5,      0,  1e10])
+    gauges.append([3,  -74.05, 40.65,    0, 1e10])
     gauges.append([4,  -72.5, 40.0, 0,   1e10])
     gauges.append([5,  -72.2, 39.8, 0,   1e10])
     gauges.append([6,  -71.9, 39.2, 0,   1e10])
@@ -337,9 +338,9 @@ def setrun(claw_pkg='geoclaw'):
     #amrdata.refinement_ratios_x = [10,4,4,6,16]
     #amrdata.refinement_ratios_y = [10,4,4,6,16]
     #amrdata.refinement_ratios_t = [10,4,4,6,16]
-    amrdata.refinement_ratios_x = [4,4,4,6,16]
-    amrdata.refinement_ratios_y = [4,4,4,6,16]
-    amrdata.refinement_ratios_t = [4,4,4,6,16]
+    amrdata.refinement_ratios_x = [4,8,4,6,16]
+    amrdata.refinement_ratios_y = [4,8,4,6,16]
+    amrdata.refinement_ratios_t = [4,8,4,6,16]
 
 
     # Specify type of each aux variable in amrdata.auxtype.
@@ -385,7 +386,7 @@ def setrun(claw_pkg='geoclaw'):
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
     #regions.append([2,7,3000,clawdata.tfinal,-74.5,-72.5,40.25,41.5])
     regions.append([3,7,3000,clawdata.tfinal,-74.5,-72.5,40.25,41.5])
-    regions.append([1,7,clawdata.t0,clawdata.tfinal,-100.,0.0,0.,100.])
+    regions.append([1,7,clawdata.t0,clawdata.tfinal,-100.,-69.0, 37.,100.])
     
 
 
@@ -448,7 +449,7 @@ def setgeo(rundata):
 
     # Refinement Criteria
     refine_data = rundata.refinement_data
-    refine_data.wave_tolerance = .01 
+    refine_data.wave_tolerance = .025 
     # refine_data.wave_tolerance = 0.5
     # refine_data.speed_tolerance = [0.25,0.5,1.0,2.0,3.0,4.0]
     # refine_data.speed_tolerance = [0.5,1.0,1.5,2.0,2.5,3.0]
@@ -471,10 +472,10 @@ def setgeo(rundata):
     #                                    '../bathy/atlantic_2min.tt3'])
     topo_data.topofiles.append([3, 1, 3, rundata.clawdata.t0, 
                                        rundata.clawdata.tfinal, 
-                                       '/Users/berger/asteroidTsunami/bathy/atlantic_2min.tt3'])
+                                       '../../bathy/atlantic_2min.tt3'])
     topo_data.topofiles.append([3, 1, 5, rundata.clawdata.t0, 
                                        rundata.clawdata.tfinal, 
-                                       '/Users/berger/asteroidTsunami/bathy/newyork_3s.tt3'])
+                                       '../../bathy/newyork_3s.tt3'])
 
     # == setqinit.data values ==
     rundata.qinit_data.qinit_type = 0
@@ -487,6 +488,13 @@ def setgeo(rundata):
     # for fixed grids append lines of the form
     # [t1,t2,noutput,x1,x2,y1,y2,xpoints,ypoints,\
     #  ioutarrivaltimes,ioutsurfacemax]
+    
+    # == fgmax.data values ==
+    fgmax_files = rundata.fgmax_data.fgmax_files
+    # for fixed grids append to this list names of any fgmax input files
+    fgmax_files.append('fgmax_grid1.txt')
+    fgmax_files.append('fgmax_grid2.txt')
+    rundata.fgmax_data.num_fgmax_val = 1  # Save depth only
     
     return rundata
     # end of function setgeo

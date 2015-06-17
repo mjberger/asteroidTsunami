@@ -118,7 +118,7 @@ def setrun(claw_pkg='geoclaw'):
     # the OUTDIR indicated in Makefile.
 
     clawdata.restart = False                # True to restart from prior results
-    clawdata.restart_file = 'fort.chk00904'  # File to use for restart data
+    clawdata.restart_file = 'fort.chk00500'  # File to use for restart data
 
     # -------------
     # Output times:
@@ -136,10 +136,10 @@ def setrun(claw_pkg='geoclaw'):
         # Output nout frames at equally spaced times up to tfinal:
         #                 day     s/hour  hours/day
         
-        clawdata.tfinal = 8000  # seconds
+        clawdata.tfinal = 1000  # seconds
 
         # Output occurrence per day, 24 = every hour, 4 = every 6 hours
-        recurrence = 100   # output every 10 seconds
+        recurrence = 50   # output every 10 seconds
         clawdata.num_output_times = int((clawdata.tfinal - clawdata.t0) 
                                             / recurrence)
 
@@ -198,8 +198,8 @@ def setrun(claw_pkg='geoclaw'):
     # Desired Courant number if variable dt used, and max to allow without
     # retaking step with a smaller dt:
     # clawdata.cfl_desired = 0.75
-    clawdata.cfl_desired = 0.35
-    clawdata.cfl_max = .7
+    clawdata.cfl_desired = 0.2 
+    clawdata.cfl_max = .3
 
     # Maximum number of time steps to allow between output times:
     clawdata.steps_max = 2**16
@@ -279,7 +279,7 @@ def setrun(claw_pkg='geoclaw'):
 
     # for manhattan test
     #gauges.append([1,  -74.008, 40.71, 0, 1e10])  # tip of manhattan
-    gauges.append([1,  -74.00, 40.70,    0, 1e10])  # tip of manhattan
+    gauges.append([1,  -74.00, 40.715,    0, 1e10])  # tip of manhattan
     gauges.append([2,  -74.0, 40.5,      0,  1e10])
     gauges.append([3,  -74.05, 40.65,    0, 1e10])
     gauges.append([4,  -72.5, 40.0, 0,   1e10])
@@ -331,15 +331,15 @@ def setrun(claw_pkg='geoclaw'):
 
 
     # max number of refinement levels:
-    amrdata.amr_levels_max = 3
+    amrdata.amr_levels_max = 2
 
     # List of refinement ratios at each level (length at least mxnest-1)
     #amrdata.refinement_ratios_x = [10,4,4,6,16]
     #amrdata.refinement_ratios_y = [10,4,4,6,16]
     #amrdata.refinement_ratios_t = [10,4,4,6,16]
-    amrdata.refinement_ratios_x = [4,8,4,6,16]
-    amrdata.refinement_ratios_y = [4,8,4,6,16]
-    amrdata.refinement_ratios_t = [4,8,4,6,16]
+    amrdata.refinement_ratios_x = [8,8,4,6,16]
+    amrdata.refinement_ratios_y = [8,8,4,6,16]
+    amrdata.refinement_ratios_t = [8,8,4,6,16]
 
 
     # Specify type of each aux variable in amrdata.auxtype.
@@ -384,7 +384,7 @@ def setrun(claw_pkg='geoclaw'):
     # to specify regions of refinement append lines of the form
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
     #regions.append([2,7,3000,clawdata.tfinal,-74.5,-72.5,40.25,41.5])
-    regions.append([3,7,3000,clawdata.tfinal,-74.5,-72.5,40.25,41.5])
+    regions.append([3,7,0,clawdata.tfinal,-74.5,-72.5,40.25,41.5])
     regions.append([1,2,clawdata.t0,clawdata.tfinal,-100.,-69.0,37.0,100.])
     
 

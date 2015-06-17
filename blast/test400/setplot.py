@@ -122,8 +122,8 @@ def setplot(plotdata):
     plotitem.plot_var = geoplot.surface_or_depth
     #plotitem.plot_var = 0/1/2 or plot that entry into q instead of a function
     plotitem.pcolor_cmap = geoplot.tsunami_colormap
-    plotitem.pcolor_cmin = -10.
-    plotitem.pcolor_cmax =  10.
+    plotitem.pcolor_cmin = -1.
+    plotitem.pcolor_cmax =  1.
     plotitem.add_colorbar = True
     plotitem.amr_celledges_show = [0,0,0]
     plotitem.amr_patchedges_show = [0,0,0]
@@ -262,7 +262,7 @@ def setplot(plotdata):
     #plotitem.pcolor_cmap = \
     #       colormaps.make_colormap({0:[1,1,1],0.5:[0.5,0.5,1],1:[1,0.3,0.3]})
     plotitem.pcolor_cmin = 0.
-    plotitem.pcolor_cmax = 2.0
+    plotitem.pcolor_cmax = .10
     plotitem.add_colorbar = True
     plotitem.amr_celledges_show = [0,0,0]
     #plotitem.patchedges_show = 1
@@ -334,8 +334,8 @@ def setplot(plotdata):
         plotitem.pcolor_cmap = kml_cmap
         #plotitem.pcolor_cmin = kml_cmin   # same as above
         #plotitem.pcolor_cmax = kml_cmax
-        plotitem.pcolor_cmin = -.5   # same as above
-        plotitem.pcolor_cmax =  .5
+        plotitem.pcolor_cmin = -.1  
+        plotitem.pcolor_cmax =  .1
         plotitem.add_colorbar = True 
         plotitem.amr_celledges_show = [0,0,0]
         plotitem.patchedges_show = 0
@@ -542,7 +542,7 @@ def setplot(plotdata):
 
     #plotitem = plotaxes.new_plotitem(plot_type='2d_patch')
     plotitem = plotaxes.plotitem_dict['pressure']
-    plotitem.show = False  #True
+    plotitem.show = True
     plotitem.plot_var = normalized_pressure
     plotitem.amr_celledges_show = [0,0,0]
     plotitem.amr_patchedges_show = [0,0,0]

@@ -141,8 +141,8 @@ double precision function  computedOverPressure(dist_in_km,time)
     real(kind=8) :: ampl,  tstar  ! they could be params, but for debugging make them vars
     real(kind=8) :: blast_radius,a, airSpeed,rad
 
-    maxAmp  = 179.d0  ! for Tunguska sized object from Scott Lawrence
-    width   = 50.d0
+    maxAmp  = 800.d0 !from MJA sims  ! for Tunguska sized object from Scott Lawrence
+    width   = 90.d0
     thick   = 5.d0 
     speed   = 0.3915d0
 
@@ -155,8 +155,8 @@ double precision function  computedOverPressure(dist_in_km,time)
     if ( dist_in_km <= t) then
        p_t  =  thick*2.d0
        c    =  width/2.35482d0
-       g    =  maxAmp * exp(-rad*rad/(c*c))  ! /* ...Gaussian envelope */
-       computedOverPressure = 2.d0*g*exp(-0.8d0*(t-rad)/p_t)*(0.5d0 - 1.1d0*(t-rad)/p_t)
+       g    =  maxAmp * exp(-10.d0*rad*rad/(c*c))  ! /* ...Gaussian envelope */
+       computedOverPressure = 2.d0*g*exp(-0.8d0*(t-rad)/p_t)*(0.5d0 - 0.8d0*(t-rad)/p_t)
     else
        computedOverPressure = 0.d0
     endif

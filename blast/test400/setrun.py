@@ -117,7 +117,7 @@ def setrun(claw_pkg='geoclaw'):
     # restart_file 'fort.chkNNNNN' specified below should be in 
     # the OUTDIR indicated in Makefile.
 
-    clawdata.restart = False                # True to restart from prior results
+    clawdata.restart = True                 # True to restart from prior results
     clawdata.restart_file = 'fort.chk00500'  # File to use for restart data
 
     # -------------
@@ -136,14 +136,14 @@ def setrun(claw_pkg='geoclaw'):
         # Output nout frames at equally spaced times up to tfinal:
         #                 day     s/hour  hours/day
         
-        clawdata.tfinal = 1000  # seconds
+        clawdata.tfinal = 10000  # seconds
 
         # Output occurrence per day, 24 = every hour, 4 = every 6 hours
-        recurrence = 50   # output every 10 seconds
+        recurrence = 100   # output every 10 seconds
         clawdata.num_output_times = int((clawdata.tfinal - clawdata.t0) 
                                             / recurrence)
 
-        clawdata.output_t0 = True   # output at initial (or restart) time?
+        clawdata.output_t0 = False  # output at initial (or restart) time?
         
 
     elif clawdata.output_style == 2:
@@ -190,7 +190,7 @@ def setrun(claw_pkg='geoclaw'):
     # Initial time step for variable dt.
     # If dt_variable==0 then dt=dt_initial for all steps:
     #clawdata.dt_initial = 1.0
-    clawdata.dt_initial = .50
+    clawdata.dt_initial = .10
 
     # Max time step to be allowed if variable dt used:
     clawdata.dt_max = 1e+99
@@ -198,8 +198,8 @@ def setrun(claw_pkg='geoclaw'):
     # Desired Courant number if variable dt used, and max to allow without
     # retaking step with a smaller dt:
     # clawdata.cfl_desired = 0.75
-    clawdata.cfl_desired = 0.2 
-    clawdata.cfl_max = .3
+    clawdata.cfl_desired = 0.9 
+    clawdata.cfl_max = 1.
 
     # Maximum number of time steps to allow between output times:
     clawdata.steps_max = 2**16
@@ -279,14 +279,16 @@ def setrun(claw_pkg='geoclaw'):
 
     # for manhattan test
     #gauges.append([1,  -74.008, 40.71, 0, 1e10])  # tip of manhattan
-    gauges.append([1,  -74.00, 40.715,    0, 1e10])  # tip of manhattan
+    #gauges.append([1,  -74.00, 40.715,    0, 1e10])  # tip of manhattan
+    gauges.append([1,  -74.013, 40.7085,    0, 1e10])  # tip of manhattan
     gauges.append([2,  -74.0, 40.5,      0,  1e10])
     gauges.append([3,  -74.05, 40.65,    0, 1e10])
     gauges.append([4,  -72.5, 40.0, 0,   1e10])
     gauges.append([5,  -72.2, 39.8, 0,   1e10])
     gauges.append([6,  -71.9, 39.2, 0,   1e10])
     gauges.append([7,  -71.5, 38.5, 0,   1e10])
-    gauges.append([8,  -70.5, 37.5, 0,   1e10])
+    #gauges.append([8,  -70.5, 37.5, 0,   1e10])
+    gauges.append([8,  -70.002, 37.9, 0,   1e10])  # move to be closer to blast center
     gauges.append([9,  -69.5, 36.5, 0,   1e10])
     gauges.append([10, -68.5, 35.5, 0,   1e10])
 
@@ -319,7 +321,7 @@ def setrun(claw_pkg='geoclaw'):
     elif clawdata.checkpt_style == 3:
         # Checkpoint every checkpt_interval timesteps (on Level 1)
         # and at the final time.
-        clawdata.checkpt_interval = 250
+        clawdata.checkpt_interval = 100
 
  
 
@@ -337,9 +339,9 @@ def setrun(claw_pkg='geoclaw'):
     #amrdata.refinement_ratios_x = [10,4,4,6,16]
     #amrdata.refinement_ratios_y = [10,4,4,6,16]
     #amrdata.refinement_ratios_t = [10,4,4,6,16]
-    amrdata.refinement_ratios_x = [8,8,4,6,16]
-    amrdata.refinement_ratios_y = [8,8,4,6,16]
-    amrdata.refinement_ratios_t = [8,8,4,6,16]
+    amrdata.refinement_ratios_x = [16,8,4,6,16]
+    amrdata.refinement_ratios_y = [16,8,4,6,16]
+    amrdata.refinement_ratios_t = [16,8,4,6,16]
 
 
     # Specify type of each aux variable in amrdata.auxtype.

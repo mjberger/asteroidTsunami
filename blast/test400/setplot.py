@@ -334,8 +334,8 @@ def setplot(plotdata):
         plotitem.pcolor_cmap = kml_cmap
         #plotitem.pcolor_cmin = kml_cmin   # same as above
         #plotitem.pcolor_cmax = kml_cmax
-        plotitem.pcolor_cmin = -.1  
-        plotitem.pcolor_cmax =  .1
+        plotitem.pcolor_cmin = -.2  
+        plotitem.pcolor_cmax =  .2
         plotitem.add_colorbar = True 
         plotitem.amr_celledges_show = [0,0,0]
         plotitem.patchedges_show = 0

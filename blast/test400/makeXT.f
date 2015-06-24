@@ -10,7 +10,7 @@ c
       implicit double precision (a-h,o-z)
 
 !      dimension  hovLine(nvar+1,npts)  ! to include sealevel variable eta
-      dimension  hovLine(npts),xpt(npts)  ! only output eta
+      dimension  hovLine(2,npts),xpt(npts)  ! only output eta
 
       iadd(ivar,i,j)  = loc + ivar - 1 + nvar*((j-1)*mitot+i-1)
       iaddaux(iaux,i,j) = locaux + iaux-1 + naux*(i-1) +
@@ -94,7 +94,7 @@ c            compute i,j index for source grid, interp val insert into hovLine
 
              etaInterp = binterp(alloc(loc),alloc(locaux),nvar,naux,
      .                          mitot,mjtot,ix,jy,mptr,xhov,yhov,
-     .                          xlo,ylo,dx,dy)
+     .                          xlo,ylo,dx,dy,press)
 !--             hovLine(1,ii) = h
 !--             if (h > dry_tolerance) then
 !--               hovLine(2,ii) = alloc(iadd(2,ix,jy))/h ! pw const for now
@@ -103,7 +103,9 @@ c            compute i,j index for source grid, interp val insert into hovLine
 !--                hovLine(2:3,ii) = 0.d0
 !--             endif
 !--             hovLine(4,ii) = eta
-                hovLine(ii) = etaInterp
+
+                hovLine(1,ii) = etaInterp
+                hovLine(2,ii) = press
 
            xhov = xhov + dxhov ! advance location on line
            yhov = yhov + dyhov
@@ -123,8 +125,9 @@ c       output in tecplot format
            xpt(ii) = xstHov+(ii-1)*dxFine
         end do
 
-        write(ihovunit,100)(xpt(ii),time,hovLine(ii),ii=1,npts)
- 100    format(3e15.7)
+        write(ihovunit,100)(xpt(k),time,hovLine(1,k),hovLine(2,k),
+     .                      k=1,npts)
+ 100    format(4e15.7)
 
         return
         end
@@ -133,9 +136,11 @@ c ------------------------------------------------------------------------------
 c
        double precision function binterp(q,aux,nvar,naux,mitot,mjtot,
      .                                   ix,jy,mptr,xhov,yhov,
-     .                                   xlo,ylo,dx,dy)
+     .                                   xlo,ylo,dx,dy,press)
 
        use amr_module
+       use storm_module, only: pressure_index
+
        implicit double precision (a-h,o-z)      
 
        dimension q(nvar,mitot,mjtot), aux(naux,mitot,mjtot)
@@ -148,6 +153,11 @@ c
       eta01 = q(1,ix,   jy+1) + aux(1,ix,  jy+1)
       eta10 = q(1,ix+1, jy)   + aux(1,ix+1,jy)
       eta11 = q(1,ix+1, jy+1) + aux(1,ix+1,jy+1)
+
+      press00 = aux(pressure_index,ix,  jy)
+      press01 = aux(pressure_index,ix,  jy+1)
+      press10 = aux(pressure_index,ix+1,jy)
+      press11 = aux(pressure_index,ix+1,jy+1)
 
 !     handle degenerate cases of linesensor in border around first 
 !     and last cells by using pw constant
@@ -164,6 +174,9 @@ c
 
         val = (1.d0-alfax)*(1.d0-alfay)*eta00 + alfax*(1.d0-alfay)*eta10
      .         + alfay*(1.d0-alfax)*eta10      + alfax*alfay*eta11
+
+        press = (1.d0-alfax)*(1.d0-alfay)*press00 + alfax*(1.d0-alfay)*press10
+     .         + alfay*(1.d0-alfax)*press10      + alfax*alfay*press11
       endif
 
       binterp = val

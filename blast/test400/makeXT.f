@@ -139,7 +139,7 @@ c
      .                    xlo,ylo,dx,dy,val)
 
        use amr_module
-       use storm_module, only: pressure_index
+       use storm_module, only: pressure_index, ambient_pressure
 
        implicit double precision (a-h,o-z)      
 
@@ -187,7 +187,7 @@ c
       endif
 
       val(1) = eta
-      val(2) = press
+      val(2) = press/ambient_pressure - 1.d0  ! to get ordinary sized numbers for overpressure
               
       return
       end 

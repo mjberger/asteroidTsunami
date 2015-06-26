@@ -126,7 +126,7 @@ def setplot(plotdata):
     plotitem.pcolor_cmax =  1.
     plotitem.add_colorbar = True
     plotitem.amr_celledges_show = [0,0,0]
-    plotitem.amr_patchedges_show = [0,0,0]
+    plotitem.amr_patchedges_show = [0,1,0]
 
     # Land
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
@@ -154,7 +154,7 @@ def setplot(plotdata):
     plotitem.show = True
     plotitem.plot_var = geoplot.topo
     #plotitem.contour_levels = [-500,-250,-100, -50, 0, 50]
-    plotitem.contour_levels = linspace(-1000,-200,4)
+    plotitem.contour_levels = linspace(-1000,-400,3)
     plotitem.amr_contour_colors = ['g']  # color on each level
     #plotitem.kwargs = {'linestyles':'dashed','linewidths':2,'colors' : 'red' }
     plotitem.kwargs = {'linestyles':'dashed','linewidths':1,'colors' : 'magenta' }
@@ -257,6 +257,7 @@ def setplot(plotdata):
 
     # Water
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
+    plotitem.show = True 
     plotitem.plot_var = speed
     plotitem.pcolor_cmap = geoplot.tsunami_colormap
     #plotitem.pcolor_cmap = \
@@ -542,7 +543,7 @@ def setplot(plotdata):
 
     #plotitem = plotaxes.new_plotitem(plot_type='2d_patch')
     plotitem = plotaxes.plotitem_dict['pressure']
-    plotitem.show = True
+    plotitem.show = False
     plotitem.plot_var = normalized_pressure
     plotitem.amr_celledges_show = [0,0,0]
     plotitem.amr_patchedges_show = [0,0,0]
@@ -558,8 +559,11 @@ def setplot(plotdata):
     plotdata.printfigs = True                # print figures
     plotdata.print_format = 'png'            # file format
     plotdata.print_framenos = 'all'          # list of frames to print
+    #plotdata.print_framenos = [30,50,70]          # list of frames to print
+    #plotdata.print_framenos = [1]          # list of frames to print
     plotdata.print_gaugenos = 'all'          # list of gauges to print
     plotdata.print_fignos = [0,7,10,33,300]  # list of figures to print
+    #plotdata.print_fignos = [0]  # list of figures to print
     plotdata.html = True                     # create html files of plots?
     plotdata.html_homelink = '../README.html'   # pointer for top of index
     plotdata.latex = True                    # create latex file of plots?

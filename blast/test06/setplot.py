@@ -362,7 +362,7 @@ def setplot(plotdata):
 
         # add contour lines of bathy if desired:
         plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
-        plotitem.show = True 
+        plotitem.show = False
         plotitem.plot_var = geoplot.topo
         plotitem.contour_levels = linspace(-30, -10,3)
         plotitem.amr_contour_colors = ['m']  # color on each level
@@ -557,7 +557,8 @@ def setplot(plotdata):
     plotdata.print_framenos = 'all'          # list of frames to print
     plotdata.print_gaugenos = 'all'          # list of gauges to print
     #plotdata.print_fignos = [0,7,10,33,300]  # list of figures to print
-    plotdata.print_fignos = [0,7,10,300]  # list of figures to print
+    #plotdata.print_fignos = [0,7,10,300]  # list of figures to print
+    plotdata.print_fignos = [7]  # list of figures to print
     plotdata.html = True                     # create html files of plots?
     plotdata.html_homelink = '../README.html'   # pointer for top of index
     plotdata.latex = True                    # create latex file of plots?

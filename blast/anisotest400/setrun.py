@@ -144,7 +144,7 @@ def setrun(claw_pkg='geoclaw'):
         #recurrence = 150   # output every 10 seconds
         #clawdata.num_output_times = int((clawdata.tfinal - clawdata.t0) 
         #                                    / recurrence)
-        clawdata.num_output_times = 4  # for 14Ksec this is every 200 sec  
+        clawdata.num_output_times = 70  # for 14Ksec this is every 200 sec  
 
         clawdata.output_t0 = True   # output at initial (or restart) time?
         

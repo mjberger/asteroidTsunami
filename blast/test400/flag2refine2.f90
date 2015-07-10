@@ -136,7 +136,7 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
             endif
 
            ! Refine based on pressure gradient
-            if (pressure_forcing) then
+            if (pressure_forcing .and. t .lt. 300d0) then
                 P_gradientx = (aux(pressure_index,i+1,j) &
                                - aux(pressure_index,i-1,j)) / (2.d0 * dx_meters)
                 P_gradienty = (aux(pressure_index,i,j+1) &

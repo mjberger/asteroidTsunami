@@ -62,7 +62,7 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
     ! Storm specific variables
     real(kind=8) :: R_eye(2), wind_speed, P_gradientx, P_gradienty 
     
-    logical :: allowflag
+    logical :: allowflag, depth_forcing,wasted
     external allowflag
     
     ! Generic locals
@@ -70,6 +70,7 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
     real(kind=8) :: x_c,y_c,x_low,y_low,x_hi,y_hi
     real(kind=8) :: speed, eta, ds, dx_meters, dy_meters
     real(kind=8) :: pressure_refine_sq,maxEta,gradP_sq,maxGradP2
+    real(kind=8) :: depth, depthTol
 
     ! Initialize flags
     amrflags = DONTFLAG
@@ -78,6 +79,8 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
     pressure_refine_sq = .005D0**2  !since compared with square below
     maxGradP2 = 0.d0
     maxEta    = 0.d0
+    depthTol = -100.d0 
+    depth_forcing = .true.
 
     ! Initialize mesh sizes, assume constant
     if (coordinate_system == 2) then
@@ -135,8 +138,18 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
                 enddo
             endif
 
+            ! Refine based on shallow depth
+            if (depth_forcing) then
+                depth = aux(1,i,j)
+                wasted = (x_c .lt. -76. .and. y_c .gt. 42.)
+                if (depth .gt. depthTol .and. depth .lt. 0.d0 .and. .not. wasted) then
+                     amrflags(i,j) = DOFLAG
+                     cycle x_loop
+                endif
+            endif
+
            ! Refine based on pressure gradient
-            if (pressure_forcing) then
+            if (pressure_forcing .and. t .lt. 300d0) then
                 P_gradientx = (aux(pressure_index,i+1,j) &
                                - aux(pressure_index,i-1,j)) / (2.d0 * dx_meters)
                 P_gradienty = (aux(pressure_index,i,j+1) &

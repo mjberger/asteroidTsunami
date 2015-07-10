@@ -10,11 +10,11 @@ from clawpack.geoclaw import fgmax_tools, geoplot
 def plot_fgmax_grid():
 
     fg = fgmax_tools.FGmaxGrid()
-    fg.read_input_data('fgmax_grid.txt')
+    fg.read_input_data('fgmax_grid1.txt')
     fg.read_output()
 
     #clines_zeta = [0.01] + list(numpy.linspace(0.05,0.3,6)) + [0.5,1.0,10.0]
-    clines_zeta = [0.01] + list(numpy.linspace(0.05,0.5,10))
+    clines_zeta = [0.001] + list(numpy.linspace(0.05,0.25,10))
     colors = geoplot.discrete_cmap_1(clines_zeta)
     plt.figure(1)
     plt.clf()

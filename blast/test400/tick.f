@@ -363,19 +363,15 @@ c
        endif
 
 !    output the x-t info more often  - every coarse time step
-       if (mod(ncycle,1) .eq. 0 .and. time .lt. 300) then
+       if (mod(ncycle,20) .eq. 0) then
        !make x-t plot hovmoller diagram. for now only when valout
        ! called, but consider moving to tick and calling every step
        ! if not fine enough resolution
        ! these params are for lat-long transect near NYC harbor
-          !ystHov  = 40.60d0
-          !yendHov = 40.60d0
-          !xstHov  = -74.08d0
-          !xendHov = -74.01d0 
-          ystHov  = 38.00001d0  ! perturbed off grid line for round off reasons
-          yendHov = 38.00001d0
-          xstHov  = -71.50001d0
-          xendHov = -68.50010d0 
+          ystHov  = 40.60d0
+          yendHov = 40.60d0
+          xstHov  = -74.08d0
+          xendHov = -74.01d0 
           npts = (xendHov-xstHov)/hxposs(mxnest) ! cell centered vals spanning the line
           xendHov = xstHov+npts*hxposs(mxnest)  ! in case not a multiple
 c         call makeHovmoller(time,xstHov,ystHov,xendHov,yendHov,
@@ -416,12 +412,6 @@ c             ! use same alg. as when setting refinement when first make new fin
  125    continue
 
 
-      endif
-     
-!     change cfl once pressure is weak. This will take a coarse cycle to propagate through
-      if (time .gt. 300) then   ! cfl is initially about .2 to capture forcing fn
-          cfl = .9d0
-          cflv1 = 1.d0
       endif
 
  201  go to 20

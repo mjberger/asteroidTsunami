@@ -32,7 +32,7 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux,mptr)
     character(len=*), parameter :: aux_format = "(2i4,4d15.3)"
     real(kind=8) :: dx_in_radians, dy_in_radians,dsigma,maxRatio,currPress
     real (kind=8) :: sumPress,xuse,yuse,wtx,wty   ! to do simpsons rule to get cell avg of pressure
-    real (kind=8) :: overPressure, computedOverPressure, maxOverPressure, maxPress
+    real (kind=8) :: overPressure, computedOverPressure, maxOverPressure, maxPress,minOverPressure
     character(len=100) :: format_string
     real(kind=8),parameter :: pi= 3.14159265358979
   
@@ -52,6 +52,7 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux,mptr)
 
     maxRatio        = 0.
     maxOverPressure = 0.
+    minOverPressure = 10000000000.
     maxPress        = 0.0
 
     ! Set background pressure field , then overwrite
@@ -92,6 +93,7 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux,mptr)
                 !overPressure = computedOverPressure(dist_in_km,time)       !  this version returns dp
 
                 maxOverPressure = max(maxOverPressure,abs(overPressure))
+                minOverPressure = min(minOverPressure,abs(overPressure))
                 pressRatio = 1.0 + overPressure
                 !pressRatio = 1.0 + overPressure/ambient_pressure 
 
@@ -109,8 +111,8 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux,mptr)
        enddo
     enddo
 
-    format_string = "('time ',e12.5,' mptr ',i3,' max pressure ',e15.7,'  max abs. val. overPressure % ',e12.5)"
-    !write(*,format_string) time, mptr, maxPress, maxOverPressure
+    format_string = "('time ',e12.5,' mptr ',i3,' max pressure ',e15.7,'  max abs. val. overPressure % ',e12.5), 'min ',e12.5"
+    !write(22,format_string) time, mptr, maxPress, maxOverPressure, minOverPressure
 
 end subroutine set_pressure_field
 
@@ -134,7 +136,7 @@ double precision function  computedOverPressure(dist_in_km,time)
    !double precision :: thick  = 5.d0    ! /*...pulse width(km) where overpressure > 0   */
    !double precision :: speed = 0.3915d0 ! /*    ...(km/sec) speed of pulse on ground */
    double precision :: maxAmp, width, thick, speed
-   double precision :: c, p_t, t, g, p
+   double precision :: c, p_t, t, g, p, amplitude,tail
 
    ! Locals
    !real(kind=8),parameter :: ampl = 5., width = 5., tstar = .5;
@@ -143,7 +145,7 @@ double precision function  computedOverPressure(dist_in_km,time)
 
     maxAmp  = 800.d0 !from MJA sims  ! for Tunguska sized object from Scott Lawrence
     width   = 90.d0
-    thick   = 5.d0 
+    thick   = 12.d0 
     speed   = 0.3915d0
 
     t    =  time * speed
@@ -155,8 +157,10 @@ double precision function  computedOverPressure(dist_in_km,time)
     if ( dist_in_km <= t) then
        p_t  =  thick*2.d0
        c    =  width/2.35482d0
-       g    =  maxAmp * exp(-10.d0*rad*rad/(c*c))  ! /* ...Gaussian envelope */
-       computedOverPressure = 2.d0*g*exp(-0.8d0*(t-rad)/p_t)*(0.5d0 - 0.8d0*(t-rad)/p_t)
+       g    =  maxAmp * exp(-15.d0*(rad/c)**2)  ! /* ...Gaussian envelope */
+       tail = 100.d0/(1.d0+(.05*rad)**2)
+       amplitude = g + tail
+       computedOverPressure = amplitude*exp(-5.d0*(t-rad)/p_t)*(1.0d0 - 5.0d0*(t-rad)/p_t)
     else
        computedOverPressure = 0.d0
     endif

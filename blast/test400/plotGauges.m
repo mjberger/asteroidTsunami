@@ -4,7 +4,7 @@
 %ngauges = 8;
 ngauges = 10;
 load _output/fort.gauge
-figno =  41;  % starting figure number
+figno =  1;  % starting figure number
 clear legTrm; % need new size to exactly correspond to number of gauges plotted, so reset
 numPlots = 0;
 legTrm = cellstr(num2str(zeros(ngauges,1)));
@@ -14,8 +14,8 @@ figure(figno+1); hold off
 figure(figno+2); hold off
 colors = ['b','g','r','k','c','m','k'];
 
-%for i= 1 : ngauges
-for i= 1 : 3        
+for i= 1 : ngauges
+%for i= 1 : 1        
   numPlots = numPlots+1;
   index = find(fort(:,1) == i);
   gaugedata = fort(index,:);

@@ -1,0 +1,5 @@
+cp hovSlice.dat into this directory, name it all.dat
+run tecplot macro to triangulate it:
+           tecplot -b -p newtessel.mcr
+open tecplot layout to plot it:
+      tecplot mb_x-t.lay

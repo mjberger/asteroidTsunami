@@ -131,12 +131,12 @@ c        write(*,*)" old possk is ", possk(1)
          if (.false.) then  
             write(*,122) diffdt,outtime  ! notify of change
  122        format(" Adjusting timestep by ",e10.3,
-     .             " to hit output time of ",e13.6)
+     .             " to hit output time of ",e12.6)
 c           write(*,*)" new possk is ", possk(1)
             if (diffdt .lt. 0.) then ! new step is slightly larger
               pctIncrease = -100.*diffdt/oldposs   ! minus sign to make whole expr. positive
               write(*,123) pctIncrease
- 123          format(" New step is ",e9.2," % larger.",
+ 123          format(" New step is ",e8.2," % larger.",
      .               "  Should still be stable")
               endif
             endif
@@ -270,8 +270,8 @@ c         # rjl & mjb changed to cfl_level, 3/17/10
           if (method(4).ge.level) then
               write(6,100)level,cfl_level,possk(level),timenew
               endif
-100       format(' AMRCLAW: level ',i2,'  CFL = ',e10.3,
-     &           '  dt = ',e11.4,  '  final t = ',e13.6)
+100       format(' AMRCLAW: level ',i2,'  CFL = ',e8.3,
+     &           '  dt = ',e10.4,  '  final t = ',e12.6)
 
 
 c        # to debug individual grid updates...
@@ -353,6 +353,7 @@ c
 
        if ((checkpt_style.eq.3 .and. 
      &      mod(ncycle,checkpt_interval).eq.0) .or. dumpchk) then
+                write(*,*)"calling check from tick"
                 call check(ncycle,time,nvar,naux)
                 dumpchk = .true.
        endif
@@ -363,19 +364,25 @@ c
        endif
 
 !    output the x-t info more often  - every coarse time step
-       if (mod(ncycle,20) .eq. 0) then
+       if (mod(ncycle,1) .eq. 0 .and. time .lt. 300) then
        !make x-t plot hovmoller diagram. for now only when valout
        ! called, but consider moving to tick and calling every step
        ! if not fine enough resolution
        ! these params are for lat-long transect near NYC harbor
-          ystHov  = 40.60d0
-          yendHov = 40.60d0
-          xstHov  = -74.08d0
-          xendHov = -74.01d0 
+          !ystHov  = 40.60d0
+          !yendHov = 40.60d0
+          !xstHov  = -74.08d0
+          !xendHov = -74.01d0 
+          ystHov  = 38.00001d0  ! perturbed off grid line for round off reasons
+          yendHov = 38.00001d0
+          xstHov  = -71.50001d0
+          xendHov = -68.50010d0 
           npts = (xendHov-xstHov)/hxposs(mxnest) ! cell centered vals spanning the line
           xendHov = xstHov+npts*hxposs(mxnest)  ! in case not a multiple
 c         call makeHovmoller(time,xstHov,ystHov,xendHov,yendHov,
 c    .                    nvar,naux,npts,ihovUnit)
+c         added argument lst (lfine below)  - level to start looking for
+c         since coarser levels were messing up plot
           call makeXT(time,xstHov,ystHov,xendHov,yendHov,
      .                    nvar,naux,npts,ihovUnit)
        endif
@@ -412,6 +419,12 @@ c             ! use same alg. as when setting refinement when first make new fin
  125    continue
 
 
+      endif
+     
+!     change cfl once pressure is weak. This will take a coarse cycle to propagate through
+      if (time .gt. 300) then   ! cfl is initially about .2 to capture forcing fn
+          cfl = .9d0
+          cflv1 = 1.d0
       endif
 
  201  go to 20

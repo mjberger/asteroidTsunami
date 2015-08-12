@@ -58,9 +58,7 @@ subroutine b4step2(mbc,mx,my,meqn,q,xlower,ylower,dx,dy,t,dt,maux,aux,mptr)
 
 
     ! Set wind and pressure aux variables for this grid
-    if (t .lt. 300) then !otherwise leave ambient pressure in grids
-    call   set_pressure_field(maux, mbc, mx, my, xlower, ylower, dx, dy, t, aux, mptr)
-    endif
+    call set_pressure_field(maux, mbc, mx, my, xlower, ylower, dx, dy, t, aux, mptr)
 
 end subroutine b4step2
     

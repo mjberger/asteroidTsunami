@@ -122,11 +122,11 @@ def setplot(plotdata):
     plotitem.plot_var = geoplot.surface_or_depth
     #plotitem.plot_var = 0/1/2 or plot that entry into q instead of a function
     plotitem.pcolor_cmap = geoplot.tsunami_colormap
-    plotitem.pcolor_cmin = -1.
-    plotitem.pcolor_cmax =  1.
+    plotitem.pcolor_cmin = -.25
+    plotitem.pcolor_cmax =  .25
     plotitem.add_colorbar = True
     plotitem.amr_celledges_show = [0,0,0]
-    plotitem.amr_patchedges_show = [0,1,0]
+    plotitem.amr_patchedges_show = [0,0,0]
 
     # Land
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
@@ -257,7 +257,7 @@ def setplot(plotdata):
 
     # Water
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
-    plotitem.show = True 
+    plotitem.show = False
     plotitem.plot_var = speed
     plotitem.pcolor_cmap = geoplot.tsunami_colormap
     #plotitem.pcolor_cmap = \
@@ -328,7 +328,7 @@ def setplot(plotdata):
 
         # Water
         plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
-        plotitem.show = True
+        plotitem.show = False
         #plotitem.plot_var = geoplot.surface
         plotitem.plot_var = geoplot.surface_or_depth
         #plotitem.pcolor_cmap = geoplot.tsunami_colormap
@@ -343,7 +343,7 @@ def setplot(plotdata):
 
         # Land
         plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
-        plotitem.show = True 
+        plotitem.show = False
         plotitem.plot_var = geoplot.land
         # plotitem.pcolor_cmap = colormaps.all_white  # to print better in B&W
         plotitem.pcolor_cmap = geoplot.land_colors
@@ -355,7 +355,7 @@ def setplot(plotdata):
 
         # contour lines:
         plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
-        plotitem.show = True 
+        plotitem.show = False
         plotitem.plot_var = geoplot.surface
         plotitem.contour_levels = [-0.8, -0.4, 0.4, 0.8]
         plotitem.amr_contour_colors = ['k']  # color on each level
@@ -426,13 +426,13 @@ def setplot(plotdata):
         s = sqrt(ssq)
         return ssq
 
-    #plotitem.plot_var = gaugetopo
-    #plotitem.plotstyle = 'g-'
+    plotitem.plot_var = gaugetopo
+    plotitem.plotstyle = 'g-'
 
     # Plot relative delta pressure as red curve:
-    plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
-    plotitem.plot_var = gaugedpress
-    plotitem.plotstyle = 'r-'
+    #plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
+    #plotitem.plot_var = gaugedpress
+    #plotitem.plotstyle = 'r-'
 
     # add speed to this plot since cant get new one going
     plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
@@ -442,8 +442,8 @@ def setplot(plotdata):
     def add_zeroline(current_data):
         from pylab import plot, legend
         t = current_data.t
-#       legend(('surface','topography','dp'),loc='lower left')
-        legend(('surface','dp','speed'),loc='upper right')
+        legend(('surface','topography','dp'),loc='lower left')
+#       legend(('surface','dp','speed'),loc='upper right')
         #plot(t, 0*t, 'k')
 
     plotaxes.afteraxes = add_zeroline
@@ -560,10 +560,10 @@ def setplot(plotdata):
     plotdata.print_format = 'png'            # file format
     plotdata.print_framenos = 'all'          # list of frames to print
     #plotdata.print_framenos = [30,50,70]          # list of frames to print
-    #plotdata.print_framenos = [1]          # list of frames to print
     plotdata.print_gaugenos = 'all'          # list of gauges to print
-    plotdata.print_fignos = [0,7,10,33,300]  # list of figures to print
-    #plotdata.print_fignos = [0]  # list of figures to print
+    #plotdata.print_fignos = [0,7,10,33,300]  # list of figures to print
+    #plotdata.print_fignos = [0,7,10,300]  # list of figures to print
+    plotdata.print_fignos = [300]  # list of figures to print
     plotdata.html = True                     # create html files of plots?
     plotdata.html_homelink = '../README.html'   # pointer for top of index
     plotdata.latex = True                    # create latex file of plots?

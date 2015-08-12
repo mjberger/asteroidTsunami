@@ -15,9 +15,9 @@ CLAWMAKE = $(CLAW)/clawutil/src/Makefile.common
 CLAW_PKG = geoclaw                  # Clawpack package to use
 EXE = xgeoclaw                 # Executable to create
 SETRUN_FILE = setrun.py        # File containing function to make data
-OUTDIR = /data/berger/test400/_output                # Directory for output
+OUTDIR = /data/berger/test400_2lev/_outputaniso4         # Directory for output
 SETPLOT_FILE = setplot.py      # File containing function to set plots
-PLOTDIR = /data/berger/test400/_plots               # Directory for plots
+PLOTDIR = /data/berger/test400_2lev/_plotsaniso4         # Directory for plots
 
 OVERWRITE ?= True                   # False ==> make a copy of OUTDIR first
 RESTART ?= False                    # Should = clawdata.restart in setrun
@@ -83,7 +83,7 @@ SOURCES = \
   $(GEOLIB)/bc2amr.f \
   $(GEOLIB)/update.f \
   $(AMRLIB)/flagregions2.f90  \
-  $(GEOLIB)/allowflag.f90  \
+  ./allowflag.f90  \
   ./dumpgauge.f \
   $(GEOLIB)/upbnd.f  \
   ./tick.f \

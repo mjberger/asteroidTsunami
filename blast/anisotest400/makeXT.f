@@ -69,7 +69,7 @@ c     grids are cell-centered.  hovLine starts at xstHov (node centered)
 
             if (xstHov .eq. xendHov) then  ! line is vertical
               ipt = ipty
-              iptend = (ylast - ystHov +1.e-7)/dyfine
+              iptend = (ylast - ystHov)/dyfine
               dyhov = dyfine
               if (ystHov+(ipty-1)*dyfine .gt. ybegin .or.  
      .            ysthov+ipty*dyfine .lt. ybegin)  then
@@ -77,7 +77,7 @@ c     grids are cell-centered.  hovLine starts at xstHov (node centered)
               endif
             else
               ipt = iptx
-              iptend = (xlast - xstHov +1.e-7)/dxfine
+              iptend = (xlast - xstHov)/dxfine
               dxhov = dxfine
               if (xstHov+(iptx-1)*dxfine .gt. xbegin .or.  
      .            xsthov+iptx*dxfine .lt. xbegin)  then

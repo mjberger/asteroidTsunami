@@ -27,12 +27,12 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux,mptr)
     
     ! Locals
     integer :: i,j,m,iloc,jloc
-    real(kind=8) :: x,y,xm,ym,xp,yp,blastx_center,blasty_center
-    real(kind=8) :: yc, xc,dist,dist_in_km,pressRatio, fallOff             
+    real(kind=8) :: x,y,xm,ym,xp,yp,blastx_center,blasty_center,theta
+    real(kind=8) :: yc, xc,dist,dist_in_km,xdist,ydist,pressRatio, fallOff             
     character(len=*), parameter :: aux_format = "(2i4,4d15.3)"
-    real(kind=8) :: dx_in_radians, dy_in_radians,dsigma,maxRatio,currPress
-    real (kind=8) :: sumPress,xuse,yuse,wtx,wty   ! to do simpsons rule to get cell avg of pressure
-    real (kind=8) :: overPressure, computedOverPressure, maxOverPressure, maxPress,minOverPressure
+    real(kind=8) :: dx_in_radians, dy_in_radians,dsigma,maxRatio,currPress,scale
+    real (kind=8) :: sumPress,xuse,yuse,wtx,wty,xrot,yrot   ! to do simpsons rule to get cell avg of pressure
+    real (kind=8) :: overPressure, overPressure_x,overPressure_y,computedOverPressure, maxOverPressure, maxPress
     character(len=100) :: format_string
     real(kind=8),parameter :: pi= 3.14159265358979
   
@@ -52,7 +52,6 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux,mptr)
 
     maxRatio        = 0.
     maxOverPressure = 0.
-    minOverPressure = 10000000000.
     maxPress        = 0.0
 
     ! Set background pressure field , then overwrite
@@ -84,16 +83,23 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux,mptr)
                 ! **** CHANGED to make 1D Test Problem *****
                 !  for traveling wave test case, make into a 1d problem, only look at dist in x
                 ! this is for one-dimensional pressure test (consant in y) 
-                !dist_in_km = spherical_distance(xuse,yuse,blastx_center,yuse)/1000.
-                
-                ! this is for two-dimensional radially symmetric pressure wave
                 dist_in_km = spherical_distance(xuse,yuse,blastx_center,blasty_center)/1000.
 
-                overPressure = computedOverPressure(dist_in_km,time)/100. !  / 100 from percent to value
+                ! need to put signs in answer, since distance is always positive
+                xdist = xuse - blastx_center
+                ydist = yuse - blasty_center
+
+                scale = 3.d0
+                overPressure_x = computedOverPressure(dist_in_km,time,1.d0)/100. !  / 100 from percent to value
+                overPressure_y = computedOverPressure(dist_in_km,time,scale)/100. !  / 100 from percent to value
                 !overPressure = computedOverPressure(dist_in_km,time)       !  this version returns dp
 
+                theta = atan2(ydist,xdist)
+                theta = theta + .75d0*pi ! to make ellipse at 45 degree
+
+                overPressure =  overPressure_x*cos(theta)**2 + overPressure_y*sin(theta)**2
+
                 maxOverPressure = max(maxOverPressure,abs(overPressure))
-                minOverPressure = min(minOverPressure,abs(overPressure))
                 pressRatio = 1.0 + overPressure
                 !pressRatio = 1.0 + overPressure/ambient_pressure 
 
@@ -111,8 +117,8 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux,mptr)
        enddo
     enddo
 
-    format_string = "('time ',e12.5,' mptr ',i3,' max pressure ',e15.7,'  max abs. val. overPressure % ',e12.5), 'min ',e12.5"
-    !write(22,format_string) time, mptr, maxPress, maxOverPressure, minOverPressure
+    format_string = "('time ',e12.5,' mptr ',i3,' max pressure ',e15.7,'  max abs. val. overPressure % ',e12.5)"
+    !write(*,format_string) time, mptr, maxPress, maxOverPressure
 
 end subroutine set_pressure_field
 
@@ -123,12 +129,12 @@ end subroutine set_pressure_field
 !        of rad = radius from ground zero (km) and time in seconds
 !        ...based on Friedlander wave, but scaled and tuned from actual runs.
 !
-double precision function  computedOverPressure(dist_in_km,time)
+double precision function  computedOverPressure(dist_in_km,time,scale)
 
    implicit none
 
    ! Arguments
-   real(kind=8), intent(in) :: dist_in_km, time
+   real(kind=8), intent(in) :: dist_in_km, time, scale
 
    ! local arguments - could be params, but for testing make them variables
    !double precision :: maxAmp = 6.d0    !/* ...max overpressre (%) = height of envelope */
@@ -144,7 +150,7 @@ double precision function  computedOverPressure(dist_in_km,time)
     real(kind=8) :: blast_radius,a, airSpeed,rad
 
     maxAmp  = 800.d0 !from MJA sims  ! for Tunguska sized object from Scott Lawrence
-    width   = 90.d0
+    width   = 90.d0 * scale
     thick   = 12.d0 
     speed   = 0.3915d0
 

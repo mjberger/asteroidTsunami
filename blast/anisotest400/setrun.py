@@ -117,8 +117,8 @@ def setrun(claw_pkg='geoclaw'):
     # restart_file 'fort.chkNNNNN' specified below should be in 
     # the OUTDIR indicated in Makefile.
 
-    clawdata.restart = True                # True to restart from prior results
-    clawdata.restart_file = 'fort.chk01300'  # File to use for restart data
+    clawdata.restart = False                # True to restart from prior results
+    clawdata.restart_file = 'fort.chk00500'  # File to use for restart data
 
     # -------------
     # Output times:
@@ -136,16 +136,17 @@ def setrun(claw_pkg='geoclaw'):
         # Output nout frames at equally spaced times up to tfinal:
         #                 day     s/hour  hours/day
         
-        #clawdata.tfinal = 1000  # seconds
         clawdata.tfinal = 14000  # seconds
+        #clawdata.tfinal = 200  # seconds
+        #clawdata.tfinal = 600  # seconds
 
         # Output occurrence per day, 24 = every hour, 4 = every 6 hours
-        #recurrence = 70    
+        #recurrence = 150   # output every 10 seconds
         #clawdata.num_output_times = int((clawdata.tfinal - clawdata.t0) 
         #                                    / recurrence)
-        clawdata.num_output_times = 70
+        clawdata.num_output_times = 70  # for 14Ksec this is every 200 sec  
 
-        clawdata.output_t0 = True  # output at initial (or restart) time?
+        clawdata.output_t0 = True   # output at initial (or restart) time?
         
 
     elif clawdata.output_style == 2:
@@ -154,8 +155,9 @@ def setrun(claw_pkg='geoclaw'):
 
     elif clawdata.output_style == 3:
         # Output every iout timesteps with a total of ntot time steps:
-        clawdata.output_step_interval = 100
-        clawdata.total_steps = 2000
+        clawdata.output_step_interval =1
+        clawdata.total_steps = 2
+        #clawdata.total_steps = 2200
         clawdata.output_t0 = True
 
         
@@ -163,7 +165,7 @@ def setrun(claw_pkg='geoclaw'):
     #clawdata.output_format = 'ascii'        # 'ascii' or 'netcdf' 
 
     clawdata.output_q_components = 'all'   # could be list such as [True,True]
-    clawdata.output_aux_components = 'none'
+    clawdata.output_aux_components = 'all'
     clawdata.output_aux_onlyonce = False    # output aux arrays only at t0
 
 
@@ -189,17 +191,18 @@ def setrun(claw_pkg='geoclaw'):
 
     # Initial time step for variable dt.
     # If dt_variable==0 then dt=dt_initial for all steps:
+    #clawdata.dt_initial = 1.0
     clawdata.dt_initial = .10
-    #clawdata.dt_initial = .50
 
     # Max time step to be allowed if variable dt used:
     clawdata.dt_max = 1e+99
 
     # Desired Courant number if variable dt used, and max to allow without
     # retaking step with a smaller dt:
-    # clawdata.cfl_desired = 0.75
-    clawdata.cfl_desired = 0.1 
-    clawdata.cfl_max = .2
+    #clawdata.cfl_desired = 0.9 
+    #clawdata.cfl_max = 1.
+    clawdata.cfl_desired = 0.1   # initial cfl while pressure pulse is there
+    clawdata.cfl_max =  .2       # in the code it will be upped to .9 after 300 seconds
 
     # Maximum number of time steps to allow between output times:
     clawdata.steps_max = 2**16
@@ -279,7 +282,8 @@ def setrun(claw_pkg='geoclaw'):
 
     # for manhattan test
     #gauges.append([1,  -74.008, 40.71, 0, 1e10])  # tip of manhattan
-    #gauges.append([1,  -74.00, 40.71, 3000, 1e10])  # tip of manhattan using ref by 10
+    #gauges.append([1,  -74.00, 40.715,    0, 1e10])  # tip of manhattan
+    #gauges.append([1,  -74.013, 40.7085,    0, 1e10])  # tip of manhattan
 
     gauges.append([1,  -74.01 , 40.705,    0, 1e10])  # tip of manhattan
     gauges.append([2,  -74.0, 40.5,      0,  1e10])
@@ -288,7 +292,7 @@ def setrun(claw_pkg='geoclaw'):
 
     #gauges.append([5,  -72.2, 39.8, 0,   1e10]) # old one near continental shelf
     gauges.append([5,  -64.8014, 32.4146, 0,   1e10])  # new one near Bermuda
-
+ 
     gauges.append([6,  -71.9, 39.2, 0,   1e10])
     gauges.append([7,  -71.5, 38.5, 0,   1e10])
     #gauges.append([8,  -70.5, 37.5, 0,   1e10])
@@ -322,7 +326,7 @@ def setrun(claw_pkg='geoclaw'):
 
     elif clawdata.checkpt_style == 2:
         # Specify a list of checkpoint times.  
-        clawdata.checkpt_times = [2700.1, 2900.100,3000.100]
+        clawdata.checkpt_times = [200, 300, 1000, 7000]
 
     elif clawdata.checkpt_style == 3:
         # Checkpoint every checkpt_interval timesteps (on Level 1)
@@ -339,15 +343,15 @@ def setrun(claw_pkg='geoclaw'):
 
 
     # max number of refinement levels:
-    amrdata.amr_levels_max = 3
+    amrdata.amr_levels_max = 2
 
     # List of refinement ratios at each level (length at least mxnest-1)
     #amrdata.refinement_ratios_x = [10,4,4,6,16]
     #amrdata.refinement_ratios_y = [10,4,4,6,16]
     #amrdata.refinement_ratios_t = [10,4,4,6,16]
-    amrdata.refinement_ratios_x = [12,8,4,6,16]
-    amrdata.refinement_ratios_y = [12,8,4,6,16]
-    amrdata.refinement_ratios_t = [12,8,4,6,16]
+    amrdata.refinement_ratios_x = [12,4,4,6,16]
+    amrdata.refinement_ratios_y = [12,4,4,6,16]
+    amrdata.refinement_ratios_t = [12,4,4,6,16]
 
 
     # Specify type of each aux variable in amrdata.auxtype.
@@ -392,8 +396,9 @@ def setrun(claw_pkg='geoclaw'):
     # to specify regions of refinement append lines of the form
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
     #regions.append([2,7,3000,clawdata.tfinal,-74.5,-72.5,40.25,41.5])
+
     #nyc zoom
-    #regions.append([3,7,9000,clawdata.tfinal,-74.5,-72.5,40.25,41.5])
+    regions.append([3,7,9000,clawdata.tfinal,-74.5,-72.5,40.25,41.5])
     regions.append([2,2,0,clawdata.tfinal,-74.5,-72.5,40.25,41.5])
 
     #allow 2 levels on left of blast towards coastline
@@ -403,7 +408,7 @@ def setrun(claw_pkg='geoclaw'):
 
     #allow 3 levels around pressure wave only
     regions.append([1,3,0,300,-100.,-69.0,37.0,100.])
-
+    
 
 
     #  ----- For developers ----- 
@@ -465,7 +470,7 @@ def setgeo(rundata):
 
     # Refinement Criteria
     refine_data = rundata.refinement_data
-    refine_data.wave_tolerance = .025 
+    refine_data.wave_tolerance = .1 
     # refine_data.wave_tolerance = 0.5
     # refine_data.speed_tolerance = [0.25,0.5,1.0,2.0,3.0,4.0]
     # refine_data.speed_tolerance = [0.5,1.0,1.5,2.0,2.5,3.0]
@@ -480,18 +485,18 @@ def setgeo(rundata):
     topo_data.topofiles = []
     # for topography, append lines of the form
     #   [topotype, minlevel, maxlevel, t1, t2, fname]
-    # geodata.topofiles.append([3, 1, 3, rundata.clawdata.t0, 
-    #                                    rundata.clawdata.tfinal, 
-    #                                    '../bathy/atlantic_2min.tt3'])
-    # topo_data.topofiles.append([3, 1, 3, rundata.clawdata.t0, 
-    #                                    rundata.clawdata.tfinal, 
-    #                                    '../bathy/atlantic_2min.tt3'])
     topo_data.topofiles.append([3, 1, 3, rundata.clawdata.t0, 
-                                       rundata.clawdata.tfinal, 
-                                       '../../bathy/atlantic_2min.tt3'])
-    topo_data.topofiles.append([3, 1, 5, rundata.clawdata.t0, 
-                                       rundata.clawdata.tfinal, 
-                                       '../../bathy/newyork_3s.tt3'])
+                                        rundata.clawdata.tfinal, 
+                                        '../../bathy/atlantic_2min.tt3'])
+    topo_data.topofiles.append([3, 1, 3, rundata.clawdata.t0, 
+                                        rundata.clawdata.tfinal, 
+                                        '../../bathy/atlantic_2min.tt3'])
+    #topo_data.topofiles.append([3, 1, 3, rundata.clawdata.t0, 
+    #                                   rundata.clawdata.tfinal, 
+    #                                   '/home/berger/asteroidTsunami/bathy/atlantic_2min.tt3'])
+    #topo_data.topofiles.append([3, 1, 5, rundata.clawdata.t0, 
+    #                                   rundata.clawdata.tfinal, 
+    #                                   '/home/berger/asteroidTsunami/bathy/newyork_3s.tt3'])
 
     # == setqinit.data values ==
     rundata.qinit_data.qinit_type = 0
@@ -504,13 +509,12 @@ def setgeo(rundata):
     # for fixed grids append lines of the form
     # [t1,t2,noutput,x1,x2,y1,y2,xpoints,ypoints,\
     #  ioutarrivaltimes,ioutsurfacemax]
-    
-    # == fgmax.data values ==
     fgmax_files = rundata.fgmax_data.fgmax_files
     # for fixed grids append to this list names of any fgmax input files
     fgmax_files.append('fgmax_grid1.txt')
     #fgmax_files.append('fgmax_grid2.txt')
     rundata.fgmax_data.num_fgmax_val = 1  # Save depth only
+
     
     return rundata
     # end of function setgeo

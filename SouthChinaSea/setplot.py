@@ -21,7 +21,7 @@ import clawpack.geoclaw.surge.plot as surgeplot
 
 # testing new addition from Kyle for dpi
 import matplotlib
-matplotlib.rcParams['savefig.dpi'] = 200
+matplotlib.rcParams['savefig.dpi'] = 150
 
 
 #--------------------------
@@ -126,7 +126,7 @@ def setplot(plotdata):
     plotitem.pcolor_cmax =  1.
     plotitem.add_colorbar = True
     plotitem.amr_celledges_show = [0,0,0]
-    plotitem.amr_patchedges_show = [0,1,0]
+    plotitem.amr_patchedges_show = [0,0,0]
 
     # Land
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
@@ -154,10 +154,10 @@ def setplot(plotdata):
     plotitem.show = True
     plotitem.plot_var = geoplot.topo
     #plotitem.contour_levels = [-500,-250,-100, -50, 0, 50]
-    plotitem.contour_levels = linspace(-1000,-400,3)
+    plotitem.contour_levels = linspace(-1000,-100,10)
     plotitem.amr_contour_colors = ['g']  # color on each level
     #plotitem.kwargs = {'linestyles':'dashed','linewidths':2,'colors' : 'red' }
-    plotitem.kwargs = {'linestyles':'dashed','linewidths':1,'colors' : 'magenta' }
+    plotitem.kwargs = {'linestyles':'solid','linewidths':.25,'colors' : 'black' }
     plotitem.amr_contour_show = [1,1,1]
     plotitem.celledges_show = 0
     plotitem.patchedges_show = 0
@@ -267,7 +267,7 @@ def setplot(plotdata):
     plotitem.add_colorbar = True
     plotitem.amr_celledges_show = [0,0,0]
     #plotitem.patchedges_show = 1
-    plotitem.amr_patchedges_show = [0,0,0]
+    plotitem.amr_patchedges_show = [0,1,0]
 
     # Land
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
@@ -285,7 +285,7 @@ def setplot(plotdata):
     #-----------------------------------------
     # Figure for zoom around NYC
     #-----------------------------------------
-    zoomWanted = True
+    zoomWanted = False
     if zoomWanted:
         plotfigure = plotdata.new_plotfigure(name='Zoom1', figno=7)
 
@@ -494,7 +494,7 @@ def setplot(plotdata):
     plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
     plotitem.show =  False
     plotitem.plot_var = geoplot.topo
-    plotitem.contour_levels = linspace(-2000,2000,21)
+    plotitem.contour_levels = linspace(-2000,2000,11)
     plotitem.amr_contour_colors = ['k']  # color on each level
     #plotitem.contour_levels = [-1000 -500,-250,-100, -5, 5]
 
@@ -562,7 +562,9 @@ def setplot(plotdata):
     #plotdata.print_framenos = [30,50,70]          # list of frames to print
     #plotdata.print_framenos = [1]          # list of frames to print
     plotdata.print_gaugenos = 'all'          # list of gauges to print
-    plotdata.print_fignos = [0,7,10,33,300]  # list of figures to print
+    plotdata.print_fignos = [0,10]  # list of figures to print
+    #plotdata.print_fignos = [0,7,10,33,300]  # list of figures to print
+    # 33 is pressure 300 is gauges, 7 is zoom - currently set for NYC 
     #plotdata.print_fignos = [0]  # list of figures to print
     plotdata.html = True                     # create html files of plots?
     plotdata.html_homelink = '../README.html'   # pointer for top of index

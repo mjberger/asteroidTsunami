@@ -67,15 +67,15 @@ def setrun(claw_pkg='geoclaw'):
 
     # Lower and upper edge of computational domain:
     #  this is whole region covered by bathy
-    clawdata.lower[0] =   0.0       # west longitude
-    clawdata.upper[0] =  24.0      # east longitude
+    clawdata.lower[0] =  99.0       # west longitude
+    clawdata.upper[0] = 125.0      # east longitude
 
-    clawdata.lower[1] =  99.0       # south latitude
-    clawdata.upper[1] = 125.0       # north latitude
+    clawdata.lower[1] =  0.0       # south latitude
+    clawdata.upper[1] = 24.0       # north latitude
 
 
     # Number of grid cells:
-    degree_factor = 20
+    degree_factor = 30
     clawdata.num_cells[0] = int(clawdata.upper[0] - clawdata.lower[0]) * degree_factor
     clawdata.num_cells[1] = int(clawdata.upper[1] - clawdata.lower[1]) * degree_factor
 
@@ -128,7 +128,7 @@ def setrun(claw_pkg='geoclaw'):
         #                 day     s/hour  hours/day
         
         #clawdata.tfinal = 14000  # seconds
-        clawdata.tfinal = 300  # seconds
+        clawdata.tfinal = 10000  # seconds
 
         # Output occurrence per day, 24 = every hour, 4 = every 6 hours
         recurrence = 50   # output every 50 seconds
@@ -155,7 +155,7 @@ def setrun(claw_pkg='geoclaw'):
     #clawdata.output_format = 'ascii'        # 'ascii' or 'netcdf' 
 
     clawdata.output_q_components = 'all'   # could be list such as [True,True]
-    clawdata.output_aux_components = 'all'
+    clawdata.output_aux_components = 'none'
     clawdata.output_aux_onlyonce = False    # output aux arrays only at t0
 
 
@@ -324,15 +324,15 @@ def setrun(claw_pkg='geoclaw'):
 
 
     # max number of refinement levels:
-    amrdata.amr_levels_max = 1
+    amrdata.amr_levels_max = 2
 
     # List of refinement ratios at each level (length at least mxnest-1)
-    #amrdata.refinement_ratios_x = [10,4,4,6,16]
-    #amrdata.refinement_ratios_y = [10,4,4,6,16]
-    #amrdata.refinement_ratios_t = [10,4,4,6,16]
-    amrdata.refinement_ratios_x = [12,4,4,6,16]
-    amrdata.refinement_ratios_y = [12,4,4,6,16]
-    amrdata.refinement_ratios_t = [12,4,4,6,16]
+    amrdata.refinement_ratios_x = [4,6,16]
+    amrdata.refinement_ratios_y = [4,6,16]
+    amrdata.refinement_ratios_t = [4,6,16]
+    #amrdata.refinement_ratios_x = [12,4,4,6,16]
+    #amrdata.refinement_ratios_y = [12,4,4,6,16]
+    #amrdata.refinement_ratios_t = [12,4,4,6,16]
 
 
     # Specify type of each aux variable in amrdata.auxtype.
@@ -376,7 +376,7 @@ def setrun(claw_pkg='geoclaw'):
     regions = rundata.regiondata.regions
     # to specify regions of refinement append lines of the form
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
-    #regions.append([2,7,3000,clawdata.tfinal,-74.5,-72.5,40.25,41.5])
+    regions.append([1,3,0,clawdata.tfinal,90.0,135.,-1.,25.0])
 
     #nyc zoom
     #regions.append([3,7,9000,clawdata.tfinal,-74.5,-72.5,40.25,41.5])
@@ -447,7 +447,7 @@ def setgeo(rundata):
 
     # Refinement Criteria
     refine_data = rundata.refinement_data
-    refine_data.wave_tolerance = .1 
+    refine_data.wave_tolerance = .2 
     # refine_data.wave_tolerance = 0.5
     # refine_data.speed_tolerance = [0.25,0.5,1.0,2.0,3.0,4.0]
     # refine_data.speed_tolerance = [0.5,1.0,1.5,2.0,2.5,3.0]
@@ -483,6 +483,11 @@ def setgeo(rundata):
     # for fixed grids append lines of the form
     # [t1,t2,noutput,x1,x2,y1,y2,xpoints,ypoints,\
     #  ioutarrivaltimes,ioutsurfacemax]
+    fgmax_files = rundata.fgmax_data.fgmax_files 
+    # for fixed grids append to this list names of any fgmax input files
+    fgmax_files.append('fgmax_grid.txt')
+    rundata.fgmax_data.num_fgmax_val = 1  # Save depth only
+
     
     return rundata
     # end of function setgeo

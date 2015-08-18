@@ -324,7 +324,7 @@ def setrun(claw_pkg='geoclaw'):
 
 
     # max number of refinement levels:
-    amrdata.amr_levels_max = 2
+    amrdata.amr_levels_max = 1
 
     # List of refinement ratios at each level (length at least mxnest-1)
     amrdata.refinement_ratios_x = [4,6,16]
@@ -464,7 +464,7 @@ def setgeo(rundata):
     #   [topotype, minlevel, maxlevel, t1, t2, fname]
     topo_data.topofiles.append([1, 1, 3, rundata.clawdata.t0, 
                                         rundata.clawdata.tfinal, 
-                                        '../bathy/SouthChinaSea_Lat24_0Long_125_99.xyz'])
+                                        'SouthChinaSea_Lat24_0Long_125_99.xyz'])
     #topo_data.topofiles.append([3, 1, 3, rundata.clawdata.t0, 
     #                                    rundata.clawdata.tfinal, 
     #                                    '../../bathy/atlantic_2min.tt3'])

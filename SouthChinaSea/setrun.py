@@ -131,7 +131,7 @@ def setrun(claw_pkg='geoclaw'):
         clawdata.tfinal = 10000  # seconds
 
         # Output occurrence per day, 24 = every hour, 4 = every 6 hours
-        recurrence = 50   # output every 50 seconds
+        recurrence = 120   # output every 50 seconds
         clawdata.num_output_times = int((clawdata.tfinal - clawdata.t0) 
                                             / recurrence)
         #clawdata.num_output_times = 70  # for 14Ksec this is every 200 sec  
@@ -282,6 +282,20 @@ def setrun(claw_pkg='geoclaw'):
     #gauges.append([9,  -69.5, 36.5, 0,   1e10])
     #gauges.append([10, -68.5, 35.5, 0,   1e10])
     #gauges.append([11, -73.085, 40.7, 0,   1e10]) # long island 
+
+    # for SouthChinaSea
+    gauges.append([1,  115.2 , 13.,    0, 1e10])  # by blast center 
+    gauges.append([2,  114.15, 21.49,   0, 1e10])  # off Hong Kong
+    gauges.append([3,  119.46, 21.36,   0, 1e10])  # off Taiwan
+    gauges.append([4,  120.11, 22.0 ,   0, 1e10])  # closer to Taiwan
+    gauges.append([5,  120.11, 22.0 ,   0, 1e10])  # closer to Taiwan
+
+    gauges.append([6,  119.42, 15.10,   0, 1e10])  # off of Phillipines
+
+    gauges.append([7,  110.09, 12.36,   0, 1e10])  # off of Vietnam
+    gauges.append([8,  109.39, 12.36,   0, 1e10])  # off of Vietnam
+
+    gauges.append([9,  114.44,  5.13,   0, 1e10])  # off of Singapore
 
 
 
@@ -464,13 +478,13 @@ def setgeo(rundata):
     #   [topotype, minlevel, maxlevel, t1, t2, fname]
     topo_data.topofiles.append([1, 1, 3, rundata.clawdata.t0, 
                                         rundata.clawdata.tfinal, 
-                                        'SouthChinaSea_Lat24_0Long_125_99.xyz'])
+                                        '../bathy/SouthChinaSea_Lat24_0Long_125_99.xyz'])
     #topo_data.topofiles.append([3, 1, 3, rundata.clawdata.t0, 
     #                                    rundata.clawdata.tfinal, 
-    #                                    '../../bathy/atlantic_2min.tt3'])
+    #                                    '../bathy/atlantic_2min.tt3'])
     #topo_data.topofiles.append([3, 1, 3, rundata.clawdata.t0, 
     #                                    rundata.clawdata.tfinal, 
-    #                                    '../../bathy/atlantic_2min.tt3'])
+    #                                    '../bathy/atlantic_2min.tt3'])
 
     # == setqinit.data values ==
     rundata.qinit_data.qinit_type = 0

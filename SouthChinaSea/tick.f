@@ -373,10 +373,16 @@ c
           !xstHov  = -71.50001d0
           !xendHov = -68.50010d0 
        ! these params are for lat-long transect in South china sea
-          ystHov  = 17.45001d0  ! perturbed off grid line for round off reasons
-          yendHov = 17.45001d0
-          xstHov  = 107.0001d0
-          xendHov = 120.0010d0 
+          !ystHov  = 17.45001d0  ! perturbed off grid line for round off reasons
+          !yendHov = 17.45001d0
+          !xstHov  = 107.0001d0
+          !xendHov = 120.0010d0 
+       ! these params are for lat-long transect in South china sea
+          ystHov  = 13 33001d0  ! perturbed off grid line for round off reasons
+          yendHov = 13 33001d0
+          xstHov  = 113.2601d0
+          xendHov = 117.2601d0 
+
           npts = (xendHov-xstHov)/hxposs(mxnest) ! cell centered vals spanning the line
           xendHov = xstHov+npts*hxposs(mxnest)  ! in case not a multiple
 c         call makeHovmoller(time,xstHov,ystHov,xendHov,yendHov,

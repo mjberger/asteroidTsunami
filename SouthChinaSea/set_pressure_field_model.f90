@@ -38,10 +38,12 @@ subroutine set_pressure_field(maux,mbc,mx,my,xlow,ylow,dx,dy,time,aux,mptr)
   
 
     ! for two dimensional radially symmetric pressure wave. give blast center in lat/long units of domain
-    ! this is in shallow part near NYC
-    blasty_center = 17.45
-    blastx_center = 117.38
+    ! my original blast loc - deep water
+    !blasty_center = 17.45
+    !blastx_center = 117.38
 
+    blasty_center = 13.33
+    blastx_center = 115.26
 
     maxRatio        = 0.
     maxOverPressure = 0.

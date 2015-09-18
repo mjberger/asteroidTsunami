@@ -562,10 +562,8 @@ def setplot(plotdata):
     #plotdata.print_framenos = [30,50,70]          # list of frames to print
     #plotdata.print_framenos = [1]          # list of frames to print
     plotdata.print_gaugenos = 'all'          # list of gauges to print
-    plotdata.print_fignos = [0,10]  # list of figures to print
+    plotdata.print_fignos = [0,10,300]  # list of figures to print
     #plotdata.print_fignos = [0,7,10,33,300]  # list of figures to print
-    # 33 is pressure 300 is gauges, 7 is zoom - currently set for NYC 
-    #plotdata.print_fignos = [0]  # list of figures to print
     plotdata.html = True                     # create html files of plots?
     plotdata.html_homelink = '../README.html'   # pointer for top of index
     plotdata.latex = True                    # create latex file of plots?

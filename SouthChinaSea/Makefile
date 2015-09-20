@@ -33,6 +33,7 @@ FFLAGS ?=
 
 AMRLIB = $(CLAW)/amrclaw/src/2d
 GEOLIB = $(CLAW)/geoclaw/src/2d/shallow
+STORMLIB = $(CLAW)/geoclaw/examples/storm-surge/pressure_test/
 
 MODULES = \
  $(GEOLIB)/utility_module.f90 \
@@ -67,9 +68,9 @@ SOURCES = \
   ./stepgrid.f \
   ./hovmoller.f \
   ./makeXT.f \
-  $(CLAW)/riemann/src/rpn2_geoclaw.f \
+  $(STORMLIB)/rpn2_geoclaw.f \
   $(CLAW)/riemann/src/rpt2_geoclaw.f \
-  $(CLAW)/riemann/src/geoclaw_riemann_utils.f \
+  $(STORMLIB)/geoclaw_riemann_utils.f \
   $(GEOLIB)/step2.f90 \
   $(GEOLIB)/flux2fw.f \
   $(GEOLIB)/qad.f \

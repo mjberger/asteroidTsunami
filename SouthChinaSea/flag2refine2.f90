@@ -64,6 +64,7 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
     
     logical :: allowflag, depth_forcing,wasted
     external allowflag
+    logical :: use_topofiles
     
     ! Generic locals
     integer :: i,j,m
@@ -74,14 +75,15 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
 
     ! Initialize flags
     amrflags = DONTFLAG
+    use_topofiles = .false.
 
     ! for refinement using pressure gradient
     !pressure_refine_sq = .005D0**2  !since compared with square below
-    pressure_refine_sq = .100D0**2  !since compared with square below
+    pressure_refine_sq = .500D0**2  !since compared with square below
     maxGradP2 = 0.d0
     maxEta    = 0.d0
     depthTol = -100.d0 
-    depth_forcing = .true.
+    depth_forcing = .false.
 
     ! Initialize mesh sizes, assume constant
     if (coordinate_system == 2) then
@@ -142,8 +144,8 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
             ! Refine based on shallow depth
             if (depth_forcing) then
                 depth = aux(1,i,j)
-                wasted = (x_c .lt. 107. .and. y_c .lt. 14.)
-                if (depth .gt. depthTol .and. depth .lt. 0.d0 .and. .not. wasted) then
+                !wasted = (x_c .lt. 107. .and. y_c .lt. 14.)
+                if (depth .gt. depthTol .and. depth .lt. 0.d0 ) then
                      amrflags(i,j) = DOFLAG
                      cycle x_loop
                 endif
@@ -166,6 +168,7 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
             ! *****************************************************
             
             ! Check to see if refinement is forced in any topography file region:
+            if (use_topofiles) then
             do m=1,mtopofiles
                 if (level < minleveltopo(m) .and. t >= tlowtopo(m) .and. t <= thitopo(m)) then
                     if (  x_hi > xlowtopo(m) .and. x_low < xhitopo(m) .and. &
@@ -176,6 +179,7 @@ subroutine flag2refine2(mx,my,mbc,mbuff,meqn,maux,xlower,ylower,dx,dy,t,level, &
                     endif
                 endif
             enddo
+            endif
 
             ! Check to see if refinement is forced in any other region:
             do m=1,num_regions

@@ -338,7 +338,7 @@ def setrun(claw_pkg='geoclaw'):
 
 
     # max number of refinement levels:
-    amrdata.amr_levels_max = 1
+    amrdata.amr_levels_max = 2
 
     # List of refinement ratios at each level (length at least mxnest-1)
     amrdata.refinement_ratios_x = [4,6,16]
@@ -466,8 +466,8 @@ def setgeo(rundata):
     # refine_data.speed_tolerance = [0.25,0.5,1.0,2.0,3.0,4.0]
     # refine_data.speed_tolerance = [0.5,1.0,1.5,2.0,2.5,3.0]
     #refine_data.speed_tolerance = [1.0,2.0,3.0,4.0]
-    refine_data.deep_depth = 1e6
-    refine_data.max_level_deep = 3
+    refine_data.deep_depth = 300
+    refine_data.max_level_deep = 2
     #refine_data.variable_dt_refinement_ratios = True
     refine_data.variable_dt_refinement_ratios = False
 
